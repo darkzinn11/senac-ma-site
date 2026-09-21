@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+
+# Local development / QA artifacts
+.qa/
+.senac-backups/
+.design/
+
+# IDE / OS
+.vscode/
+.idea/

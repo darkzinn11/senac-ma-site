@@ -1,0 +1,39 @@
+/* Atalhos compactos alinhados ao grid da Home, sem um segundo carrossel. */
+.quick-links-heading { margin-bottom:27px; }
+.quick-links-heading h2 { color:var(--blue); font-size:32px; font-weight:800; line-height:1.2; }
+.quick-links-heading p { color:#53697c; font-size:16px; line-height:1.5; margin-top:7px; }
+.quick-links-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; }
+.quick-links-card {
+  position:relative; min-width:0; min-height:166px;
+  display:flex; flex-direction:column; align-items:flex-start;
+  border:0; border-radius:20.2px;
+  background:#fff; padding:22px 18px 20px; color:#004b8d;
+  box-shadow:0 30px 75px rgb(12 49 86 / 10%);
+  transition:transform .22s ease,box-shadow .22s ease;
+}
+.quick-links-icon { width:32px; height:32px; flex:none; margin-bottom:18px; }
+.quick-links-icon--student { transform:scaleY(1.14); transform-box:fill-box; transform-origin:center; }
+.quick-links-text { display:flex; flex-direction:column; gap:6px; min-width:0; padding-right:0; }
+.quick-links-text strong { font-size:16px; line-height:1.25; font-weight:800; overflow-wrap:break-word; }
+.quick-links-text small { font-size:12px; line-height:1.35; color:#63788c; }
+.quick-links-arrow { position:absolute; top:24px; right:13px; width:17px; height:17px; flex:none; color:#ef8c19;
+  transition:transform .22s ease; }
+.quick-links-card:focus-visible { outline:3px solid #f7941f; outline-offset:3px; }
+@media (hover:hover) {
+  .quick-links-card:hover { transform:translateY(-4px); box-shadow:0 36px 85px rgb(12 49 86 / 16%); }
+  .quick-links-card:hover .quick-links-arrow { transform:translateX(3px); }
+}
+@media (max-width:1100px) { .quick-links-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width:767px) {
+  .quick-links-heading h2 { font-size:27px; }
+  .quick-links-heading p { font-size:15px; }
+  .quick-links-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .quick-links-card { min-height:146px; padding:18px 13px 15px; }
+  .quick-links-icon { width:28px; height:28px; margin-bottom:15px; }
+  .quick-links-text strong { font-size:15px; }
+  .quick-links-text small { font-size:12px; }
+  .quick-links-arrow { right:12px; top:21px; width:16px; height:16px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .quick-links-card,.quick-links-arrow { transition:none; }
+}

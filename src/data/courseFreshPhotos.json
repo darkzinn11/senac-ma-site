@@ -1,0 +1,646 @@
+{
+  "license": "https://www.pexels.com/license/",
+  "provider": "Pexels",
+  "photos": {
+    "2608517": {
+      "src": "/assets/courses-fresh/2608517.webp",
+      "source": "https://www.pexels.com/photo/2608517/"
+    },
+    "3983575": {
+      "src": "/assets/courses-fresh/3983575.webp",
+      "source": "https://www.pexels.com/photo/3983575/"
+    },
+    "3983576": {
+      "src": "/assets/courses-fresh/3983576.webp",
+      "source": "https://www.pexels.com/photo/3983576/"
+    },
+    "3984836": {
+      "src": "/assets/courses-fresh/3984836.webp",
+      "source": "https://www.pexels.com/photo/3984836/"
+    },
+    "4078342": {
+      "src": "/assets/courses-fresh/4078342.webp",
+      "source": "https://www.pexels.com/photo/4078342/"
+    },
+    "4078343": {
+      "src": "/assets/courses-fresh/4078343.webp",
+      "source": "https://www.pexels.com/photo/4078343/"
+    },
+    "4483941": {
+      "src": "/assets/courses-fresh/4483941.webp",
+      "source": "https://www.pexels.com/photo/4483941/"
+    },
+    "4586728": {
+      "src": "/assets/courses-fresh/4586728.webp",
+      "source": "https://www.pexels.com/photo/4586728/"
+    },
+    "4586744": {
+      "src": "/assets/courses-fresh/4586744.webp",
+      "source": "https://www.pexels.com/photo/4586744/"
+    },
+    "4599430": {
+      "src": "/assets/courses-fresh/4599430.webp",
+      "source": "https://www.pexels.com/photo/4599430/"
+    },
+    "4783290": {
+      "src": "/assets/courses-fresh/4783290.webp",
+      "source": "https://www.pexels.com/photo/4783290/"
+    },
+    "4872028": {
+      "src": "/assets/courses-fresh/4872028.webp",
+      "source": "https://www.pexels.com/photo/4872028/"
+    },
+    "5214997": {
+      "src": "/assets/courses-fresh/5214997.webp",
+      "source": "https://www.pexels.com/photo/5214997/"
+    },
+    "5371676": {
+      "src": "/assets/courses-fresh/5371676.webp",
+      "source": "https://www.pexels.com/photo/5371676/"
+    },
+    "5427870": {
+      "src": "/assets/courses-fresh/5427870.webp",
+      "source": "https://www.pexels.com/photo/5427870/"
+    },
+    "5427998": {
+      "src": "/assets/courses-fresh/5427998.webp",
+      "source": "https://www.pexels.com/photo/5427998/"
+    },
+    "5428012": {
+      "src": "/assets/courses-fresh/5428012.webp",
+      "source": "https://www.pexels.com/photo/5428012/"
+    },
+    "5428715": {
+      "src": "/assets/courses-fresh/5428715.webp",
+      "source": "https://www.pexels.com/photo/5428715/"
+    },
+    "5474282": {
+      "src": "/assets/courses-fresh/5474282.webp",
+      "source": "https://www.pexels.com/photo/5474282/"
+    },
+    "5474300": {
+      "src": "/assets/courses-fresh/5474300.webp",
+      "source": "https://www.pexels.com/photo/5474300/"
+    },
+    "5489456": {
+      "src": "/assets/courses-fresh/5489456.webp",
+      "source": "https://www.pexels.com/photo/5489456/"
+    },
+    "5926382": {
+      "src": "/assets/courses-fresh/5926382.webp",
+      "source": "https://www.pexels.com/photo/5926382/"
+    },
+    "5964569": {
+      "src": "/assets/courses-fresh/5964569.webp",
+      "source": "https://www.pexels.com/photo/5964569/"
+    },
+    "6129237": {
+      "src": "/assets/courses-fresh/6129237.webp",
+      "source": "https://www.pexels.com/photo/6129237/"
+    },
+    "6129243": {
+      "src": "/assets/courses-fresh/6129243.webp",
+      "source": "https://www.pexels.com/photo/6129243/"
+    },
+    "6129681": {
+      "src": "/assets/courses-fresh/6129681.webp",
+      "source": "https://www.pexels.com/photo/6129681/"
+    },
+    "6187845": {
+      "src": "/assets/courses-fresh/6187845.webp",
+      "source": "https://www.pexels.com/photo/6187845/"
+    },
+    "6205646": {
+      "src": "/assets/courses-fresh/6205646.webp",
+      "source": "https://www.pexels.com/photo/6205646/"
+    },
+    "6303650": {
+      "src": "/assets/courses-fresh/6303650.webp",
+      "source": "https://www.pexels.com/photo/6303650/"
+    },
+    "6322367": {
+      "src": "/assets/courses-fresh/6322367.webp",
+      "source": "https://www.pexels.com/photo/6322367/"
+    },
+    "6461165": {
+      "src": "/assets/courses-fresh/6461165.webp",
+      "source": "https://www.pexels.com/photo/6461165/"
+    },
+    "6466141": {
+      "src": "/assets/courses-fresh/6466141.webp",
+      "source": "https://www.pexels.com/photo/6466141/"
+    },
+    "6473969": {
+      "src": "/assets/courses-fresh/6473969.webp",
+      "source": "https://www.pexels.com/photo/6473969/"
+    },
+    "6473981": {
+      "src": "/assets/courses-fresh/6473981.webp",
+      "source": "https://www.pexels.com/photo/6473981/"
+    },
+    "6474460": {
+      "src": "/assets/courses-fresh/6474460.webp",
+      "source": "https://www.pexels.com/photo/6474460/"
+    },
+    "6502823": {
+      "src": "/assets/courses-fresh/6502823.webp",
+      "source": "https://www.pexels.com/photo/6502823/"
+    },
+    "6628647": {
+      "src": "/assets/courses-fresh/6628647.webp",
+      "source": "https://www.pexels.com/photo/6628647/"
+    },
+    "6693646": {
+      "src": "/assets/courses-fresh/6693646.webp",
+      "source": "https://www.pexels.com/photo/6693646/"
+    },
+    "6694492": {
+      "src": "/assets/courses-fresh/6694492.webp",
+      "source": "https://www.pexels.com/photo/6694492/"
+    },
+    "6754846": {
+      "src": "/assets/courses-fresh/6754846.webp",
+      "source": "https://www.pexels.com/photo/6754846/"
+    },
+    "6914038": {
+      "src": "/assets/courses-fresh/6914038.webp",
+      "source": "https://www.pexels.com/photo/6914038/"
+    },
+    "7129665": {
+      "src": "/assets/courses-fresh/7129665.webp",
+      "source": "https://www.pexels.com/photo/7129665/"
+    },
+    "7233270": {
+      "src": "/assets/courses-fresh/7233270.webp",
+      "source": "https://www.pexels.com/photo/7233270/"
+    },
+    "7256861": {
+      "src": "/assets/courses-fresh/7256861.webp",
+      "source": "https://www.pexels.com/photo/7256861/"
+    },
+    "7289732": {
+      "src": "/assets/courses-fresh/7289732.webp",
+      "source": "https://www.pexels.com/photo/7289732/"
+    },
+    "7289733": {
+      "src": "/assets/courses-fresh/7289733.webp",
+      "source": "https://www.pexels.com/photo/7289733/"
+    },
+    "7414048": {
+      "src": "/assets/courses-fresh/7414048.webp",
+      "source": "https://www.pexels.com/photo/7414048/"
+    },
+    "7446906": {
+      "src": "/assets/courses-fresh/7446906.webp",
+      "source": "https://www.pexels.com/photo/7446906/"
+    },
+    "7446910": {
+      "src": "/assets/courses-fresh/7446910.webp",
+      "source": "https://www.pexels.com/photo/7446910/"
+    },
+    "7446917": {
+      "src": "/assets/courses-fresh/7446917.webp",
+      "source": "https://www.pexels.com/photo/7446917/"
+    },
+    "7447128": {
+      "src": "/assets/courses-fresh/7447128.webp",
+      "source": "https://www.pexels.com/photo/7447128/"
+    },
+    "7447297": {
+      "src": "/assets/courses-fresh/7447297.webp",
+      "source": "https://www.pexels.com/photo/7447297/"
+    },
+    "7579831": {
+      "src": "/assets/courses-fresh/7579831.webp",
+      "source": "https://www.pexels.com/photo/7579831/"
+    },
+    "7643721": {
+      "src": "/assets/courses-fresh/7643721.webp",
+      "source": "https://www.pexels.com/photo/7643721/"
+    },
+    "7654132": {
+      "src": "/assets/courses-fresh/7654132.webp",
+      "source": "https://www.pexels.com/photo/7654132/"
+    },
+    "7674983": {
+      "src": "/assets/courses-fresh/7674983.webp",
+      "source": "https://www.pexels.com/photo/7674983/"
+    },
+    "7691694": {
+      "src": "/assets/courses-fresh/7691694.webp",
+      "source": "https://www.pexels.com/photo/7691694/"
+    },
+    "7778188": {
+      "src": "/assets/courses-fresh/7778188.webp",
+      "source": "https://www.pexels.com/photo/7778188/"
+    },
+    "7857532": {
+      "src": "/assets/courses-fresh/7857532.webp",
+      "source": "https://www.pexels.com/photo/7857532/"
+    },
+    "7857553": {
+      "src": "/assets/courses-fresh/7857553.webp",
+      "source": "https://www.pexels.com/photo/7857553/"
+    },
+    "7998328": {
+      "src": "/assets/courses-fresh/7998328.webp",
+      "source": "https://www.pexels.com/photo/7998328/"
+    },
+    "7998340": {
+      "src": "/assets/courses-fresh/7998340.webp",
+      "source": "https://www.pexels.com/photo/7998340/"
+    },
+    "7998341": {
+      "src": "/assets/courses-fresh/7998341.webp",
+      "source": "https://www.pexels.com/photo/7998341/"
+    },
+    "7998347": {
+      "src": "/assets/courses-fresh/7998347.webp",
+      "source": "https://www.pexels.com/photo/7998347/"
+    },
+    "8297074": {
+      "src": "/assets/courses-fresh/8297074.webp",
+      "source": "https://www.pexels.com/photo/8297074/"
+    },
+    "8558242": {
+      "src": "/assets/courses-fresh/8558242.webp",
+      "source": "https://www.pexels.com/photo/8558242/"
+    },
+    "9553905": {
+      "src": "/assets/courses-fresh/9553905.webp",
+      "source": "https://www.pexels.com/photo/9553905/"
+    },
+    "9849320": {
+      "src": "/assets/courses-fresh/9849320.webp",
+      "source": "https://www.pexels.com/photo/9849320/"
+    },
+    "10775080": {
+      "src": "/assets/courses-fresh/10775080.webp",
+      "source": "https://www.pexels.com/photo/10775080/"
+    },
+    "12234106": {
+      "src": "/assets/courses-fresh/12234106.webp",
+      "source": "https://www.pexels.com/photo/12234106/"
+    },
+    "12902996": {
+      "src": "/assets/courses-fresh/12902996.webp",
+      "source": "https://www.pexels.com/photo/12902996/"
+    },
+    "12903003": {
+      "src": "/assets/courses-fresh/12903003.webp",
+      "source": "https://www.pexels.com/photo/12903003/"
+    },
+    "12903115": {
+      "src": "/assets/courses-fresh/12903115.webp",
+      "source": "https://www.pexels.com/photo/12903115/"
+    },
+    "13138522": {
+      "src": "/assets/courses-fresh/13138522.webp",
+      "source": "https://www.pexels.com/photo/13138522/"
+    },
+    "14036250": {
+      "src": "/assets/courses-fresh/14036250.webp",
+      "source": "https://www.pexels.com/photo/14036250/"
+    },
+    "15189552": {
+      "src": "/assets/courses-fresh/15189552.webp",
+      "source": "https://www.pexels.com/photo/15189552/"
+    },
+    "15249626": {
+      "src": "/assets/courses-fresh/15249626.webp",
+      "source": "https://www.pexels.com/photo/15249626/"
+    },
+    "16213402": {
+      "src": "/assets/courses-fresh/16213402.webp",
+      "source": "https://www.pexels.com/photo/16213402/"
+    },
+    "16313501": {
+      "src": "/assets/courses-fresh/16313501.webp",
+      "source": "https://www.pexels.com/photo/16313501/"
+    },
+    "16466498": {
+      "src": "/assets/courses-fresh/16466498.webp",
+      "source": "https://www.pexels.com/photo/16466498/"
+    },
+    "16767783": {
+      "src": "/assets/courses-fresh/16767783.webp",
+      "source": "https://www.pexels.com/photo/16767783/"
+    },
+    "17086340": {
+      "src": "/assets/courses-fresh/17086340.webp",
+      "source": "https://www.pexels.com/photo/17086340/"
+    },
+    "18271866": {
+      "src": "/assets/courses-fresh/18271866.webp",
+      "source": "https://www.pexels.com/photo/18271866/"
+    },
+    "18337050": {
+      "src": "/assets/courses-fresh/18337050.webp",
+      "source": "https://www.pexels.com/photo/18337050/"
+    },
+    "18459210": {
+      "src": "/assets/courses-fresh/18459210.webp",
+      "source": "https://www.pexels.com/photo/18459210/"
+    },
+    "18999475": {
+      "src": "/assets/courses-fresh/18999475.webp",
+      "source": "https://www.pexels.com/photo/18999475/"
+    },
+    "20530805": {
+      "src": "/assets/courses-fresh/20530805.webp",
+      "source": "https://www.pexels.com/photo/20530805/"
+    },
+    "22873663": {
+      "src": "/assets/courses-fresh/22873663.webp",
+      "source": "https://www.pexels.com/photo/22873663/"
+    },
+    "23349891": {
+      "src": "/assets/courses-fresh/23349891.webp",
+      "source": "https://www.pexels.com/photo/23349891/"
+    },
+    "28098571": {
+      "src": "/assets/courses-fresh/28098571.webp",
+      "source": "https://www.pexels.com/photo/28098571/"
+    },
+    "31112240": {
+      "src": "/assets/courses-fresh/31112240.webp",
+      "source": "https://www.pexels.com/photo/31112240/"
+    },
+    "31112250": {
+      "src": "/assets/courses-fresh/31112250.webp",
+      "source": "https://www.pexels.com/photo/31112250/"
+    },
+    "31969463": {
+      "src": "/assets/courses-fresh/31969463.webp",
+      "source": "https://www.pexels.com/photo/31969463/"
+    },
+    "32588538": {
+      "src": "/assets/courses-fresh/32588538.webp",
+      "source": "https://www.pexels.com/photo/32588538/"
+    },
+    "33418521": {
+      "src": "/assets/courses-fresh/33418521.webp",
+      "source": "https://www.pexels.com/photo/33418521/"
+    },
+    "33580445": {
+      "src": "/assets/courses-fresh/33580445.webp",
+      "source": "https://www.pexels.com/photo/33580445/"
+    },
+    "33580449": {
+      "src": "/assets/courses-fresh/33580449.webp",
+      "source": "https://www.pexels.com/photo/33580449/"
+    },
+    "34804007": {
+      "src": "/assets/courses-fresh/34804007.webp",
+      "source": "https://www.pexels.com/photo/34804007/"
+    },
+    "34930119": {
+      "src": "/assets/courses-fresh/34930119.webp",
+      "source": "https://www.pexels.com/photo/34930119/"
+    },
+    "34930151": {
+      "src": "/assets/courses-fresh/34930151.webp",
+      "source": "https://www.pexels.com/photo/34930151/"
+    },
+    "34930163": {
+      "src": "/assets/courses-fresh/34930163.webp",
+      "source": "https://www.pexels.com/photo/34930163/"
+    },
+    "36473250": {
+      "src": "/assets/courses-fresh/36473250.webp",
+      "source": "https://www.pexels.com/photo/36473250/"
+    },
+    "36731158": {
+      "src": "/assets/courses-fresh/36731158.webp",
+      "source": "https://www.pexels.com/photo/36731158/"
+    },
+    "36731160": {
+      "src": "/assets/courses-fresh/36731160.webp",
+      "source": "https://www.pexels.com/photo/36731160/"
+    },
+    "36731169": {
+      "src": "/assets/courses-fresh/36731169.webp",
+      "source": "https://www.pexels.com/photo/36731169/"
+    },
+    "36731179": {
+      "src": "/assets/courses-fresh/36731179.webp",
+      "source": "https://www.pexels.com/photo/36731179/"
+    },
+    "36731372": {
+      "src": "/assets/courses-fresh/36731372.webp",
+      "source": "https://www.pexels.com/photo/36731372/"
+    },
+    "36731445": {
+      "src": "/assets/courses-fresh/36731445.webp",
+      "source": "https://www.pexels.com/photo/36731445/"
+    },
+    "36861971": {
+      "src": "/assets/courses-fresh/36861971.webp",
+      "source": "https://www.pexels.com/photo/36861971/"
+    },
+    "37105711": {
+      "src": "/assets/courses-fresh/37105711.webp",
+      "source": "https://www.pexels.com/photo/37105711/"
+    },
+    "37409121": {
+      "src": "/assets/courses-fresh/37409121.webp",
+      "source": "https://www.pexels.com/photo/37409121/"
+    },
+    "37409124": {
+      "src": "/assets/courses-fresh/37409124.webp",
+      "source": "https://www.pexels.com/photo/37409124/"
+    },
+    "37489058": {
+      "src": "/assets/courses-fresh/37489058.webp",
+      "source": "https://www.pexels.com/photo/37489058/"
+    }
+  },
+  "categories": {
+    "sewing": [
+      37409121,
+      37409124,
+      3984836,
+      7998328,
+      7998347,
+      6461165,
+      7998340,
+      7998341,
+      7778188
+    ],
+    "fashion": [
+      36731445,
+      36731158,
+      36731372,
+      36731169,
+      9849320,
+      36731160,
+      36731179,
+      7256861
+    ],
+    "ecommerce": [
+      7857532,
+      7674983,
+      7289732,
+      7857553,
+      7289733
+    ],
+    "coding": [
+      4078342,
+      4078343,
+      5474282,
+      5926382,
+      9553905,
+      34804007,
+      5474300
+    ],
+    "network": [
+      6466141,
+      5489456
+    ],
+    "repair": [
+      36861971,
+      32588538,
+      6754846,
+      37489058
+    ],
+    "makeup": [
+      8558242,
+      33580449,
+      7446906,
+      7446910,
+      7446917,
+      15249626
+    ],
+    "brows": [
+      33580445,
+      7446910
+    ],
+    "nails": [
+      34930163,
+      34930151
+    ],
+    "barber": [
+      13138522,
+      33418521,
+      10775080
+    ],
+    "hair": [
+      7447128,
+      23349891,
+      4783290
+    ],
+    "massage": [
+      6187845,
+      4599430,
+      6628647,
+      34930119,
+      7233270
+    ],
+    "skincare": [
+      4586744,
+      4586728,
+      34930119
+    ],
+    "health": [
+      5214997,
+      6303650,
+      6129681,
+      6129237,
+      6129243,
+      18271866,
+      18459210,
+      7579831
+    ],
+    "elderly": [
+      18271866,
+      18459210,
+      5214997
+    ],
+    "cooking": [
+      36473250,
+      17086340,
+      31969463,
+      18337050
+    ],
+    "pastry": [
+      3983575,
+      37105711,
+      5964569,
+      3983576
+    ],
+    "bakery": [
+      7447297,
+      3983575
+    ],
+    "coffee": [
+      16466498,
+      6205646,
+      28098571,
+      22873663
+    ],
+    "business": [
+      7643721,
+      4872028,
+      7691694,
+      7414048,
+      6914038,
+      12903115
+    ],
+    "speaking": [
+      15189552,
+      18999475,
+      2608517
+    ],
+    "finance": [
+      8297074,
+      6693646,
+      7654132,
+      6694492,
+      16213402
+    ],
+    "warehouse": [
+      4483941,
+      12234106,
+      31112250,
+      31112240
+    ],
+    "photo": [
+      20530805,
+      7129665
+    ],
+    "design": [
+      12902996,
+      12903003,
+      16313501,
+      6322367,
+      5428715
+    ],
+    "teaching": [
+      5427870,
+      5427998,
+      5428012,
+      6502823
+    ],
+    "construction": [
+      6473969,
+      16767783,
+      6473981,
+      6474460
+    ],
+    "hotel": [
+      5371676,
+      14036250
+    ],
+    "store": [
+      7857532,
+      7674983,
+      7289733
+    ]
+  },
+  "failed": [
+    [
+      15323383,
+      "HTTP Error 404: Not Found"
+    ]
+  ]
+}
