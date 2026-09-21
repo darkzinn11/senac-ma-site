@@ -82,8 +82,8 @@ export default function App() {
         {route==='/' ? <>
           <BannerCarousel slides={heroSlides} initial={2} label="Destaques do Senac" />
           <CourseFinder filters={filters} setFilters={setFilters} onSearch={search} onReset={reset} />
-          <Courses courses={results} searched={searched} filters={applied} onReset={reset} onDetails={setSelected} />
           <QuickAccess />
+          <Courses courses={results} searched={searched} filters={applied} onReset={reset} onDetails={setSelected} />
           <Services /><Institutional /><News /><Notices /><InstitutionalVideo /><Contact />
         </> : loadingRoute && !getPage(route) ? <div className="container inner-not-found" role="status"><h1>Carregando página...</h1><p>Consultando informações públicas do Senac Maranhão.</p></div> : <PortalPages page={getPage(route)} path={route} />}
       </main>

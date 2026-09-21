@@ -29,10 +29,8 @@ export default function CourseDetail({page}) {
     <article className="inner-content">
       {state.source==='loading'&&<div role="status" className="inner-empty"><h2>Consultando informações do curso…</h2></div>}
       {state.error&&<div role="alert" className="inner-empty"><p>{state.error}</p>
-        <ActionLink href={page.original} arrow>Ver no site oficial</ActionLink></div>}
+        <ActionLink href="/cursos-senac/" arrow>Ver outros cursos</ActionLink></div>}
       {item&&<>
-        <div className="inner-detail-photo"><img src={visual.image} alt="" loading="eager"/></div>
-        <p className="inner-course-disclaimer">Fotografia ilustrativa independente do Pexels; não retrata necessariamente alunos ou unidades do Senac. Informações referentes à turma publicada.</p>
         <div className="inner-detail-overview">
           <div className="inner-detail-heading"><span className="course-badge">{item.eixo_tecnologico||visual.area}</span>
             <span className={'inner-course-status '+(status==='Encerrada'?'is-past':'')}>{status}</span></div>
@@ -43,8 +41,8 @@ export default function CourseDetail({page}) {
             <Info icon={Clock3} label="Carga horária" value={item.carga_horaria?item.carga_horaria+' horas':null}/>
             <Info icon={CalendarDays} label="Início" value={item.inicio}/>
             <Info icon={CalendarDays} label="Término" value={item.fim}/>
-            <Info icon={Wallet} label="Valor publicado para esta turma" value={brl(item.preco)}/>
-            <Info icon={Users} label="Vagas cadastradas originalmente" value={item.total_de_vagas}/>
+            <Info icon={Wallet} label="Valor" value={brl(item.preco)}/>
+            <Info icon={Users} label="Vagas" value={item.total_de_vagas}/>
           </div>
           {item.horarios&&<p className="inner-detail-schedule"><strong>Horários:</strong> {item.horarios}</p>}
           {item.modalidade&&<p className="inner-detail-schedule"><strong>Modalidade:</strong> {item.modalidade}</p>}
@@ -56,13 +54,11 @@ export default function CourseDetail({page}) {
       <div className="inner-aside-card">
         <h2>Interessado neste curso?</h2>
         {item && status==='Encerrada'
-          ? <p>O período informado para esta turma já terminou. Consulte o portal oficial para conferir se há novas turmas.</p>
-          : <p>Consulte as condições de matrícula e confirme disponibilidade diretamente com o Senac Maranhão.</p>}
+          ? <p>O período desta turma já terminou. Confira outras turmas disponíveis.</p>
+          : <p>Confira as condições e, quando disponível, faça sua matrícula online.</p>}
         {item && status==='Programada' && item.link_para_matricula &&
-          <ActionLink href={item.link_para_matricula} arrow>Consultar matrícula oficial</ActionLink>}
-        <ActionLink href={page.original} arrow>Ver página oficial do curso</ActionLink>
+          <ActionLink href={item.link_para_matricula} arrow>Fazer matrícula</ActionLink>}
         <ActionLink href="/cursos-senac/" arrow>Explorar outros cursos</ActionLink>
-        {state.source==='snapshot'&&<p className="inner-catalog-warning">Dados da última consulta local. Atualização online indisponível.</p>}
       </div>
     </aside>
   </div>;

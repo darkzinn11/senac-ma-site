@@ -55,7 +55,7 @@ export default function CourseCatalog() {
   return <section className="inner-stack" aria-labelledby="catalog-title">
     <div className="inner-section-title"><div>
       <h2 id="catalog-title">Encontre o curso ideal</h2>
-      <p>Consulte as informações publicadas pelo Senac Maranhão. Datas e valores correspondem a cada turma cadastrada.</p>
+      <p>Consulte cursos, datas, valores e turmas disponíveis no Senac Maranhão.</p>
     </div></div>
     <div className="inner-catalog-layout">
       <aside className="inner-catalog-sidebar" aria-label="Filtros de cursos">

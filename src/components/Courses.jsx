@@ -20,7 +20,7 @@ export function CourseDialog({ course, onClose }) {
       <div className="dialog-copy">
         <span className="course-badge">{course.area}</span><h2 id="dialog-title">{course.title}</h2>
         <p className="course-duration"><Icon name="clock" />{course.hours} horas</p>
-        <p>Consulte as unidades, datas e condições de inscrição na programação oficial do Senac Maranhão.</p>
+        <p>Consulte as unidades, datas e condições de inscrição disponíveis para este curso.</p>
         <ActionLink href={links.courses} arrow>Consultar programação</ActionLink>
       </div>
     </div>

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
 import { articles, catalog, getPage, isCatalog, isNews, isNotices, localHref, pages, unitPages } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
+import { courseVisual } from '../data/courseVisuals';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import { ActionLink } from './Ui';
@@ -76,8 +77,8 @@ function ContentPage({page}) {
     ? unitPages.filter(p=>p.id!==page.id).slice(0,3)
     : page.path.startsWith('/institucional/') ? pages.filter(p=>p.parent===114 && p.id!==page.id).slice(0,3) : [];
   const blocks=page.blocks.filter(b=>!b.href || !b.href.includes('/author/'));
-  const actionLabel=page.path.includes('unidades/')?'Consultar cursos':page.path.includes('psg')?'Consultar editais':'Acessar o site oficial';
-  const actionUrl=page.path.includes('unidades/')?links.courses:page.path.includes('psg')?links.notices:page.original;
+  const actionLabel=page.path.includes('unidades/')?'Consultar cursos':page.path.includes('psg')?'Consultar editais':'Explorar cursos';
+  const actionUrl=page.path.includes('unidades/')?links.courses:page.path.includes('psg')?links.notices:links.courses;
   return <>
     <Intro page={page}/>
     {page.path==='/unidades/' && <UnitListing/>}
@@ -85,8 +86,7 @@ function ContentPage({page}) {
       <article className="inner-content">
         {blocks.length ? <TextBlocks blocks={blocks}/> : <div className="inner-empty">
           <h2>Informações e atendimento</h2>
-          <p>Consulte as informações atualizadas desta área no portal oficial do Senac Maranhão.</p>
-          <ActionLink href={page.original} arrow>Consultar informações oficiais</ActionLink>
+          <p>Novas informações desta área serão disponibilizadas aqui.</p>
         </div>}
         <ResourceLinks items={page.links} title={page.path.includes('psg')?'Editais e documentos':'Acessos e documentos'}/>
       </article>
@@ -123,14 +123,27 @@ function NewsListing() {
         <h3>{a.title}</h3>{a.excerpt&&<p>{a.excerpt}</p>}<span className="inner-news-link">Ler notícia <ArrowRight size={17}/></span></div>
     </a>)}</div>
     {!filtered.length && <p className="inner-no-results">Nenhuma notícia encontrada para esta busca.</p>}
-    <div className="inner-list-actions">{filtered.length>limit && <button className="button" onClick={()=>setLimit(v=>v+12)}>Carregar mais notícias <ArrowRight size={18}/></button>}
-      <ActionLink href="https://ma.senac.br/noticias/" className="button-outline" arrow>Ver arquivo completo</ActionLink></div>
+    <div className="inner-list-actions">{filtered.length>limit && <button className="button" onClick={()=>setLimit(v=>v+12)}>Carregar mais notícias <ArrowRight size={18}/></button>}</div>
   </section>;
 }
 function ArticlePage({page}) {
   const related=articles.filter(a=>a.id!==page.id).slice(0,3);
-  return <><Intro page={page} eyebrow="Notícias" subtitle={page.excerpt || prettyDate(page.date)}/>
-    <div className="inner-layout"><article className="inner-content">
+  const articleImage=safeImage(page.image) || safeImage(page.cover);
+  return <>
+    <header className="inner-article-heading">
+      <Breadcrumb page={page}/>
+      <div className="inner-article-lead">
+        <div className="inner-article-copy">
+          <h1>{page.title}</h1>
+          <p>{page.excerpt || prettyDate(page.date)}</p>
+        </div>
+        {articleImage && <figure className="inner-article-cover">
+          <img src={articleImage} alt={page.title} loading="eager" decoding="async"
+            onError={e=>{if(page.cover && e.currentTarget.src!==page.cover)e.currentTarget.src=page.cover;}}/>
+        </figure>}
+      </div>
+    </header>
+    <div className="inner-layout inner-article-layout"><article className="inner-content">
       <div className="inner-article-meta"><CalendarDays size={18}/>{prettyDate(page.date)}</div>
       <TextBlocks blocks={page.blocks}/>
       <div className="inner-article-end"><a href="/noticias/" className="button button-outline">Voltar para notícias</a></div>
@@ -143,8 +156,22 @@ function ArticlePage({page}) {
 }
 
 function CoursePage({page}) {
-  return <><Intro page={page} eyebrow="Cursos Senac" subtitle="Informações publicadas sobre esta turma no portal oficial do Senac Maranhão."/>
-    <CourseDetail page={page}/></>;
+  const visual=courseVisual(page);
+  return <>
+    <header className="inner-article-heading inner-course-heading">
+      <Breadcrumb page={page}/>
+      <div className="inner-article-lead inner-course-lead">
+        <div className="inner-article-copy inner-course-copy">
+          <h1>{page.title}</h1>
+          <p>Confira as informações da turma, carga horária, datas, unidade e condições de matrícula.</p>
+        </div>
+        <figure className="inner-article-cover inner-course-cover">
+          <img src={visual.image} alt="" loading="eager" decoding="async"/>
+        </figure>
+      </div>
+    </header>
+    <CourseDetail page={page}/>
+  </>;
 }
 
 function NoticesPage({page}) {
@@ -154,7 +181,7 @@ function NoticesPage({page}) {
   const filtered=entries.filter(item=>fold(item.text).includes(fold(query)));
   return <section className="inner-stack">
     <div className="inner-section-title"><div><h2>Consulte os documentos</h2>
-      <p>Relação de documentos disponibilizados no portal oficial. Confira as datas, condições e atualizações na origem.</p></div>
+      <p>Consulte editais, documentos e comunicados disponíveis nesta página.</p></div>
       <label className="inner-search"><Search size={20}/><input type="search" aria-label="Buscar edital" value={query}
         onChange={e=>{setQuery(e.target.value);setLimit(18)}} placeholder="Buscar edital"/></label>
     </div>
@@ -164,15 +191,13 @@ function NoticesPage({page}) {
       </a>)}
     </div>
     {!filtered.length && <p className="inner-no-results">Nenhum documento encontrado nesta seleção.</p>}
-    <div className="inner-list-actions">{filtered.length>limit&&<button className="button" onClick={()=>setLimit(v=>v+18)}>Carregar mais</button>}
-      <ActionLink href={page.original} className="button-outline" arrow>Ver atualizações oficiais</ActionLink></div>
+    <div className="inner-list-actions">{filtered.length>limit&&<button className="button" onClick={()=>setLimit(v=>v+18)}>Carregar mais</button>}</div>
   </section>;
 }
 export default function PortalPages({page,path}) {
   if (!page) return <div className="container inner-not-found"><h1>Página não encontrada</h1>
     <p>Não foi possível localizar esta página nesta versão do portal.</p>
     <ActionLink href="/" arrow>Voltar para a Home</ActionLink>
-    <a href={'https://ma.senac.br'+(path || '/')} target="_blank" rel="noopener noreferrer">Consultar a página no site oficial ↗</a>
   </div>;
   return <div className={'container inner-page'+(isCatalog(page.path)?' is-course-catalog':'')} key={page.path}>
     {page.kind==='post' ? <ArticlePage page={page}/> :

@@ -8,7 +8,7 @@ const shortcuts = [
   { title:'Cursos presenciais', detail:'Consulte as turmas', href:links.courses, icon:Book1 },
   { title:'Cursos a distância', detail:'Aprenda de onde estiver', href:links.ead, icon:Monitor },
   { title:'Bolsas e gratuidade', detail:'Conheça o PSG', href:links.psg, icon:BookSaved },
-  { title:'Portal do aluno', detail:'Acesse sua área', href:links.student, icon:Teacher, iconClass:'quick-links-icon--student' },
+  { title:'Portal do aluno', detail:'Acesse sua área', href:links.student, icon:Teacher },
   { title:'Nossas unidades', detail:'Encontre a mais próxima', href:links.units, icon:Location },
 ];
 
@@ -20,9 +20,9 @@ export default function QuickAccess() {
         <p>Encontre o que você precisa no Senac Maranhão.</p>
       </div>
       <div className="quick-links-grid">
-        {shortcuts.map(({title,detail,href,icon:Icon,iconClass=''})=>
+        {shortcuts.map(({title,detail,href,icon:Icon})=>
           <a className="quick-links-card" href={href} key={title}>
-            <Icon className={`quick-links-icon ${iconClass}`} size={32} variant="Linear" color="currentColor" aria-hidden="true"/>
+            <Icon className="quick-links-icon" size={32} variant="Linear" color="currentColor" aria-hidden="true"/>
             <span className="quick-links-text"><strong>{title}</strong><small>{detail}</small></span>
             <ArrowRight2 className="quick-links-arrow" size={19} variant="Linear" color="currentColor" aria-hidden="true"/>
           </a>
