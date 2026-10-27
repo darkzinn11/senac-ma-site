@@ -19,7 +19,7 @@
 .service-intro p { font-size:16px; line-height:1.75; color:#52677c; max-width:none; }
 .service-steps { margin-top:0; }
 .service-steps-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:17px; }
-.service-step { display:flex; flex-direction:column; min-width:0; background:white; padding:25px; border-radius:25px; box-shadow:0 16px 38px rgb(12 49 86 / 8%); }
+.service-step { display:flex; flex-direction:column; min-width:0; background:white; padding:25px; border-radius:25px; box-shadow:var(--shadow); }
 .service-step-icon { width:44px; height:44px; display:grid; place-items:center; color:#004b8d; }
 .service-step h3 { margin:16px 0 9px; color:#004b8d; font-size:20px; font-weight:800; line-height:1.35; }
 .service-step p { color:#52677c; font-size:15px; line-height:1.7; overflow-wrap:anywhere; }

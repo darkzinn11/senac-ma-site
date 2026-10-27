@@ -98,7 +98,7 @@ export const navigation = [
     { label:'Perguntas Frequentes', href:'/faq/' },
     { label:'Legislação', href:'/institucional/projeto-politico-pedagogico/' },
   ] },
-  { label:'Unidades', items:[
+  { label:'Unidade', items:[
     { label:'Capital', items:[
       { label:'Centro de Educação Profissional de São Luís', href:'/unidades/centro-de-educacao-profissional-de-sao-luis/' },
       { label:'Posto Avançado São Luís', href:'/unidades/posto-avancado-sao-luis/' },
@@ -119,7 +119,7 @@ export const navigation = [
     ] },
     { label:'Educação a distância', href:'https://www.ead.senac.br/' },
   ] },
-  { label:'Para Você', items:[
+  { label:'Para você', items:[
     { label:'Cursos', href:links.courses },
     { label:'PSG – Programa Senac de Gratuidade', href:'https://www.portal-psg.ma.senac.br/#/programa-senac-de-gratuidade', items:[
       { label:'O que é o PSG?', href:links.psg },
@@ -134,7 +134,7 @@ export const navigation = [
     { label:'Notícias', href:links.news },
     { label:'Trabalhe Conosco', href:links.jobs },
   ] },
-  { label:'Para Sua Empresa', items:[
+  { label:'Para sua empresa', items:[
     { label:'Solicite uma Visita', href:links.company },
     { label:'Banco de Oportunidades', href:links.opportunities },
     { label:'Aprendizagem', href:'/aprendizagem/' },

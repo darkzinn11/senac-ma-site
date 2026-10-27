@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import BannerCarousel from './BannerCarousel';
 import CourseFinder from './CourseFinder';
 import QuickAccess from './QuickAccess';
-import Courses, { CourseDialog } from './Courses';
+import Courses from './Courses';
 import { Contact, Institutional, InstitutionalVideo, News, Notices, Services } from './ContentSections';
 import { coursePreview, heroSlides } from '../data/content';
 import useAsync from '../api/useAsync';
@@ -33,7 +33,6 @@ export default function Home() {
   const [applied, setApplied] = useState(emptyFilters);
   const [searched, setSearched] = useState(false);
   const [found, setFound] = useState({ status:'idle', items:[] });
-  const [selected, setSelected] = useState(null);
   const searchSeq = useRef(0);
   const cities = useMemo(() => [...new Set(units.map(unit => unit.city).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [units]);
   const areas = useMemo(() => categories.data?.length ? categories.data.map(category => category.name) : [...new Set(coursePreview.map(course => course.area))], [categories.data]);
@@ -66,8 +65,7 @@ export default function Home() {
     <HeroBanner />
     <CourseFinder filters={filters} setFilters={setFilters} onSearch={search} onReset={reset} cities={cities} areas={areas} units={units} />
     <QuickAccess />
-    <Courses courses={showing} searched={searched} filters={applied} onReset={reset} onDetails={setSelected} loading={loading} error={searched && found.status === 'error'} units={units} />
+    <Courses courses={showing} searched={searched} filters={applied} onReset={reset} loading={loading} error={searched && found.status === 'error'} units={units} />
     <Services /><Institutional /><News /><Notices /><InstitutionalVideo /><Contact />
-    <CourseDialog course={selected} onClose={() => setSelected(null)} />
   </>;
 }
