@@ -21,7 +21,7 @@ export function Institutional() {
       href:links.ombudsman, description:'A Ouvidoria é um canal de comunicação direto e eficiente para o recebimento de reclamações, solicitações, elogios, sugestões e denúncias.' },
     { image:'b86aa.png', alt:'Conheça o Banco de Oportunidades do Senac Maranhão.', href:links.opportunities },
   ];
-  return <div className="section-block"><BannerCarousel slides={slides} variant="institutional" label="Serviços institucionais" /></div>;
+  return <div className="section-block container"><BannerCarousel slides={slides} variant="institutional" label="Serviços institucionais" /></div>;
 }
 const tagColors = ['#4f7afa', '#fa1466', '#004b8d', '#a3cc00'];
 // Foto da notícia; se o arquivo ainda não existe no servidor de mídia, mostra um fundo neutro (sem imagem quebrada).
