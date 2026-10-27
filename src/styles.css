@@ -239,6 +239,8 @@ button { color:inherit; }
 .notice-card .button { flex:none; margin:0; }
 .video-section { position:relative; height:574px; min-height:574px; padding:80px 0; overflow:hidden; background:#004a8c; }
 .senac80-background { position:absolute; left:0; right:0; bottom:0; width:100%; height:auto; max-width:none; }
+.senac80-custom-banner { height:100%; object-fit:cover; object-position:center; }
+.senac80-brand-spacer { width:439.56px; min-height:1px; }
 .senac80-inner { position:relative; z-index:1; display:grid; grid-template-columns:439.56px minmax(0,735.7px); gap:65px; align-items:center; }
 .senac80-brand { width:439.56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:37.65px; }
 .senac80-brand-row { width:440.5px; display:grid; grid-template-columns:170.86px 1.26px 147.28px; justify-content:space-between; align-items:center; }
@@ -368,6 +370,9 @@ button { color:inherit; }
   .notice-card .button { margin-top:8px; }
   .senac80-section { height:auto; min-height:auto; padding:70px 0; }
   .senac80-background { width:100%; height:100%; object-fit:cover; }
+  .senac80-section.has-banner { aspect-ratio:3 / 5; max-height:820px; min-height:0; padding:0 0 70px; display:flex; align-items:flex-end; }
+  .senac80-section.has-banner .senac80-inner { width:calc(100% - 48px); }
+  .senac80-brand-spacer { display:none; }
   .senac80-inner { grid-template-columns:1fr; gap:44px; justify-items:center; }
   .senac80-brand { width:min(100%,439.56px); }
   .senac80-video-frame { width:min(100%,735.7px); }

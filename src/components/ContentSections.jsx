@@ -70,10 +70,20 @@ export function Notices() {
 }
 export function InstitutionalVideo() {
   const [playing, setPlaying] = useState(false);
-  return <section className="video-section senac80-section section-block" id="senac" aria-label="Senac 80 anos">
-    <img className="senac80-background" src={publicUrl('/assets/senac80/453e1.png')} alt="" aria-hidden="true" />
+  const { highlight = {} } = useSiteData().settings;
+  if (highlight.enabled === false) return null;
+  const banner = highlight.bannerUrl;
+  const id = highlight.videoId || videoId;
+  const customPoster = highlight.videoId ? 'https://i.ytimg.com/vi/' + highlight.videoId : '';
+  return <section className={'video-section senac80-section section-block' + (banner ? ' has-banner' : '')} id="senac" aria-label="Senac 80 anos">
+    {banner
+      ? <picture>
+        {highlight.bannerMobileUrl && <source media="(max-width: 768px)" srcSet={highlight.bannerMobileUrl} />}
+        <img className="senac80-background senac80-custom-banner" src={banner} alt={highlight.bannerAlt} />
+      </picture>
+      : <img className="senac80-background" src={publicUrl('/assets/senac80/453e1.png')} alt="" aria-hidden="true" />}
     <div className="container senac80-inner">
-      <div className="senac80-brand" aria-hidden="true">
+      {banner ? <div className="senac80-brand-spacer" aria-hidden="true" /> : <div className="senac80-brand" aria-hidden="true">
         <div className="senac80-brand-row">
           <div className="senac80-lockup">
             <img className="senac80-senac-logo" src={publicUrl('/assets/senac80/5f907.svg')} alt="" />
@@ -83,12 +93,15 @@ export function InstitutionalVideo() {
           <img className="senac80-mark" src={publicUrl('/assets/senac80/0d0d4.svg')} alt="" />
         </div>
         <img className="senac80-tagline" src={publicUrl('/assets/senac80/63eeb.png')} alt="" />
-      </div>
+      </div>}
       <div className="video-frame senac80-video-frame">
-        {playing ? <iframe title="Senac 80 anos — vídeo institucional" src={'https://www.youtube-nocookie.com/embed/' + videoId + '?autoplay=1'}
+        {playing ? <iframe title="Senac 80 anos — vídeo institucional" src={'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1'}
           allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
           : <button className="video-poster" onClick={() => setPlaying(true)} aria-label="Assistir ao vídeo Senac 80 anos">
-            <img className="video-photo" src={publicUrl('/assets/senac80/9a2a2.png')} alt="Estudante com uma câmera em frente ao Senac" loading="lazy" decoding="async" />
+            {customPoster
+              ? <img className="video-photo video-photo-yt" src={customPoster + '/maxresdefault.jpg'} alt="" loading="lazy" decoding="async"
+                onError={event => { if (!event.currentTarget.src.endsWith('/hqdefault.jpg')) event.currentTarget.src = customPoster + '/hqdefault.jpg'; }} />
+              : <img className="video-photo" src={publicUrl('/assets/senac80/9a2a2.png')} alt="Estudante com uma câmera em frente ao Senac" loading="lazy" decoding="async" />}
             <span className="youtube-play"><img className="youtube-play-bg" src={publicUrl('/assets/senac80/ac7ff.svg')} alt="" /><img className="youtube-triangle" src={publicUrl('/assets/senac80/ddbc7.svg')} alt="" /></span>
           </button>}
       </div>

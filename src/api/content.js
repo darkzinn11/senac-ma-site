@@ -67,6 +67,12 @@ export async function loadSettings() {
   return {
     facebook: settings.facebook_url || '', instagram: settings.instagram_url || '', youtube: settings.youtube_url || '',
     address: settings.address || '', phone: settings.phone || '', email: settings.email || '', name: settings.portal_name || '',
+    // Destaque institucional da home (editável no admin). Nulos = o site usa a arte e o vídeo padrão.
+    highlight: {
+      enabled: settings.highlight?.enabled !== false,
+      bannerUrl: mediaUrl(settings.highlight?.banner_url), bannerMobileUrl: mediaUrl(settings.highlight?.banner_mobile_url),
+      bannerAlt: settings.highlight?.banner_alt || '', videoId: settings.highlight?.video_id || '',
+    },
   };
 }
 export async function loadQuickLinks() {
