@@ -1,10 +1,6 @@
 /* Página interna do curso: banner com dados-chave, conteúdo e turmas em cards compactos. */
 .course-page { --course-ink:#00284d; --course-muted:#53697c; --course-soft:#e6f2ff; --course-card-shadow:var(--shadow); color:var(--course-ink); }
 
-/* Ação secundária: fundo azul-claro, sem contorno (o estado de hover do botão sem borda, fixo). */
-.course-page .button-soft { background:#eaf3fb; color:var(--blue); border:0; }
-@media (hover:hover) { .course-page .button.button-soft:not(:disabled):hover { background:#dcebf8; color:var(--blue); } }
-
 /* Topo */
 /* Banner do curso: a foto ocupa o fundo e um degradê azul (da esquerda) garante a leitura do texto. */
 .course-page-banner { position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center; min-height:440px; padding:56px; border-radius:32px; background:#00284d; color:white; }

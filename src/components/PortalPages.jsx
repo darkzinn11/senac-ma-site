@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
+import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
 import { isCatalog, isNews, isNotices, localHref } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
 import { publicUrl, routeHref } from '../data/basePath';
@@ -13,6 +13,7 @@ import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
 import { ActionLink } from './Ui';
 import './portalPages.css';
+import './articlePage.css';
 
 const fold = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const prettyDate = value => value ? new Date(value).toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}) : '';
@@ -201,6 +202,14 @@ function usePagedList(fetchPage,query,perPage) {
   useEffect(()=>{load(1,true);},[query]);
   return {...state,loadMore:()=>load(state.page+1,false),retry:()=>state.page<1?load(1,true):load(state.page+1,false)};
 }
+function NewsCard({item}) {
+  return <a className="inner-news-card" href={item.path}>
+    <div className="inner-news-photo">
+      <TileImage src={item.cover} fallback={<BookOpen size={36} variant="Bold" color="currentColor"/>}/>
+    </div><div className="inner-news-body"><span className="inner-news-date"><CalendarDays size={15} variant="Bold" color="currentColor"/>{prettyDate(item.date)}</span>
+      <h3>{item.title}</h3>{item.excerpt&&<p>{item.excerpt}</p>}<span className="inner-news-link">Ler notícia <ArrowRight size={17} variant="Bold" color="currentColor"/></span></div>
+  </a>;
+}
 function NewsListing() {
   const [search,setSearch]=useState('');
   const query=useDebounced(search);
@@ -211,44 +220,43 @@ function NewsListing() {
       <label className="inner-search"><Search size={20} variant="Linear" color="currentColor"/><input type="search" value={search}
         onChange={e=>setSearch(e.target.value)} placeholder="Buscar notícia" aria-label="Buscar notícia"/></label>
     </div>
-    <div className="inner-news-grid">{list.items.map(a=><a className="inner-news-card" href={a.path} key={a.id}>
-      <div className="inner-news-photo">
-        <TileImage src={a.cover} fallback={<BookOpen size={36} variant="Bold" color="currentColor"/>}/>
-      </div><div className="inner-news-body"><span className="inner-news-date"><CalendarDays size={15} variant="Bold" color="currentColor"/>{prettyDate(a.date)}</span>
-        <h3>{a.title}</h3>{a.excerpt&&<p>{a.excerpt}</p>}<span className="inner-news-link">Ler notícia <ArrowRight size={17} variant="Bold" color="currentColor"/></span></div>
-    </a>)}</div>
+    <div className="inner-news-grid">{list.items.map(a=><NewsCard item={a} key={a.id}/>)}</div>
     {list.status==='loading'&&<p role="status" className="inner-no-results">{list.items.length?'Carregando mais notícias…':'Carregando notícias…'}</p>}
     {list.status==='error'&&<p role="alert" className="inner-no-results">Não foi possível carregar as notícias agora. <button type="button" className="button button-outline" onClick={list.retry}>Tentar novamente</button></p>}
     {list.status==='ready'&&!list.items.length && <p className="inner-no-results">Nenhuma notícia encontrada para esta busca.</p>}
     <div className="inner-list-actions">{list.status==='ready'&&list.page<list.totalPages && <button className="button" onClick={list.loadMore}>Carregar mais notícias <ArrowRight size={18} variant="Bold" color="currentColor"/></button>}</div>
   </section>;
 }
+// Fotos seguidas no corpo (parágrafos só com imagem) viram uma galeria lado a lado.
+const IMAGE_P=/<p>\s*(?:<a [^>]*>\s*)?<img [^>]*>\s*(?:<\/a>\s*)?<\/p>/;
+const groupImages=html=>String(html||'').replace(new RegExp('(?:'+IMAGE_P.source+'\\s*){2,}','g'),
+  run=>'<div class="article-gallery">'+run.match(new RegExp(IMAGE_P.source,'g')).join('')+'</div>');
+
 function ArticlePage({page}) {
-  const related=useAsync(async()=>(await listNews({perPage:4})).items.filter(a=>a.id!==page.id).slice(0,3),[page.id]);
+  const related=useAsync(async()=>(await listNews({perPage:5})).items.filter(a=>a.id!==page.id).slice(0,4),[page.id]);
   const articleImage=safeImage(page.image) || safeImage(page.cover);
   const [coverFailed,setCoverFailed]=useState(false);
+  const body=useMemo(()=>groupImages(page.html),[page.html]);
   return <>
-    <header className="inner-article-heading">
-      <Breadcrumb page={page}/>
-      <div className="inner-article-lead">
-        <div className="inner-article-copy">
+    <Breadcrumb page={page}/>
+      <article className="article-page">
+        <header className="article-heading">
+          {page.date&&<ul className="article-meta"><li><CalendarDays size={16} variant="Bold" color="currentColor"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li></ul>}
           <h1>{page.title}</h1>
-          <p>{page.excerpt || prettyDate(page.date)}</p>
-        </div>
-        {articleImage && !coverFailed && <figure className="inner-article-cover">
-          <img src={articleImage} alt={page.coverAlt||page.title} loading="eager" decoding="async" onError={()=>setCoverFailed(true)}/>
-        </figure>}
-      </div>
-    </header>
-    <div className="inner-layout inner-article-layout"><article className="inner-content">
-      <div className="inner-article-meta"><CalendarDays size={18} variant="Bold" color="currentColor"/>{prettyDate(page.date)}</div>
-      <Html html={page.html}/>
-      <div className="inner-article-end"><a href={routeHref('/noticias/')} className="button button-outline">Voltar para notícias</a></div>
-    </article><aside className="inner-aside"><div className="inner-aside-card"><h2>Fique por dentro</h2>
-      <p>Acompanhe as notícias, cursos e oportunidades do Senac Maranhão.</p>
-      <ActionLink href={routeHref('/noticias/')} arrow>Ver outras notícias</ActionLink></div></aside></div>
-    {(related.data||[]).length>0&&<section className="inner-stack"><div className="inner-section-title"><h2>Outras notícias</h2></div>
-      <div className="inner-tile-grid">{related.data.map(item=><LinkTile item={item} key={item.id}/>)}</div></section>}
+          {articleImage && !coverFailed && <figure className="article-cover">
+            <img src={articleImage} alt={page.coverAlt||''} loading="eager" decoding="async" onError={()=>setCoverFailed(true)}/>
+          </figure>}
+        </header>
+        <div className="article-body"><Html html={body}/></div>
+        <footer className="article-end">
+          <a href={routeHref('/noticias/')} className="button button-soft"><ArrowLeft size={18} variant="Linear" color="currentColor"/>Voltar para notícias</a>
+        </footer>
+      </article>
+    {(related.data||[]).length>0&&<section className="article-related" aria-labelledby="article-related-title">
+      <div className="article-related-head"><h2 id="article-related-title">Outras notícias</h2>
+        <a className="button" href={routeHref('/noticias/')}>Ver todas as notícias <ArrowRight size={18} variant="Linear" color="currentColor"/></a></div>
+      <div className="inner-news-grid article-related-grid">{related.data.map(item=><NewsCard item={item} key={item.id}/>)}</div>
+    </section>}
   </>;
 }
 
