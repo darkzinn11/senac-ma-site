@@ -232,22 +232,37 @@ const IMAGE_P=/<p>\s*(?:<a [^>]*>\s*)?<img [^>]*>\s*(?:<\/a>\s*)?<\/p>/;
 const groupImages=html=>String(html||'').replace(new RegExp('(?:'+IMAGE_P.source+'\\s*){2,}','g'),
   run=>'<div class="article-gallery">'+run.match(new RegExp(IMAGE_P.source,'g')).join('')+'</div>');
 
+const SHARE_TARGETS=[
+  {name:'WhatsApp',icon:'whatsapp',href:(url,title)=>'https://wa.me/?text='+encodeURIComponent(title+' '+url)},
+  {name:'X',icon:'x',href:(url,title)=>'https://twitter.com/intent/tweet?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(title)},
+  {name:'Facebook',icon:'facebook',href:url=>'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)},
+];
+function ArticleShare({title}) {
+  const url=typeof window==='undefined'?'':window.location.href;
+  return <div className="article-share">
+    <span>Compartilhe:</span>
+    <ul>{SHARE_TARGETS.map(t=><li key={t.icon}><a href={t.href(url,title)} target="_blank" rel="noopener noreferrer" aria-label={'Compartilhar no '+t.name}>
+      <img src={publicUrl('/assets/share/'+t.icon+'.svg')} alt="" width="34" height="34"/></a></li>)}</ul>
+  </div>;
+}
+
 function ArticlePage({page}) {
   const related=useAsync(async()=>(await listNews({perPage:5})).items.filter(a=>a.id!==page.id).slice(0,4),[page.id]);
   const articleImage=safeImage(page.image) || safeImage(page.cover);
   const [coverFailed,setCoverFailed]=useState(false);
   const body=useMemo(()=>groupImages(page.html),[page.html]);
   return <>
-    <Breadcrumb page={page}/>
       <article className="article-page">
         <header className="article-heading">
-          {page.date&&<ul className="article-meta"><li><CalendarDays size={16} variant="Bold" color="currentColor"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li></ul>}
+          <Breadcrumb page={page}/>
           <h1>{page.title}</h1>
-          {articleImage && !coverFailed && <figure className="article-cover">
-            <img src={articleImage} alt={page.coverAlt||''} loading="eager" decoding="async" onError={()=>setCoverFailed(true)}/>
-          </figure>}
+          {page.date&&<ul className="article-meta"><li><CalendarDays size={16} variant="Bold" color="currentColor"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li></ul>}
         </header>
+        {articleImage && !coverFailed && <figure className="article-cover">
+          <img src={articleImage} alt={page.coverAlt||''} loading="eager" decoding="async" onError={()=>setCoverFailed(true)}/>
+        </figure>}
         <div className="article-body"><Html html={body}/></div>
+        <ArticleShare title={page.title}/>
         <footer className="article-end">
           <a href={routeHref('/noticias/')} className="button button-soft"><ArrowLeft size={18} variant="Linear" color="currentColor"/>Voltar para notícias</a>
         </footer>
