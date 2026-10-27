@@ -44,13 +44,27 @@ export default function AccessibilityMenu(){
   useEffect(()=>{
     const onKey=e=>{if(e.key==='Escape')setOpen(false)};
     window.addEventListener('keydown',onKey);
+    // O botão do VLibras fica num shadow DOM fixado no meio da tela, onde cobre as setas do banner
+    // principal; um estilo dentro do shadow root o leva para baixo, na altura do botão de acessibilidade.
+    const placeVlibras=()=>{
+      const root=document.getElementById('vlibras-access-wrapper')?.shadowRoot;
+      if(!root)return false;
+      if(!root.getElementById('senac-vlibras-position')){
+        const style=document.createElement('style');style.id='senac-vlibras-position';
+        style.textContent='#vlibras-access{top:auto;bottom:37px}@media (max-width:640px){#vlibras-access{bottom:22px}}';
+        root.appendChild(style);
+      }
+      return true;
+    };
+    const vlibrasObserver=new MutationObserver(()=>{if(placeVlibras())vlibrasObserver.disconnect()});
+    if(!placeVlibras())vlibrasObserver.observe(document.body,{childList:true});
     if(!document.getElementById('vlibras-plugin-script')){
       const script=document.createElement('script');
       script.id='vlibras-plugin-script';script.src='https://vlibras.gov.br/app/vlibras-plugin.js';script.async=true;
       script.onload=()=>{if(window.VLibras?.Widget&&!window.__senacVlibras)window.__senacVlibras=new window.VLibras.Widget('https://vlibras.gov.br/app')};
       document.body.appendChild(script);
     }else if(window.VLibras?.Widget&&!window.__senacVlibras) window.__senacVlibras=new window.VLibras.Widget('https://vlibras.gov.br/app');
-    return()=>window.removeEventListener('keydown',onKey);
+    return()=>{window.removeEventListener('keydown',onKey);vlibrasObserver.disconnect()};
   },[]);
 
   const toggle=key=>setPrefs(value=>({...value,[key]:!value[key]}));

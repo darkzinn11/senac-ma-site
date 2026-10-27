@@ -50,6 +50,9 @@ button { color:inherit; }
 .button .icon { width:20px; height:20px; }
 .button-outline { background:transparent; color:#08345c; border:0; font-weight:700; }
 .button-outline:hover { background:#edf3fa; }
+/* Ação secundária: fundo azul-claro, sem contorno. */
+.button-soft { background:#eaf3fb; color:var(--blue); border:0; }
+@media (hover:hover) { .button.button-soft:not(:disabled):hover { background:#dcebf8; color:var(--blue); } }
 .button-small { min-height:38px; padding:7px 15px; font-size:14.31px; line-height:21.46px; background:#ff7d0b; }
 .button-small .icon { width:14px; height:14px; }
 .section-heading { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:32px; }
@@ -286,12 +289,14 @@ button { color:inherit; }
 @media (hover:hover) and (prefers-reduced-motion:reduce) {
   .footer-socials a:hover { background:#fff0dd; }
 }
-.footer-columns { flex:1; min-width:0; display:grid; grid-template-columns:170px 170px 170px minmax(0,1fr); gap:32px; }
+/* Em telas largas a sobra vira espaço entre as colunas (mínimo de 32px); o endereço ocupa uma coluna estreita para quebrar o texto. */
+.footer-columns { flex:1; min-width:0; display:grid; grid-template-columns:170px 170px 170px minmax(0,340px); justify-content:space-between; gap:32px; }
 .footer-columns h2 { font-size:16px; line-height:18px; font-weight:800; margin-bottom:16px; }
 .footer-columns ul { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
 .footer-columns li,.footer-columns address { font-size:14px; line-height:25.2px; font-weight:400; font-style:normal; }
 .footer-column li:last-child { line-height:18.2px; }
-.footer-columns a:hover { text-decoration:underline; text-underline-offset:3px; }
+.footer-columns a { transition:color .2s ease; }
+.footer-columns a:hover { color:var(--orange); text-decoration:none; }
 .copyright { text-align:center; min-height:58px; padding:24px 16px 19px; font-size:12px; line-height:15px; }
 .copyright a:hover { text-decoration:underline; }
 .copyright p { margin:0; }
@@ -650,13 +655,13 @@ svg.icon { display:block; flex-shrink:0; visibility:visible; opacity:1; }
 .student-link .icon { width:21px; height:21px; color:white; }
 .footer-socials .icon { width:23px; height:23px; color:#f7941f; }
 
-/* Acessibilidade flutuante */
-.accessibility-widget { position:fixed; left:0; top:50%; transform:translateY(-50%); z-index:140; }
+/* Acessibilidade flutuante: fica na parte de baixo da tela para não cobrir as setas do banner principal. */
+.accessibility-widget { position:fixed; left:0; bottom:32px; z-index:140; }
 .accessibility-trigger { width:50px; height:50px; display:grid; place-items:center; border:0; border-radius:0 15px 15px 0;
   background:#1746b8; color:white; box-shadow:0 6px 18px rgb(0 30 90 / 12%); transition:background-color .2s ease,transform .2s ease; }
 .accessibility-trigger:hover { background:#0c388f; }
 .accessibility-trigger:focus-visible { outline:3px solid #f7941f; outline-offset:3px; }
-.accessibility-panel { position:fixed; left:64px; top:50%; transform:translateY(-50%); width:300px; padding:18px;
+.accessibility-panel { position:fixed; left:64px; bottom:32px; width:300px; padding:18px;
   border-radius:20px; background:white; color:#00284d; box-shadow:var(--shadow-float); }
 .accessibility-panel-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:16px; }
 .accessibility-panel-heading strong { display:block; color:#004b8d; font-size:20px; line-height:1.2; }
@@ -687,7 +692,7 @@ html.a11y-reduce-motion *, html.a11y-reduce-motion *::before, html.a11y-reduce-m
 }
 
 /* Painel de acessibilidade completo */
-.accessibility-panel { width:278px; max-height:min(620px,calc(100dvh - 32px)); padding:0; overflow:auto;
+.accessibility-panel { width:278px; max-height:min(620px,calc(100dvh - 64px)); padding:0; overflow:auto;
   border-radius:0 18px 18px 0; background:#fff; color:#222; border:1px solid #dce5ef; box-shadow:var(--shadow-float); }
 .accessibility-panel-heading { position:sticky; top:0; z-index:2; min-height:58px; display:flex; align-items:center;
   justify-content:space-between; gap:12px; margin:0; padding:15px 15px 13px; background:#fff; border-bottom:1px solid #edf1f5; }
