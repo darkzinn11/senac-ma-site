@@ -10,9 +10,11 @@ const bannerSrc = (image) => /^(\/|https?:)/i.test(image) ? image : asset(image)
 // Assim a Home continua funcional durante a importação dos arquivos mobile.
 const mobileAvailability=new Map();
 function SlideArtwork({slide,side,variant}) {
+  // Hero e institucional aceitam arte própria para celular.
+  const withMobile=variant==='hero'||variant==='institutional';
   const [mobileReady,setMobileReady]=useState(Boolean(slide.mobileVerified));
   useEffect(()=>{
-    if(variant!=='hero'||!slide.mobileImage||slide.mobileVerified||!window.matchMedia('(max-width: 767px)').matches)return;
+    if(!withMobile||!slide.mobileImage||slide.mobileVerified||!window.matchMedia('(max-width: 767px)').matches)return;
     let active=true;
     if(mobileAvailability.has(slide.mobileImage)){
       setMobileReady(mobileAvailability.get(slide.mobileImage));return;
@@ -24,11 +26,11 @@ function SlideArtwork({slide,side,variant}) {
       if(active)setMobileReady(ok);
     }).catch(()=>{mobileAvailability.set(slide.mobileImage,false)});
     return ()=>{active=false};
-  },[slide.mobileImage,variant]);
+  },[slide.mobileImage,withMobile]);
   const image=<img src={bannerSrc(slide.image)} alt={side ? '' : slide.alt} draggable="false" data-landscape={slide.landscape ? '' : undefined}
     loading="eager" fetchPriority={variant==='hero'&&!side?'high':'auto'} decoding="async"
     onError={()=>setMobileReady(false)}/>;
-  if(variant!=='hero'||!slide.mobileImage||!mobileReady)return image;
+  if(!withMobile||!slide.mobileImage||!mobileReady)return image;
   return <picture className="banner-picture">
     <source media="(max-width: 767px)" srcSet={slide.mobileImage}/>
     {image}

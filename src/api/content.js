@@ -92,8 +92,9 @@ const canLoad = (url, timeout = 5000) => new Promise(resolve => {
 // Banners do carrossel da home. A API pública já devolve só os ativos e dentro da janela start_at/end_at;
 // aqui só ordenamos (sort_order) e descartamos o que não tem imagem carregável. Lista vazia é resposta legítima
 // (a Home esconde a seção); erro de rede/HTTP rejeita a promessa (a Home usa os slides de reserva).
-export async function loadBanners() {
-  const banners = (await getJSON(`${API}/banners`, { ttl: 30 * 1000 })).data || [];
+// placement: 'hero' (carrossel do topo, padrão) ou 'institutional' (segundo carrossel, acima das notícias).
+export async function loadBanners(placement = 'hero') {
+  const banners = (await getJSON(`${API}/banners` + query({ placement }), { ttl: 30 * 1000 })).data || [];
   const slides = [...banners].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)).map(item => ({
     id: item.id, image: mediaUrl(item.desktop_image_url), mobileImage: mediaUrl(item.mobile_image_url) || undefined,
     alt: item.alt_text || 'Banner do Senac Maranhão', href: item.link_url || undefined, newTab: Boolean(item.open_in_new_tab),

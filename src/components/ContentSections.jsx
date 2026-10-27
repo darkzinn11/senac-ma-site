@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowUp2 } from 'iconsax-react';
 import { asset, links, notices, services, stories, videoId } from '../data/content';
 import useAsync from '../api/useAsync';
-import { loadHomeNews } from '../api/content';
+import { loadBanners, loadHomeNews } from '../api/content';
 import { useSiteData } from '../api/SiteData';
 import { publicUrl, routeHref } from '../data/basePath';
 import { ActionLink, Icon, PhotoCard, SectionHeading } from './Ui';
@@ -16,11 +16,17 @@ export function Services() {
   </section>;
 }
 export function Institutional() {
-  const slides = [
+  const banners = useAsync(() => loadBanners('institutional'), []);
+  const fallback = [
     { image:'5e143.png', title:'Ouvidoria Senac', alt:'Ouvidoria Senac — acesse nosso canal de atendimento',
       href:links.ombudsman, description:'A Ouvidoria é um canal de comunicação direto e eficiente para o recebimento de reclamações, solicitações, elogios, sugestões e denúncias.' },
     { image:'b86aa.png', alt:'Conheça o Banco de Oportunidades do Senac Maranhão.', href:links.opportunities },
   ];
+  // Carrega do admin (aba "Carrossel institucional"). API fora do ar: slides de reserva. Lista vazia: o admin não
+  // quer banners aqui, então o bloco some. Enquanto carrega, reserva a altura para evitar salto de layout.
+  if (banners.status === 'loading') return <div className="section-block container institutional-placeholder" aria-hidden="true" />;
+  const slides = banners.status === 'error' ? fallback : banners.data;
+  if (!slides?.length) return null;
   return <div className="section-block container"><BannerCarousel slides={slides} variant="institutional" label="Serviços institucionais" /></div>;
 }
 const tagColors = ['#4f7afa', '#fa1466', '#004b8d', '#a3cc00'];

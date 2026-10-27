@@ -746,3 +746,4 @@ html.a11y-legible .site-shell,html.a11y-legible .site-shell * { font-family:Aria
 .main-story h3 { display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
 .main-story h3.is-long { font-size:30px; line-height:1.1; }
 .course-badge { overflow:hidden; text-overflow:ellipsis; }
+.institutional-placeholder { min-height:317px; }
