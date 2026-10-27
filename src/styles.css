@@ -157,6 +157,17 @@ button { color:inherit; }
 .course-viewport::-webkit-scrollbar { display:none; }
 .course-card { flex:0 0 calc((100% - 75.75px)/4); width:calc((100% - 75.75px)/4); scroll-snap-align:start; scroll-snap-stop:always; background:white; border-radius:26.26px; box-shadow:0 18px 28px -18px rgb(12 49 86 / 22%); overflow:hidden; display:flex; flex-direction:column; }
 .course-photo { width:100%; height:181.83px; object-fit:cover; }
+/* Hover dos cards da Home no mesmo padrão do catálogo; sombra contida para caber no recorte do carrossel. */
+.courses-section .course-card { transition:transform .3s ease,box-shadow .3s ease; }
+.courses-section .course-photo { transition:transform .4s cubic-bezier(.2,.7,.2,1); }
+@media (hover:hover) {
+  .courses-section .course-card:hover { transform:translateY(-4px); box-shadow:0 24px 34px -18px rgb(12 49 86 / 32%); }
+  .courses-section .course-card:hover .course-photo { transform:scale(1.045); }
+  .courses-section .course-card:hover .course-button { background-color:#eb7e0d; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .courses-section .course-card:hover,.courses-section .course-card:hover .course-photo { transform:none; }
+}
 .course-body { flex:1; display:flex; flex-direction:column; align-items:flex-start; padding:20.07px; min-height:253.52px; }
 .course-badge { display:inline-block; max-width:100%; padding:8.48px 15.14px; background:var(--blue); color:white; border-radius:9.84px; font-size:15.14px; line-height:15.14px; letter-spacing:.908px; white-space:nowrap; }
 .course-body h3 { color:#00284d; font-size:19.18px; line-height:24.55px; font-weight:700; min-height:49.1px; margin-top:15.05px; }
@@ -282,7 +293,7 @@ button { color:inherit; }
 .copyright a:hover { text-decoration:underline; }
 .copyright p { margin:0; }
 .copyright .footer-company { max-width:980px; margin-inline:auto; line-height:18px; }
-.copyright .footer-rule { width:min(420px,70%); height:1px; margin:16px auto; border:0; background:rgb(255 255 255 / 22%); }
+.copyright .footer-company + p { margin-top:12px; }
 .copyright .footer-credit { display:inline-flex; align-items:center; justify-content:center; gap:10px; margin-top:16px; color:rgb(255 255 255 / 82%); }
 .copyright .footer-credit img { display:block; width:auto; height:20px; }
 .copyright .footer-credit:hover,.copyright .footer-credit:focus-visible { color:white; text-decoration:none; }
@@ -389,10 +400,8 @@ button { color:inherit; }
   .menu-label { display:none; }
   .banner-stage { width:calc(100% - 32px); }
   .hero-carousel .banner-slide { border-radius:26px; aspect-ratio:1121 / 1403; }
-  .hero-carousel .banner-slide:has(img[data-landscape]) { aspect-ratio:1920 / 780; }
-  /* Arte horizontal sem versão mobile (ex.: 1920x780): aparece inteira, sem cortar; o buscador não a cobre e a paginação fica na base. */
-  .hero-carousel:has(.main-slide img[data-landscape]) + .course-finder { margin-top:16px; }
-  .hero-carousel:has(.main-slide img[data-landscape]) .banner-dots { bottom:0; }
+  /* Arte horizontal sem versão mobile (ex.: 1920x780): mantém o formato vertical do layout e recorta pelo centro
+     (object-fit:cover) até a arte vertical ser cadastrada na API. */
   .previous-slide { right:calc(100% + 12px); }
   .next-slide { left:calc(100% + 12px); }
   .far-previous-slide { right:calc(200% + 24px); }

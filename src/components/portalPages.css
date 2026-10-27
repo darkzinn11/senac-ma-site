@@ -278,7 +278,8 @@
 }
 .inner-catalog-sidebar,.inner-catalog-results { min-width:0; }
 /* O sticky precisa estar no item do grid, não no formulário limitado pela altura do aside. */
-.inner-catalog-sidebar { position:sticky; top:24px; align-self:start; max-height:calc(100dvh - 48px); overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+/* top = header fixo (90px) + 24px de respiro. */
+.inner-catalog-sidebar { position:sticky; top:114px; align-self:start; max-height:calc(100dvh - 138px); overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
 .inner-catalog-filter {
   position:static;
   display:flex;

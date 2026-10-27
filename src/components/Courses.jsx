@@ -79,7 +79,7 @@ export default function Courses({ courses, searched, filters, onReset, onDetails
   const unit = units.find(item => item.name === filters.unit);
   return <section id="cursos" className="container courses-section section-block" aria-labelledby="courses-heading">
     <SectionHeading id="courses-heading" title={searched ? 'Resultados da busca' : 'Cursos em destaque'}
-      subtitle={searched ? (loading ? 'Buscando cursos…' : courses.length + (courses.length === 1 ? ' curso encontrado' : ' cursos encontrados')) : 'Busque por curso, cidade ou unidade e veja as turmas disponíveis no Senac Maranhão'}
+      subtitle={searched ? (loading ? 'Buscando cursos…' : courses.length + (courses.length === 1 ? ' curso encontrado' : ' cursos encontrados')) : 'Conheça alguns dos cursos oferecidos pelo Senac Maranhão.'}
       action={{ label:'Ver todos', href:links.courses }} />
     <span className="sr-only" role="status">{searched && !loading ? courses.length + ' cursos encontrados com os filtros selecionados.' : ''}</span>
     {loading ? <div className="empty-results" role="status"><h3>Carregando cursos…</h3><p>Consultando a programação do Senac Maranhão.</p></div> : error ? <div className="empty-results" role="alert">

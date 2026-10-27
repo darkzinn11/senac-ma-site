@@ -1,7 +1,4 @@
 /* Atalhos compactos alinhados ao grid da Home, sem um segundo carrossel. */
-.quick-links-heading { margin-bottom:27px; }
-.quick-links-heading h2 { color:var(--blue); font-size:32px; font-weight:800; line-height:1.2; }
-.quick-links-heading p { color:#53697c; font-size:16px; line-height:1.5; margin-top:7px; }
 .quick-links-grid { display:grid; grid-template-columns:repeat(var(--quick-cols,5),minmax(0,1fr)); gap:14px; }
 .quick-links-card.is-placeholder { box-shadow:none; background:#eef3f8; pointer-events:none; }
 .quick-links-card {
@@ -29,8 +26,6 @@
 }
 @media (max-width:1100px) { .quick-links-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }
 @media (max-width:767px) {
-  .quick-links-heading h2 { font-size:27px; }
-  .quick-links-heading p { font-size:15px; }
   .quick-links-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
   .quick-links-card { min-height:146px; padding:18px 13px 15px; }
   .quick-links-icon { width:28px; height:28px; margin-bottom:15px; }
