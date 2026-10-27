@@ -48,3 +48,11 @@ O site consome somente a API pública (`/v1/public/...`); não há snapshots no 
 ### Catálogo: limite de scroll e modos de visualização
 - O filtro à esquerda acompanha a rolagem somente até o último card do catálogo. A paginação fica fora da região que limita o sticky, impedindo o filtro de descer até os controles de páginas.
 - A alternância grade/lista, os 6 cursos por página, os filtros e a navegação mantêm o mesmo comportamento.
+
+## Rodar o site local apontando para a API online (web designer)
+
+```bash
+npm install
+API_PROXY_TARGET=https://api.senac.sitw.tech npm run dev -- --host 127.0.0.1 --port 5174
+```
+O Vite encaminha `/v1` para a API hospedada (sem CORS). Dados e mídia vêm do servidor; só leitura pública.
