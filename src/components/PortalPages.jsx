@@ -8,7 +8,6 @@ import { courseStatus } from '../data/courseApi';
 import useAsync from '../api/useAsync';
 import { listChildPages, listNews, listNotices, listResults, listUnits } from '../api/content';
 import Html, { sanitizeHtml } from './Html';
-import { textOf } from '../api/adapters';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
@@ -255,28 +254,7 @@ function ArticlePage({page}) {
 
 function CoursePage({page}) {
   const visual=courseVisual({id:page.id,title:page.title,image:page.image});
-  const status=page.situation;
-  const summary=page.excerpt?textOf(page.excerpt):'';
-  return <>
-    <header className="inner-article-heading inner-course-heading">
-      <Breadcrumb page={page}/>
-      <div className="inner-article-lead inner-course-lead">
-        <div className="inner-article-copy inner-course-copy">
-          <div className="inner-detail-heading">
-            <span className="course-badge">{page.category||visual.area}</span>
-            <span className={'inner-course-status '+(status==='Encerrada'?'is-past':'')}>{status}</span>
-          </div>
-          <h1>{page.title}</h1>
-          <p>Confira a carga horária, as turmas, datas, unidade e condições de matrícula.</p>
-          {summary&&<section className="inner-detail-objective inner-course-about"><h2>Sobre o curso</h2><p>{summary}</p></section>}
-        </div>
-        <figure className="inner-article-cover inner-course-cover">
-          <img src={visual.image} alt="" loading="eager" decoding="async"/>
-        </figure>
-      </div>
-    </header>
-    <CourseDetail course={page}/>
-  </>;
+  return <CourseDetail course={{...page,category:page.category||visual.area}} breadcrumb={<Breadcrumb page={page}/>} image={visual.image}/>;
 }
 
 // Lista de editais/resultados com busca e paginação no servidor.

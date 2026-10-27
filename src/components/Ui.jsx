@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  HambergerMenu, CloseSquare,
+  HambergerMenu,
 } from 'iconsax-react';
 import { asset } from '../data/content';
 
@@ -10,13 +10,21 @@ const originalIcons = {
   search:'d8b45.svg', searchWhite:'9f4c4.svg', cap:'22d34.svg', clock:'cbaca.svg',
   facebook:'053d5.svg', instagram:'a2dbe.svg', youtube:'cce85.svg',
 };
-const glyphs = { menu:HambergerMenu, close:CloseSquare };
+// O iconsax não tem um "X" simples; este segue o traço do HambergerMenu Linear (1.5px, pontas arredondadas).
+function CloseLinear({ size = 20, color = 'currentColor', variant, ...props }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" {...props}>
+    <path d="M6 6l12 12M18 6L6 18" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+  </svg>;
+}
+const glyphs = { menu:HambergerMenu, close:CloseLinear };
+// Menu e fechar usam os ícones clássicos de traço, não as versões preenchidas.
+const glyphVariants = { menu:'Linear' };
 export function Icon({ name, className = '', ...props }) {
   if (originalIcons[name]) return <img src={asset(originalIcons[name])} alt="" aria-hidden="true"
     className={'icon '+className} width="20" height="20" {...props}/>;
   const Glyph = glyphs[name];
   if (!Glyph) return null;
-  return <Glyph size={20} variant="Bold" color="currentColor"
+  return <Glyph size={20} variant={glyphVariants[name] || 'Bold'} color="currentColor"
     aria-hidden="true" className={'icon '+className} {...props}/>;
 }
 export function ActionLink({ href, children, className = '', arrow = false, ...props }) {

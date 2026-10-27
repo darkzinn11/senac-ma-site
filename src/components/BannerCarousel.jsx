@@ -191,12 +191,27 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
           aria-current={i === index ? 'true' : undefined}><span /></button>)}
       </div>}
     </div>
-    <button className="banner-arrow banner-previous" onClick={() => { pendingTarget.current = null; change(-1); }} aria-label={'Banner anterior — ' + label}>
-      <Icon name="chevronLeft" />
-    </button>
-    <button className="banner-arrow banner-next" onClick={() => { pendingTarget.current = null; change(1); }} aria-label={'Próximo banner — ' + label}>
-      <Icon name="chevronLeft" />
-    </button>
+    {variant === 'hero' ? <>
+      <button className="banner-arrow banner-previous" onClick={() => { pendingTarget.current = null; change(-1); }} aria-label={'Banner anterior — ' + label}>
+        <Icon name="chevronLeft" />
+      </button>
+      <button className="banner-arrow banner-next" onClick={() => { pendingTarget.current = null; change(1); }} aria-label={'Próximo banner — ' + label}>
+        <Icon name="chevronLeft" />
+      </button>
+    </> : <div className="course-controls">
+      {/* Slider dentro do grid: mesmos botões do carrossel de cursos. */}
+      <button className="course-arrow course-previous" onClick={() => { pendingTarget.current = null; change(-1); }} aria-label={'Banner anterior — ' + label}>
+        <Icon name="chevronLeft" />
+      </button>
+      <button className="course-arrow course-next" onClick={() => { pendingTarget.current = null; change(1); }} aria-label={'Próximo banner — ' + label}>
+        <Icon name="chevronLeft" />
+      </button>
+    </div>}
+    {variant !== 'hero' && slides.length > 1 && <div className="course-pagination banner-pagination" aria-label="Escolher banner">
+      {slides.map((slide, i) => <button key={slide.id||slide.image} type="button" onClick={() => navigateTo(i)}
+        className={i === index ? 'is-active' : ''} aria-label={'Mostrar banner ' + (i + 1)}
+        aria-current={i === index ? 'true' : undefined}><span /></button>)}
+    </div>}
     <span className="sr-only" aria-live="polite">Banner {index + 1} de {slides.length}</span>
   </section>;
 }

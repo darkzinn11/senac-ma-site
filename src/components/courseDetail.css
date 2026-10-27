@@ -1,0 +1,125 @@
+/* Página interna do curso: banner com dados-chave, conteúdo e turmas em cards compactos. */
+.course-page { --course-ink:#00284d; --course-muted:#53697c; --course-soft:#e6f2ff; --course-card-shadow:var(--shadow); color:var(--course-ink); }
+
+/* Ação secundária: fundo azul-claro, sem contorno (o estado de hover do botão sem borda, fixo). */
+.course-page .button-soft { background:#eaf3fb; color:var(--blue); border:0; }
+@media (hover:hover) { .course-page .button.button-soft:not(:disabled):hover { background:#dcebf8; color:var(--blue); } }
+
+/* Topo */
+/* Banner do curso: a foto ocupa o fundo e um degradê azul (da esquerda) garante a leitura do texto. */
+.course-page-banner { position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center; min-height:440px; padding:56px; border-radius:32px; background:#00284d; color:white; }
+.course-page-banner-image { position:absolute; inset:0; z-index:-2; width:100%; height:100%; object-fit:cover; object-position:70% top; }
+.course-page-banner::before { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,rgb(0 40 77 / 96%) 0%,rgb(0 40 77 / 88%) 38%,rgb(0 40 77 / 35%) 72%,rgb(0 40 77 / 10%) 100%); }
+.course-page-hero-copy { max-width:760px; }
+/* Selos de área e situação no mesmo formato: fundo branco, mesma altura e raio; muda só a cor do texto. */
+.course-page-tags { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:18px; }
+.course-page-banner .course-badge,.course-page-status { display:inline-flex; align-items:center; gap:8px; height:34px; padding:0 14px; border-radius:10px; background:white; font-size:14px; font-weight:800; line-height:1; letter-spacing:.3px; }
+.course-page-banner .course-badge { color:var(--blue); }
+.course-page-status { color:#a3540a; }
+.course-page-status::before { content:""; flex:none; width:8px; height:8px; border-radius:50%; corner-shape:round; background:currentColor; }
+.course-page-status.is-open { color:#1d7a3e; }
+.course-page-hero h1.is-long { font-size:36px; }
+.course-page-hero h1 { color:white; font-size:44px; line-height:1.1; font-weight:800; letter-spacing:-.5px; max-width:640px; }
+.course-page-lead { margin-top:16px; max-width:60ch; color:rgb(255 255 255 / 86%); font-size:18px; line-height:1.6; }
+.course-page-facts { list-style:none; margin:28px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:12px; }
+.course-page-fact { display:flex; align-items:center; gap:14px; min-width:150px; padding:16px 22px 16px 16px; background:white; border-radius:18px; color:var(--course-ink); }
+.course-page-fact > svg { flex:none; color:var(--orange); }
+.course-page-fact span { display:flex; flex-direction:column; gap:3px; }
+.course-page-fact small { font-size:13px; line-height:1; color:var(--course-muted); }
+.course-page-fact strong { font-size:18px; line-height:1.15; font-weight:800; color:var(--course-ink); }
+.course-page-fact > svg { width:26px; height:26px; }
+
+/* Corpo */
+.course-page-body { margin-top:72px; }
+.course-page-main { display:grid; gap:56px; min-width:0; }
+.course-page-section > h2,.course-offers-head h2 { color:var(--blue); font-size:28px; line-height:1.15; font-weight:800; }
+.course-page-prose { margin-top:18px; max-width:72ch; }
+.course-page-prose .inner-prose { color:#3e5a71; font-size:16px; line-height:1.75; }
+.course-page-prose .inner-prose h2,.course-page-prose .inner-prose h3 { color:var(--course-ink); font-size:19px; line-height:1.3; font-weight:800; margin:24px 0 8px; }
+.course-page-prose .inner-prose > :first-child { margin-top:0; }
+.course-page-prose .inner-prose p { margin:0 0 12px; }
+.course-page-prose .inner-prose ul { margin:0 0 12px; padding-left:20px; }
+.course-page-extras { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin:0; }
+.course-page-extras > div { padding:20px; background:white; border-radius:20px; box-shadow:var(--course-card-shadow); }
+.course-page-extras dt { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:var(--blue); }
+.course-page-extras dt svg { color:var(--orange); }
+.course-page-extras dd { margin:8px 0 0; color:#3e5a71; font-size:15px; line-height:1.55; }
+
+/* Turmas */
+.course-offers { scroll-margin-top:120px; }
+.course-offers-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:18px 24px; margin-bottom:22px; }
+.course-offers-head p { margin-top:8px; color:var(--course-muted); font-size:15px; line-height:1.5; }
+.course-offers-filter { display:flex; flex-wrap:wrap; gap:8px; }
+.course-offers-filter button { padding:9px 16px; border:1px solid rgb(0 75 141 / 22%); border-radius:999px; background:white; color:var(--blue); font-size:14px; font-weight:700; line-height:1.1; transition:background-color .2s ease,color .2s ease,border-color .2s ease; }
+.course-offers-filter button.is-active { background:var(--blue); border-color:var(--blue); color:white; }
+.course-offers-filter button:focus-visible { outline:3px solid var(--orange); outline-offset:2px; }
+@media (hover:hover) { .course-offers-filter button:not(.is-active):hover { border-color:var(--blue); background:#f0f6fd; } }
+.course-offer-list { list-style:none; margin:0; padding:0; display:grid; gap:14px; }
+.course-offer { display:grid; grid-template-columns:76px minmax(0,1fr) auto; align-items:center; gap:22px; padding:20px 22px; background:white; border-radius:22px; box-shadow:var(--course-card-shadow); }
+.course-offer-date { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; height:76px; border-radius:18px; background:var(--course-soft); color:var(--blue); text-align:center; }
+.course-offer-date strong { font-size:28px; line-height:1; font-weight:800; }
+.course-offer-date span { font-size:13px; line-height:1; font-weight:700; text-transform:uppercase; letter-spacing:.6px; }
+.course-offer.is-muted .course-offer-date { background:#eef1f5; color:#5d7186; }
+.course-offer-status { display:inline-block; padding:5px 10px; border-radius:999px; background:#fff1dd; color:#a3540a; font-size:12px; font-weight:800; line-height:1; }
+.course-offer-status.is-open { background:#e3f5e9; color:#1d7a3e; }
+.course-offer-main h3 { margin-top:9px; font-size:18px; line-height:1.3; font-weight:800; }
+.course-offer-meta { list-style:none; margin:8px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:6px 18px; color:var(--course-muted); font-size:14px; line-height:1.4; }
+.course-offer-meta li { display:flex; align-items:center; gap:6px; }
+.course-offer-meta svg { flex:none; color:var(--orange); }
+.course-offer-action { display:flex; flex-direction:column; align-items:flex-end; gap:10px; text-align:right; }
+.course-offer-price { display:flex; flex-direction:column; gap:3px; margin:0; font-size:22px; line-height:1; font-weight:800; color:var(--blue); }
+.course-offer-price small { font-size:12px; font-weight:400; color:var(--course-muted); }
+.course-offer-action .button { min-height:46px; padding:11px 18px; font-size:15px; gap:8px; white-space:nowrap; }
+.course-offer-soon { font-size:14px; font-weight:700; color:#5d7186; }
+.course-offers-more { margin-top:16px; width:100%; }
+.course-offers-empty { padding:28px; background:white; border-radius:22px; box-shadow:var(--course-card-shadow); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+.course-offers-empty p { color:#3e5a71; line-height:1.6; }
+
+/* Outros cursos da área */
+.course-related { margin-top:96px; padding-top:56px; border-top:1px solid #e3e9f1; }
+.course-related-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px 24px; margin-bottom:26px; }
+.course-related-head .button { min-height:46px; padding:11px 18px; font-size:15px; }
+.course-related-head h2 { color:var(--blue); font-size:28px; line-height:1.15; font-weight:800; }
+.course-related-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:22px; }
+.course-related-grid .inner-course-card { height:100%; }
+
+/* Acima de 1440, o banner acompanha o grid proporcional do site. */
+@media (min-width:1441px) {
+  .course-page-banner { min-height:calc(100vw * 440 / 1440); }
+}
+@media (max-width:1100px) {
+  .course-page-banner { padding:44px; min-height:400px; }
+  .course-page-hero h1 { font-size:38px; }
+  .course-related-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:900px) {
+  .course-page-banner::before { background:linear-gradient(90deg,rgb(0 40 77 / 95%) 0%,rgb(0 40 77 / 82%) 60%,rgb(0 40 77 / 55%) 100%); }
+  .course-page-body { margin-top:52px; }
+}
+@media (max-width:640px) {
+  .course-page-hero h1 { font-size:30px; letter-spacing:0; }
+  .course-page-hero h1.is-long { font-size:25px; }
+  .course-page-lead { font-size:16px; display:-webkit-box; -webkit-line-clamp:3; line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .course-page-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:22px; }
+  .course-page-fact { gap:10px; min-width:0; padding:13px 12px; }
+  .course-page-fact > svg { width:20px; height:20px; }
+  .course-page-fact small { font-size:11px; }
+  .course-page-fact strong { font-size:15px; white-space:nowrap; }
+  .course-page-banner .course-badge,.course-page-status { height:30px; padding:0 12px; font-size:13px; }
+  .course-page-body { margin-top:44px; }
+  .course-page-main { gap:44px; }
+  .course-related { margin-top:64px; padding-top:40px; }
+  .course-related-head h2 { font-size:24px; }
+  .course-related-grid { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; margin:0 -20px; padding:4px 20px 18px; scroll-padding-inline:20px; }
+  .course-related-grid::-webkit-scrollbar { display:none; }
+  .course-related-grid .inner-course-card.course-card { flex:0 0 78%; width:auto; scroll-snap-align:start; }
+  /* No celular o degradê cobre a foto inteira, de baixo para cima, para o texto continuar legível. */
+  .course-page-banner { min-height:0; padding:28px 22px; border-radius:26px; }
+  .course-page-banner::before { background:linear-gradient(0deg,rgb(0 40 77 / 96%) 0%,rgb(0 40 77 / 86%) 55%,rgb(0 40 77 / 62%) 100%); }
+  .course-page-section > h2,.course-offers-head h2 { font-size:24px; }
+  .course-offer { grid-template-columns:60px minmax(0,1fr); gap:14px 16px; padding:16px; align-items:start; }
+  .course-offer-date { height:64px; border-radius:15px; }
+  .course-offer-date strong { font-size:24px; }
+  .course-offer-action { grid-column:1 / -1; flex-direction:row; align-items:center; justify-content:space-between; text-align:left; padding-top:14px; border-top:1px solid #edf1f6; }
+  .course-offer-filter { gap:6px; }
+}

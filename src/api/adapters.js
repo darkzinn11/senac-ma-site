@@ -79,6 +79,8 @@ export function courseSituation(offers) {
   if (states.length && states.every(state => state === 'Encerrada')) return 'Encerrada';
   return 'A confirmar';
 }
+// A API devolve o texto 'None' em campos opcionais vazios do SIG.
+const filled = value => (value && String(value).trim() !== 'None' ? String(value).trim() : '');
 export function adaptCourse(data) {
   const offers = (data.offers || []).map(adaptOffer);
   return {
@@ -87,7 +89,7 @@ export function adaptCourse(data) {
     category: data.category_name || '', categorySlug: data.category_slug || '',
     workload: data.workload_hours, modality: modalityLabels[data.modality] || data.modality || '',
     courseType: courseTypeLabels[data.course_type] || '',
-    audience: data.target_audience || '', prerequisites: data.prerequisites || '', certification: data.certification || '',
+    audience: filled(data.target_audience), prerequisites: filled(data.prerequisites), certification: filled(data.certification),
     offers, situation: courseSituation(offers), cover: mediaUrl(data.image_url), image: mediaUrl(data.image_url),
     seoTitle: '', seoDescription: data.short_description || '',
   };
