@@ -1,9 +1,6 @@
 import React from 'react';
-import { cities, coursePreview, units } from '../data/content';
-import { Icon } from './Ui';
-
-const areas = [...new Set(coursePreview.map(course => course.area))];
-export default function CourseFinder({ filters, setFilters, onSearch, onReset }) {
+import { SearchNormal1 } from 'iconsax-react';
+export default function CourseFinder({ filters, setFilters, onSearch, onReset, cities = [], areas = [], units = [] }) {
   const availableUnits = units.filter(unit => !filters.city || unit.city === filters.city);
   function update(key, value) {
     setFilters(current => ({ ...current, [key]:value, ...(key === 'city' ? { unit:'' } : {}) }));
@@ -33,7 +30,7 @@ export default function CourseFinder({ filters, setFilters, onSearch, onReset })
         {select('type', 'Tipo de curso', 'Todos os tipos', ['Curso livre','Curso técnico','Aprendizagem','EAD'])}
       </div>
       <div className="filter-actions">
-        <button className="button" type="submit"><Icon name="searchWhite" />Buscar cursos próximos de mim</button>
+        <button className="button" type="submit"><SearchNormal1 className="icon" size={20} variant="Linear" color="currentColor" aria-hidden="true"/>Buscar cursos próximos de mim</button>
         <button className="button button-outline" type="button" onClick={onReset}>Limpar</button>
       </div>
     </form>

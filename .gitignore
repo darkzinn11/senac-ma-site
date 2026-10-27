@@ -14,3 +14,4 @@ dist/
 # IDE / OS
 .vscode/
 .idea/
+dist.zip

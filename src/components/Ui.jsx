@@ -16,7 +16,7 @@ export function Icon({ name, className = '', ...props }) {
     className={'icon '+className} width="20" height="20" {...props}/>;
   const Glyph = glyphs[name];
   if (!Glyph) return null;
-  return <Glyph size={20} variant="Linear" color="currentColor"
+  return <Glyph size={20} variant="Bold" color="currentColor"
     aria-hidden="true" className={'icon '+className} {...props}/>;
 }
 export function ActionLink({ href, children, className = '', arrow = false, ...props }) {

@@ -3,6 +3,38 @@ import { flushSync } from 'react-dom';
 import { asset } from '../data/content';
 import { Icon } from './Ui';
 
+// Imagens do layout vêm de /assets/figma (nome do arquivo); as da API chegam como URL completa.
+const bannerSrc = (image) => /^(\/|https?:)/i.test(image) ? image : asset(image);
+
+// Preserva os banners desktop e só usa a arte vertical quando seu arquivo existe.
+// Assim a Home continua funcional durante a importação dos arquivos mobile.
+const mobileAvailability=new Map();
+function SlideArtwork({slide,side,variant}) {
+  const [mobileReady,setMobileReady]=useState(Boolean(slide.mobileVerified));
+  useEffect(()=>{
+    if(variant!=='hero'||!slide.mobileImage||slide.mobileVerified||!window.matchMedia('(max-width: 767px)').matches)return;
+    let active=true;
+    if(mobileAvailability.has(slide.mobileImage)){
+      setMobileReady(mobileAvailability.get(slide.mobileImage));return;
+    }
+    fetch(slide.mobileImage,{method:'HEAD'}).then(response=>{
+      const ok=response.ok&&(response.headers.get('content-type')||'').startsWith('image/')
+        && Number(response.headers.get('content-length')||0)>0;
+      mobileAvailability.set(slide.mobileImage,ok);
+      if(active)setMobileReady(ok);
+    }).catch(()=>{mobileAvailability.set(slide.mobileImage,false)});
+    return ()=>{active=false};
+  },[slide.mobileImage,variant]);
+  const image=<img src={bannerSrc(slide.image)} alt={side ? '' : slide.alt} draggable="false" data-landscape={slide.landscape ? '' : undefined}
+    loading="eager" fetchPriority={variant==='hero'&&!side?'high':'auto'} decoding="async"
+    onError={()=>setMobileReady(false)}/>;
+  if(variant!=='hero'||!slide.mobileImage||!mobileReady)return image;
+  return <picture className="banner-picture">
+    <source media="(max-width: 767px)" srcSet={slide.mobileImage}/>
+    {image}
+  </picture>;
+}
+
 export default function BannerCarousel({ slides, label, variant = 'hero', initial = 0 }) {
   const [index, setIndex] = useState(initial);
   const indexRef = useRef(initial);
@@ -124,9 +156,7 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
   }, []);
   function contents(slide, side = false) {
     return <>
-      <img src={asset(slide.image)} alt={side ? '' : slide.alt} draggable="false"
-        loading="eager"
-        fetchPriority={variant === 'hero' && !side ? 'high' : 'auto'} decoding="async" />
+      <SlideArtwork key={slide.id||slide.image} slide={slide} side={side} variant={variant}/>
       {slide.title && <><div className="institutional-shade" />
         <div className="institutional-content">
           <img className="institutional-logo" src={asset('10346.svg')} alt="" width="85" height="50" />
@@ -144,6 +174,7 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
         </div>
         <div className="banner-slide side-slide previous-slide" aria-hidden="true">{contents(slides[previous], true)}</div>
         <a className="banner-slide main-slide" href={slides[index].href}
+          {...(slides[index].newTab ? { target:'_blank', rel:'noopener noreferrer', 'data-new-tab':'' } : {})}
           onDragStart={e => e.preventDefault()}
           onClick={e => { if (suppressClick.current) { e.preventDefault(); suppressClick.current = false; } }}
           aria-label={slides[index].alt}>
@@ -155,7 +186,7 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
         </div>
       </div>
       {variant === 'hero' && <div className="banner-dots" aria-label="Escolher banner">
-        {slides.map((slide, i) => <button key={slide.image} onClick={() => navigateTo(i)}
+        {slides.map((slide, i) => <button key={slide.id||slide.image} onClick={() => navigateTo(i)}
           className={i === index ? 'is-active' : ''} aria-label={'Mostrar banner ' + (i + 1)}
           aria-current={i === index ? 'true' : undefined}><span /></button>)}
       </div>}

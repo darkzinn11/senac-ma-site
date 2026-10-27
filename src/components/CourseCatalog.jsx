@@ -1,10 +1,12 @@
 import React, {useEffect,useMemo,useRef,useState} from 'react';
 import { ArrowRight, ArrowLeft2 as ChevronLeft, ArrowRight2 as ChevronRight, Element4 as LayoutGrid, TextalignLeft as ListIcon, Calendar as CalendarDays, Clock as Clock3, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
 import { courseVisual } from '../data/courseVisuals';
-import { courseStatus, loadLiveCourses } from '../data/courseApi';
+import { loadCategories, loadOffers, searchCourses } from '../api/courses';
+import { useSiteData } from '../api/SiteData';
 import { Icon } from './Ui';
 const fold=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-const initial={items:[],segments:[],units:[],source:'loading',fetchedAt:null,total:0};
+// A API só expõe turmas abertas ou programadas; turmas encerradas não são públicas.
+const SITUATIONS=['Matrículas abertas','Programada','Em andamento','A confirmar'];
 const PAGE_SIZE=6;
 function paginationNumbers(current,total) {
   if (total<=7) return Array.from({length:total},(_,i)=>i+1);
@@ -19,28 +21,36 @@ function paginationNumbers(current,total) {
 }
 
 export default function CourseCatalog() {
-  const [data,setData]=useState(initial),[error,setError]=useState('');
+  const [items,setItems]=useState([]),[status,setStatus]=useState('loading'),[error,setError]=useState('');
+  const [segments,setSegments]=useState([]),[offerCities,setOfferCities]=useState([]);
   const [query,setQuery]=useState(''),[city,setCity]=useState('');
   const [segment,setSegment]=useState(''),[period,setPeriod]=useState('');
   const [page,setPage]=useState(1);
   const [view,setView]=useState('grid');
   const resultsRef=useRef(null);
+  const { units }=useSiteData();
+  const [term,setTerm]=useState('');
+  // Nome digitado vai ao servidor com pequeno atraso; área também. Cidade e situação cruzam com as turmas.
+  useEffect(()=>{const timer=setTimeout(()=>setTerm(query),300);return()=>clearTimeout(timer)},[query]);
   useEffect(()=>{
     let active=true;
-    loadLiveCourses({onCached:value=>{if(active)setData(value)},onLive:value=>{if(active){setData(value);setError('')}}})
-      .then(result=>{if(active&&result.error)setError('Não foi possível atualizar agora. Exibindo o último catálogo consultado.')})
-      .catch(()=>{if(active)setError('Não foi possível consultar o catálogo do Senac Maranhão neste momento.')});
+    loadCategories().then(list=>{if(active)setSegments(list)}).catch(()=>{});
+    loadOffers().then(({offers})=>{if(active)setOfferCities([...new Set(offers.map(o=>o.localidade).filter(Boolean))])}).catch(()=>{});
     return ()=>{active=false};
   },[]);
-  const segments=new Map(data.segments.map(item=>[item.id,item.name]));
-  const cities=useMemo(()=>[...new Set(data.items.map(c=>c.localidade).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),[data.items]);
-  const filtered=useMemo(()=>data.items.filter(item=>{
-    const area=(item.segmento||[]).map(id=>segments.get(id)||'').join(' ');
-    return fold(item.title+' '+item.localidade+' '+area).includes(fold(query)) &&
-      (!city||fold(item.localidade)===fold(city)) &&
-      (!segment||(item.segmento||[]).includes(Number(segment))) &&
-      (!period||courseStatus(item)===period);
-  }),[data,query,city,segment,period]);
+  const [attempt,setAttempt]=useState(0);
+  useEffect(()=>{
+    let active=true;
+    setStatus('loading');
+    searchCourses({q:term,category:segment}).then(list=>{if(active){setItems(list);setStatus('ready');setError('')}})
+      .catch(()=>{if(active){setItems([]);setStatus('error');setError('Não foi possível consultar o catálogo do Senac Maranhão neste momento.')}});
+    return ()=>{active=false};
+  },[term,segment,attempt]);
+  const cities=useMemo(()=>[...new Set([...units.map(u=>u.city),...offerCities].filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),[units,offerCities]);
+  const filtered=useMemo(()=>items.filter(item=>
+    (!city||item.cities.some(name=>fold(name)===fold(city))) && (!period||item.situation===period)
+  ),[items,city,period]);
+  const data={source:status};
   const pageCount=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
   const safePage=Math.min(page,pageCount);
   const firstIndex=(safePage-1)*PAGE_SIZE;
@@ -54,7 +64,7 @@ export default function CourseCatalog() {
   const reset=()=>{setQuery('');setCity('');setSegment('');setPeriod('');setPage(1)};
   return <section className="inner-stack" aria-labelledby="catalog-title">
     <div className="inner-section-title"><div>
-      <h2 id="catalog-title">Encontre o curso ideal</h2>
+      <h1 id="catalog-title">Encontre o curso ideal</h1>
       <p>Consulte cursos, datas, valores e turmas disponíveis no Senac Maranhão.</p>
     </div></div>
     <div className="inner-catalog-layout">
@@ -62,39 +72,39 @@ export default function CourseCatalog() {
         <form className="inner-catalog-filter" role="search" onSubmit={e=>e.preventDefault()}>
           <div className="inner-filter-heading"><h3>Filtrar cursos</h3><p>Refine sua busca</p></div>
       <label><span>Qual curso você procura?</span><div className="inner-search">
-        <Search size={20}/><input type="search" value={query} placeholder="Nome do curso"
+        <Search size={20} variant="Linear" color="currentColor"/><input type="search" value={query} placeholder="Nome do curso"
           onChange={e=>{setQuery(e.target.value);setPage(1)}}/>
       </div></label>
       <label><span>Cidade</span><select value={city} onChange={e=>{setCity(e.target.value);setPage(1)}}>
         <option value="">Todas as cidades</option>{cities.map(name=><option value={name} key={name}>{name}</option>)}
       </select></label>
       <label><span>Área</span><select value={segment} onChange={e=>{setSegment(e.target.value);setPage(1)}}>
-        <option value="">Todas as áreas</option>{data.segments.map(s=><option value={s.id} key={s.id}>{s.name}</option>)}
+        <option value="">Todas as áreas</option>{segments.map(s=><option value={s.id} key={s.id}>{s.name}</option>)}
       </select></label>
       <label><span>Situação da turma</span><select value={period} onChange={e=>{setPeriod(e.target.value);setPage(1)}}>
         <option value="">Todas as turmas</option>
-        {['Programada','Em andamento','Encerrada','A confirmar'].map(x=><option key={x}>{x}</option>)}
+        {SITUATIONS.map(x=><option key={x}>{x}</option>)}
       </select></label>
       <button type="button" className="button button-outline" onClick={reset}>Limpar filtros</button>
         </form>
       </aside>
       <div className="inner-catalog-results" ref={resultsRef}>
-    {error && <p className="inner-catalog-warning" role="alert">{error}</p>}
+    {error && <p className="inner-catalog-warning" role="alert">{error} <button type="button" className="button button-outline" onClick={()=>setAttempt(n=>n+1)}>Tentar novamente</button></p>}
     <div className="inner-results-toolbar">
       <div className="inner-results-location" aria-live="polite" aria-atomic="true">
         <strong>{data.source==='loading' ? 'Carregando cursos…' : `${filtered.length} ${filtered.length===1?'curso encontrado':'cursos encontrados'}`}</strong>
         {data.source!=='loading' && <span>Mostrando {filtered.length ? `${firstIndex+1}–${Math.min(firstIndex+PAGE_SIZE,filtered.length)}` : '0'} de {filtered.length} · Página {safePage} de {pageCount}</span>}
       </div>
       <div className="inner-view-switch" role="group" aria-label="Visualização dos cursos">
-        <button type="button" className={view==='grid'?'is-active':''} aria-label="Visualizar em grade" aria-pressed={view==='grid'} title="Visualizar em grade" onClick={()=>setView('grid')}><LayoutGrid size={20}/></button>
-        <button type="button" className={view==='list'?'is-active':''} aria-label="Visualizar em lista" aria-pressed={view==='list'} title="Visualizar em lista" onClick={()=>setView('list')}><ListIcon size={20}/></button>
+        <button type="button" className={view==='grid'?'is-active':''} aria-label="Visualizar em grade" aria-pressed={view==='grid'} title="Visualizar em grade" onClick={()=>setView('grid')}><LayoutGrid size={20} variant="Bold" color="currentColor"/></button>
+        <button type="button" className={view==='list'?'is-active':''} aria-label="Visualizar em lista" aria-pressed={view==='list'} title="Visualizar em lista" onClick={()=>setView('list')}><ListIcon size={20} variant="Bold" color="currentColor"/></button>
       </div>
     </div>
     <div key={view} className={"inner-course-grid inner-catalog-grid"+(view==='list'?' is-list':'')}>
       {visibleCourses.map(item=>{
-        const visual=courseVisual(item),status=courseStatus(item);
-        const area=(item.segmento||[]).map(id=>segments.get(id)).filter(Boolean).join(' / ') || visual.area;
-        return <a href={new URL(item.link).pathname} className="course-card inner-course-card"
+        const visual=courseVisual(item),status=item.situation;
+        const area=item.area || visual.area;
+        return <a href={item.path} className="course-card inner-course-card"
           key={item.id} aria-label={'Conhecer curso '+item.title}>
           <div className="inner-course-photo">
             <img className="course-photo" src={visual.image} alt="" loading="lazy" decoding="async"/>
@@ -103,9 +113,9 @@ export default function CourseCatalog() {
             <span className="course-badge">{area}</span>
             <h3>{visual.name}</h3>
             <div className="inner-course-facts">
-              {item.localidade&&<span><MapPin size={16}/>{item.localidade}</span>}
-              {item.carga_horaria&&<span><Clock3 size={16}/>{item.carga_horaria} horas</span>}
-              {item.inicio&&<span><CalendarDays size={16}/>{item.inicio}</span>}
+              {item.localidade&&<span><MapPin size={16} variant="Bold" color="currentColor"/>{item.localidade}</span>}
+              {item.carga_horaria&&<span><Clock3 size={16} variant="Bold" color="currentColor"/>{item.carga_horaria} horas</span>}
+              {item.inicio&&<span><CalendarDays size={16} variant="Bold" color="currentColor"/>{item.inicio}</span>}
             </div>
             <span className={'inner-course-status '+(status==='Encerrada'?'is-past':'')}>{status}</span>
             <span className="button course-button">Saiba mais <Icon name="arrow"/></span>
@@ -121,14 +131,14 @@ export default function CourseCatalog() {
     <div className="inner-catalog-paging">
     {filtered.length>0 && <nav className="inner-catalog-pagination" aria-label="Paginação dos cursos">
       <button type="button" className="inner-page-button inner-page-arrow" disabled={safePage===1}
-        onClick={()=>navigatePage(safePage-1)} aria-label="Página anterior"><ChevronLeft size={19}/></button>
+        onClick={()=>navigatePage(safePage-1)} aria-label="Página anterior"><ChevronLeft size={19} variant="Bold" color="currentColor"/></button>
       {paginationNumbers(safePage,pageCount).map(value=>typeof value==='number'
         ? <button type="button" key={value} className={'inner-page-button'+(value===safePage?' is-active':'')}
             onClick={()=>navigatePage(value)} aria-label={'Página '+value}
             aria-current={value===safePage?'page':undefined}>{value}</button>
         : <span key={value} className="inner-page-ellipsis" aria-hidden="true">…</span>)}
       <button type="button" className="inner-page-button inner-page-arrow" disabled={safePage===pageCount}
-        onClick={()=>navigatePage(safePage+1)} aria-label="Próxima página"><ChevronRight size={19}/></button>
+        onClick={()=>navigatePage(safePage+1)} aria-label="Próxima página"><ChevronRight size={19} variant="Bold" color="currentColor"/></button>
     </nav>}
     {filtered.length>0 && <p className="inner-page-summary">Página {safePage} de {pageCount}</p>}
     </div>

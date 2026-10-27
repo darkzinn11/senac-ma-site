@@ -1,1 +1,21 @@
-{"scripts":{"dev":"vite","build":"vite build","preview":"vite preview"},"dependencies":{"@vitejs/plugin-react":"latest","iconsax-react":"^0.0.8","react":"latest","react-dom":"latest","vite":"latest"}}
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "verify:independence": "vite build && node scripts/verify-independence.mjs",
+    "media:map": "node scripts/build-media-map.mjs",
+    "verify:sitemap": "node scripts/verify-sitemap-sample.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "dompurify": "3.4.16",
+    "iconsax-react": "^0.0.8",
+    "react": "latest",
+    "react-dom": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
+  }
+}

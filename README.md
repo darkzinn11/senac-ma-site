@@ -30,22 +30,15 @@ Execute `node .qa/verify.mjs` com a prévia em http://localhost:5173. A verifica
 Foi corrigida a grafia “gratuitidade” para “Gratuidade”. O copyright 2020 segue o layout e merece revisão editorial antes da publicação.
 A versão anterior foi preservada em `.senac-backups/pre-figma-20260920-150201`.
 
-## Subpáginas — redesign integrado
-- Layout reutilizável em `src/components/PortalPages.jsx` e `portalPages.css`: hero, breadcrumb, conteúdo, recursos/documentos, unidades, listagens de cursos, notícias e seus detalhes.
-- Navegação interna com History API na aplicação; botão Voltar do navegador mantém o comportamento esperado.
-- Conteúdo extraído da API REST pública do portal Senac/MA em `src/data/portalSnapshot.json`, produzido por `python3 .qa/snapshot_portal.py`.
-- Snapshot inicial: 56 páginas institucionais/serviços, 70 notícias e 100 referências de cursos. Páginas de notícias e cursos fora do snapshot podem ser consultadas sob demanda por URL via API pública, quando essa API as expõe.
-- O snapshot é uma amostra do acervo, não um catálogo completo nem uma integração de matrícula. Informações dinâmicas (vagas, turmas, preços, inscrições, editais recém-publicados) devem ser validadas no portal oficial. Os links de inscrição, documentos e serviços externos permanecem na origem.
-- Páginas originalmente montadas em Elementor sem conteúdo textual acessível pela API têm fallback para o portal oficial; exigem migração editorial específica para reproduzir a totalidade dos módulos.
-- Para atualizar o material de referência, execute `python3 .qa/snapshot_portal.py`, confira o conteúdo gerado e rode `npm run build` e `node .qa/verify.mjs`.
-- As páginas possuem template editorial, mas a revisão visual e funcional específica de cada uma e a integração dos sistemas internos (busca de turmas, portais externos e formulários) ainda dependem de validação com o SENAC antes da publicação em produção.
-
-### Catálogo de cursos — integração com a API pública
-- A subpágina `/cursos-senac/` lê **todas as páginas** de `https://ma.senac.br/wp-json/wp/v2/curso`, consultando dados novamente durante a navegação (cache de 5 minutos por sessão). Fallback: `public/data/liveCoursesSnapshot.json`, gerado por `python3 .qa/snapshot_courses_live.py`.
-- Campos efetivamente retornados pela origem: título, segmento, localidade, unidade, início, fim, horários, carga horária, modalidade, objetivo, preço, vagas originalmente cadastradas e link de matrícula. O objetivo é carregado na página individual para economizar tráfego na listagem.
-- Filtros por nome, cidade, segmento e situação; cards e página de detalhes compartilham identidade visual da Home.
-- A API consultada em 20/09/2026 retorna **684 turmas publicadas**: 682 já terminadas, 1 em andamento e 1 sem datas. Não se deve apresentar turmas antigas, valores publicados nem vagas cadastradas como oferta vigente. Matrícula aparece somente para turmas futuras com link oficial, e sempre exige confirmação no sistema oficial.
-- As fotos da subpágina Cursos agora são fotografias ilustrativas independentes, selecionadas no Pexels, sem uso do acervo fotográfico do Senac. Foram obtidas 113 novas imagens WebP em `public/assets/courses-fresh/`, das quais 78 estão associadas às 684 turmas via `src/data/courseFreshMap.json`. O arquivo `src/data/courseFreshPhotos.json` documenta fontes, licença e categorias. As imagens antigas foram movidas para `.qa/course-images/backup-official/` e não entram no build. O catálogo e detalhes compartilham o mesmo mapeamento. Licença: https://www.pexels.com/license/. Fotos de pessoas e instalações são ilustrativas e não representam necessariamente o Senac.
+## Dados: API própria (fonte única)
+O site consome somente a API pública (`/v1/public/...`); não há snapshots no bundle (os antigos foram movidos para fora do projeto).
+- `src/api/client.js`: GET com timeout (10 s), 1 nova tentativa em falha de rede/5xx/429, cache em memória (5 min), sem cookies/credenciais. `mediaUrl()` resolve `/v1/media/files/...`.
+- `src/api/content.js`: resolução de rotas (`/v1/public/content?path=`), listagens (notícias, editais, resultados, unidades), home (banners, acesso rápido, notícias), busca. `src/api/courses.js`: catálogo (consulta no servidor + cruzamento com turmas). `src/api/adapters.js`: formato da API -> formato dos componentes. `src/api/seo.js`: title/description/canonical/robots por rota.
+- `src/components/Html.jsx`: HTML da API renderizado via `dangerouslySetInnerHTML` somente após DOMPurify (3.4.16, fixa); imagens quebradas são ocultadas.
+- 301 da API: o site troca a URL (`replaceState`) e segue; 410: "Conteúdo removido"; inexistente: 404; API fora do ar: mensagem com "Tentar novamente" (a home cai nos conteúdos de apresentação de `src/data/content.js`).
+- Desenvolvimento: `npm run dev` faz proxy de `/v1` para `http://127.0.0.1:8080` (`API_PROXY_TARGET` altera). Em produção publique o site e a API na mesma origem (proxy reverso em `/v1`) ou defina `VITE_API_URL` (a API precisa liberar a origem em `PUBLIC_ALLOWED_ORIGINS`). `VITE_SITE_URL` define o domínio do canonical.
+- Mídia: enquanto os uploads não são copiados para o servidor de mídia, `src/data/localMedia.json` (gerado por `npm run media:map`) aponta as 231 mídias de `public/media` para as chaves da API. Depois do rsync, esvazie esse arquivo (`{}`).
+- Verificação: `npm run verify:independence` (rotas reais, tráfego externo bloqueado) e `npm run verify:sitemap` (amostra do sitemap antigo). Ambos exigem a API no ar.
 
 ### Biblioteca de ícones
 - Preservar os pictogramas SVG originais do Figma (Portal do aluno, busca, setas, duração, botões e redes sociais) em `src/components/Ui.jsx`. Usar `iconsax-react` para novos controles internos, incluindo os filtros, dados dos cursos e visualização grade/lista.
