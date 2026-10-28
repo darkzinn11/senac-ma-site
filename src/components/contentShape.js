@@ -90,6 +90,38 @@ function cards(body) {
   });
 }
 
+// Missão, Visão e Valores (títulos soltos, cada um com um parágrafo) viram um bloco próprio: a missão em destaque e
+// visão e valores lado a lado, na ordem usual. Os valores, separados por ";", viram etiquetas.
+const PURPOSE = [['missao', /^miss[aã]o$/i], ['visao', /^vis[aã]o$/i], ['valores', /^valores$/i]];
+function purpose(body) {
+  const found = PURPOSE.map(([key, rule]) => {
+    const heading = [...body.children].find(node => isHeading(node) && rule.test(text(node).replace(/:$/, '')));
+    const answer = heading && until(heading);
+    return heading && answer.length ? { key, heading, answer } : null;
+  });
+  if (found.some(item => !item)) return;
+  const doc = body.ownerDocument;
+  const block = doc.createElement('div'); block.className = 'prose-purpose';
+  found.forEach(({ key, heading, answer }) => {
+    const card = doc.createElement('section'); card.className = 'prose-purpose-card is-' + key;
+    const title = doc.createElement('h3'); title.textContent = text(heading).replace(/:$/, '');
+    card.appendChild(title);
+    const statement = answer.map(text).join(' ');
+    if (key === 'valores' && statement.includes(';')) {
+      const list = doc.createElement('ul');
+      statement.replace(/\.$/, '').split(';').map(item => item.trim()).filter(Boolean).forEach(item => {
+        const li = doc.createElement('li'); li.textContent = item[0].toUpperCase() + item.slice(1); list.appendChild(li);
+      });
+      card.appendChild(list);
+    } else {
+      const p = doc.createElement('p'); p.textContent = statement; card.appendChild(p);
+    }
+    block.appendChild(card);
+  });
+  found[0].heading.before(block);
+  found.forEach(({ heading, answer }) => [heading, ...answer].forEach(node => node.remove()));
+}
+
 export function shapeContent(html, { extractContact = false } = {}) {
   const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
   const body = doc.body;
@@ -121,6 +153,7 @@ export function shapeContent(html, { extractContact = false } = {}) {
       [heading, ...nodes].forEach(node => node.remove());
     }
   }
+  purpose(body);
   faq(body);
   cards(body);
   return { html: body.innerHTML, contact };

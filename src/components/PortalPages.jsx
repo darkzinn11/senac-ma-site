@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
+import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, Buildings2, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
 import { isCatalog, isNews, isNotices, localHref } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
 import { publicUrl, routeHref } from '../data/basePath';
@@ -15,11 +15,12 @@ import ServiceDetails, { servicePaths } from './ServiceDetails';
 import { ActionLink } from './Ui';
 import './portalPages.css';
 import './articlePage.css';
+import './missionPage.css';
+import './adminPage.css';
 
 const fold = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const prettyDate = value => value ? new Date(value).toLocaleDateString('pt-BR',{day:'numeric',month:'long',year:'numeric'}) : '';
 const cleanTitle = text => String(text || '').replace(/\s+/g,' ').trim();
-const AreaIcon = ({type}) => type === 'unidades' ? <MapPin  variant="Bold" color="currentColor"/> : type === 'noticias' ? <BookOpen  variant="Bold" color="currentColor"/> : <GraduationCap  variant="Bold" color="currentColor"/>;
 const dest = (link) => localHref(link);
 const safeImage = (image) => image && (image.startsWith('https://') || (image.startsWith('/') && !image.startsWith('//'))) ? image : null;
 
@@ -49,11 +50,18 @@ function TileImage({src,alt='',className,eager=false,fallback=null}) {
   if(failed||!safeImage(src))return fallback;
   return <img className={className} src={src} alt={alt} loading={eager?'eager':'lazy'} decoding="async" onError={()=>setFailed(true)}/>;
 }
+// Card de página: com foto, foto em cima e texto embaixo; sem foto (ou se ela falhar), um card só de texto com ícone,
+// em vez de uma área vazia com pictograma.
 function LinkTile({item,detail=false}) {
-  return <a className={'inner-tile'+(detail?' is-detail':'')} href={dest(item.path || item.href)}>
-    <div className="inner-tile-art">
-      <TileImage src={item.cover} fallback={<AreaIcon type={item.kind==='post'?'noticias':item.path?.startsWith('/unidades/')?'unidades':'cursos'}/>}/>
-    </div>
+  const [failed,setFailed]=useState(false);
+  useEffect(()=>setFailed(false),[item.cover]);
+  const photo=!failed&&safeImage(item.cover);
+  const path=item.path||'';
+  const TileIcon=item.kind==='post'?BookOpen:path.startsWith('/unidades/')?MapPin:path.startsWith('/institucional/')?Buildings2:GraduationCap;
+  return <a className={'inner-tile'+(detail?' is-detail':'')+(photo?'':' is-text')} href={dest(item.path || item.href)}>
+    {photo
+      ? <div className="inner-tile-art"><img src={photo} alt="" loading="lazy" decoding="async" onError={()=>setFailed(true)}/></div>
+      : <span className="inner-tile-icon" aria-hidden="true"><TileIcon size={26} variant="Bulk" color="currentColor"/></span>}
     <div className="inner-tile-text"><h3>{item.title || item.label}</h3>
       {item.excerpt && <p>{item.excerpt}</p>}
       <span>{detail ? 'Conhecer unidade' : 'Saiba mais'} <ArrowRight size={18} variant="Bold" color="currentColor"/></span>
@@ -80,6 +88,137 @@ function UnitListing() {
     {units.status==='error'&&<p role="alert" className="inner-no-results">Não foi possível carregar a lista de unidades agora.</p>}
     <div className="inner-tile-grid">{(units.data||[]).map(item=><LinkTile item={item} detail key={item.id}/>)}</div>
   </section>;
+}
+function InstitutionalRelated({items,title='Explore também'}) {
+  if(!items.length)return null;
+  return <section className="inner-stack institutional-explore" aria-labelledby="institutional-explore-title">
+    <div className="inner-section-title"><h2 id="institutional-explore-title">{title}</h2></div>
+    <div className="inner-tile-grid">{items.map(item=><LinkTile item={item} key={item.id}/>)}</div>
+  </section>;
+}
+function MissionVisionPage({page}) {
+  const parts=useMemo(()=>{
+    const shaped=shapeContent(page.html);
+    const doc=new DOMParser().parseFromString(shaped.html,'text/html');
+    const purpose=doc.body.querySelector('.prose-purpose');
+    if(!purpose)return null;
+    const purposeHtml=purpose.outerHTML;
+    purpose.remove();
+    return {historyHtml:doc.body.innerHTML,purposeHtml};
+  },[page.html]);
+  const related=useAsync(async()=>(await listChildPages('/institucional/'))
+    .filter(item=>item.path!==page.path).slice(0,3),[page.path]);
+  useEffect(()=>{
+    const root=document.querySelector('.mission-page');
+    if(!root||!('IntersectionObserver' in window))return undefined;
+    const targets=root.querySelectorAll('.mission-history-dates p,.mission-history-photo,.mission-history-copy > *,.mission-principles > h2,.mission-principles .prose-purpose-card,.institutional-explore .inner-section-title,.institutional-explore a');
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('mission-reveal-active');observer.unobserve(entry.target);}
+    }),{threshold:.1});
+    targets.forEach(target=>observer.observe(target));
+    return()=>observer.disconnect();
+  },[page.html,related.data]);
+  if(!parts)return <ContentPage page={page}/>;
+  return <div className="mission-page">
+    <Breadcrumb page={page}/>
+    <section className="mission-hero" aria-labelledby="mission-title">
+      <div className="mission-hero-copy">
+        <h1 id="mission-title">Missão e Visão</h1>
+        <p>Desde 1947, a educação profissional do Senac impulsiona trajetórias e fortalece o comércio no Maranhão.</p>
+        <ActionLink className="mission-hero-link" href={dest(links.courses)} arrow>Conheça nossos cursos</ActionLink>
+      </div>
+      <div className="mission-hero-photos" aria-label="Fotografias de pessoas e atividades do Senac">
+        <img className="mission-photo-main" src={publicUrl('/media/2025/09/SENAC_73-scaled.jpg')} alt="Jovem em fotografia institucional do Senac" width="2560" height="1703" fetchPriority="high"/>
+        <img className="mission-photo-side" src={publicUrl('/media/2026/04/RA-16-1024x692.jpg')} alt="Profissionais de gastronomia do Senac em atividade" width="1024" height="692" loading="lazy"/>
+        <img className="mission-photo-side" src={publicUrl('/media/2026/05/codo-formandas-cabelereira-e-depiladora-1-1024x684.jpg')} alt="Formandas de cursos profissionais em Codó" width="1024" height="684" loading="lazy"/>
+      </div>
+    </section>
+    <section className="mission-history" aria-label="História do Senac">
+      <div className="mission-history-dates">
+        <p><strong>1946</strong><span>Criação do Senac no Brasil</span></p>
+        <p><strong>1947</strong><span>Início da atuação no Maranhão</span></p>
+        <figure className="mission-history-photo">
+          <img src={publicUrl('/media/2024/01/CEP-SAO-LUIS-REDUZIDA-768x512-1.jpg')} alt="Fachada do Centro de Educação Profissional do Senac em São Luís" width="768" height="512" loading="lazy"/>
+        </figure>
+      </div>
+      <Html html={parts.historyHtml} className="inner-prose mission-history-copy"/>
+    </section>
+    <section className="mission-principles" aria-labelledby="mission-principles-title">
+      <h2 id="mission-principles-title">O que nos move</h2>
+      <Html html={parts.purposeHtml} className="inner-prose mission-principles-content"/>
+    </section>
+    <ResourceLinks items={page.links||[]}/>
+    <InstitutionalRelated items={related.data||[]}/>
+  </div>;
+}
+function AdministrationRegionalPage({page}) {
+  const sections=useMemo(()=>{
+    const shaped=shapeContent(page.html);
+    const doc=new DOMParser().parseFromString(shaped.html,'text/html');
+    return [...doc.body.querySelectorAll(':scope > h2')].map(heading=>{
+      const grid=heading.nextElementSibling?.classList.contains('prose-card-grid')?heading.nextElementSibling:null;
+      const cards=grid?[...grid.querySelectorAll(':scope > .prose-card')].map(card=>{
+        const title=cleanTitle(card.querySelector('h3')?.textContent);
+        card.querySelector('h3')?.remove();
+        return {title,html:card.innerHTML};
+      }):[];
+      return {title:cleanTitle(heading.textContent),cards};
+    }).filter(section=>section.cards.length);
+  },[page.html]);
+  const related=useAsync(async()=>(await listChildPages('/institucional/'))
+    .filter(item=>item.path!==page.path).slice(0,3),[page.path]);
+  useEffect(()=>{
+    const root=document.querySelector('.administration-page');
+    if(!root||!('IntersectionObserver' in window))return undefined;
+    const targets=root.querySelectorAll('.administration-hero > *,.administration-section-heading > *,.administration-council-layout,.administration-director,.administration-areas details,.institutional-explore .inner-section-title,.institutional-explore a');
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('administration-reveal-active');observer.unobserve(entry.target);}
+    }),{threshold:.08});
+    targets.forEach(target=>observer.observe(target));
+    return()=>observer.disconnect();
+  },[page.html,related.data]);
+  const council=sections[0];
+  const department=sections[1];
+  const councilTitle=council?.title.replace(/\s*-\s*Per[ií]odo:.*/i,'')||'Conselho Regional do Senac/MA';
+  const period=council?.title.match(/Per[ií]odo:\s*(.+)$/i)?.[1]||'2022 a 2026';
+  return <div className="administration-page">
+    <Breadcrumb page={page}/>
+    <header className="administration-hero">
+      <div><h1>Administração Regional</h1><p>Conheça a composição do Conselho Regional e a estrutura de gestão do Senac no Maranhão.</p></div>
+      <p className="administration-hero-note"><span>Gestão vigente</span><strong>{period}</strong></p>
+    </header>
+    {council&&<section className="administration-council" aria-labelledby="council-title">
+      <div className="administration-section-heading"><h2 id="council-title">{councilTitle}</h2><p>Representação institucional e participação dos setores que integram o Conselho.</p></div>
+      <div className="administration-council-layout">
+        {council.cards[0]&&<article className="administration-president">
+          <h3>{council.cards[0].title}</h3>
+          <figure className="administration-president-photo">
+            <img src={publicUrl('/media/2026/07/Foto-1-768x511.jpeg')} alt="Maurício Aragão Feijó, presidente do Conselho Regional do Senac no Maranhão" width="768" height="511" loading="lazy"/>
+          </figure>
+          <Html html={council.cards[0].html}/>
+        </article>}
+        <div className="administration-representatives">
+          {council.cards.slice(1).map((card,index)=><article className={'administration-representative'+(index===0?' is-large':'')} key={card.title}>
+            <h3>{card.title}</h3><Html html={card.html}/>
+          </article>)}
+        </div>
+      </div>
+    </section>}
+    {department&&<section className="administration-directory" aria-labelledby="directory-title">
+      <div className="administration-section-heading"><h2 id="directory-title">{department.title}</h2><p>Diretorias, assessorias, núcleos e unidades responsáveis pela gestão regional.</p></div>
+      {department.cards[0]&&<article className="administration-director">
+        <div><span>Direção regional</span><h3>{department.cards[0].title}</h3></div><Html html={department.cards[0].html}/>
+      </article>}
+      <div className="administration-areas">
+        {department.cards.slice(1).map((card,index)=><details key={card.title} open={index===0}>
+          <summary>{card.title}<span aria-hidden="true">+</span></summary>
+          <Html html={card.html} className="administration-area-content"/>
+        </details>)}
+      </div>
+    </section>}
+    <ResourceLinks items={page.links||[]}/>
+    <InstitutionalRelated items={related.data||[]}/>
+  </div>;
 }
 function ContentPage({page}) {
   const isUnits=page.path==='/unidades/';
@@ -387,6 +526,8 @@ export default function PortalPages({page,path}) {
       page.path==='/fale-conosco/' ? <ContactPage page={page}/> :
       servicePaths.has(page.path) ? <ServiceDetails page={page}/> :
       isNotices(page.path) ? <><Intro page={page}/><NoticesPage kind={page.path==='/resultados-psg/'?'results':'psg'}/></> :
+      page.path==='/institucional/missao-e-visao/' ? <MissionVisionPage page={page}/> :
+      page.path==='/institucional/administracao-regional/' ? <AdministrationRegionalPage page={page}/> :
       <ContentPage page={page}/>}
   </div>;
 }
