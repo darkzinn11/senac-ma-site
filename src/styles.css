@@ -14,6 +14,7 @@
   /* Sombras suaves: cards (--shadow), hover de cards e elementos flutuantes (menus, painéis). */
   --shadow-hover:0 12px 30px rgb(12 49 86 / 8%);
   --shadow-float:0 14px 36px rgb(12 49 86 / 10%);
+  --motion-ease:cubic-bezier(.2,0,0,1);
 }
 * { box-sizing:border-box; corner-shape:squircle; }
 *::before,*::after { corner-shape:squircle; }
@@ -84,6 +85,13 @@ button { color:inherit; }
 .nav-trigger .icon { object-position:-99px 0; background:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; }
 .nav-trigger[aria-expanded=true] .icon { transform:rotate(180deg); }
 .nav-dropdown { position:absolute; top:calc(100% + 12px); left:-16px; width:280px; padding:8px; margin:0; list-style:none; background:#fff; border:0; border-radius:20.8px; box-shadow:var(--shadow-float); max-height:65vh; overflow:auto; }
+@media (prefers-reduced-motion:no-preference) {
+  .nav-dropdown:not([hidden]),.nav-dropdown .nav-sub:not([hidden]) { animation:menu-enter 220ms var(--motion-ease) both; transform-origin:top left; }
+  @keyframes menu-enter {
+    from { opacity:.65; transform:translateY(-6px) scale(.985); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+  }
+}
 .nav-dropdown a { display:block; padding:12px; border-radius:10.4px; line-height:1.4; font-size:15px; }
 .nav-dropdown a:hover,.nav-dropdown a:focus-visible { background:#eef4fa; }
 /* Grupos com subitens: base = acordeão (celular); a partir de 1101px vira painel lateral. */
@@ -637,6 +645,10 @@ button { color:inherit; }
   .video-poster:hover .youtube-play { transform:translate(-50%,-50%) scale(1.08); }
 }
 .button:disabled, .course-arrow:disabled { transform:none; cursor:default; }
+@media (prefers-reduced-motion:no-preference) {
+  .button:not(:disabled):active,.course-arrow:not(:disabled):active { transform:scale(.97); transition-duration:120ms; }
+  .quick-links-card:active,.inner-tile:active { transform:scale(.985); transition-duration:120ms; }
+}
 .button:focus-visible, .course-arrow:focus-visible, .banner-arrow:focus-visible,
 .menu-toggle:focus-visible, .nav-trigger:focus-visible,
 .site-search button:focus-visible { outline:3px solid #f7941f; outline-offset:3px; }
