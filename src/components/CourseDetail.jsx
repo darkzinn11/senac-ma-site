@@ -174,8 +174,8 @@ export default function CourseDetail({ course, breadcrumb, image }) {
   return <div className="course-page">
     <header className="course-page-hero">
       {breadcrumb}
-      <div className="course-page-banner">
-        {image && <img className="course-page-banner-image is-half" src={image} alt="" loading="eager" decoding="async" />}
+      <div className="course-page-banner is-split">
+        {image && <img className="course-page-banner-image" src={image} alt="" loading="eager" decoding="async" />}
         <div className="course-page-hero-copy">
           <div className="course-page-tags">
             {course.category && <span className="course-badge">{course.category}</span>}
