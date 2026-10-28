@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "vite",
+    "dev:api": "API_PROXY_TARGET=https://api.senac.sitw.tech vite",
     "build": "vite build",
     "preview": "vite preview",
     "verify:independence": "vite build && node scripts/verify-independence.mjs",

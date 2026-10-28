@@ -5,6 +5,8 @@
 /* Banner do curso: a foto ocupa o fundo e um degradê azul (da esquerda) garante a leitura do texto. */
 .course-page-banner { position:relative; isolation:isolate; overflow:hidden; display:flex; align-items:center; min-height:440px; padding:56px; border-radius:32px; background:#00284d; color:white; }
 .course-page-banner-image { position:absolute; inset:0; z-index:-2; width:100%; height:100%; object-fit:cover; object-position:70% top; }
+/* Foto só na metade direita, com a borda esquerda dissolvida no azul: evita a foto ampliada demais. */
+.course-page-banner-image.is-half { left:auto; width:58%; object-position:center; -webkit-mask-image:linear-gradient(90deg,transparent,#000 35%); mask-image:linear-gradient(90deg,transparent,#000 35%); }
 .course-page-banner::before { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,rgb(0 40 77 / 96%) 0%,rgb(0 40 77 / 88%) 38%,rgb(0 40 77 / 35%) 72%,rgb(0 40 77 / 10%) 100%); }
 .course-page-hero-copy { max-width:760px; }
 /* Selos de área e situação no mesmo formato: fundo branco, mesma altura e raio; muda só a cor do texto. */
@@ -89,6 +91,7 @@
   .course-related-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:900px) {
+  .course-page-banner-image.is-half { width:100%; -webkit-mask-image:none; mask-image:none; }
   .course-page-banner::before { background:linear-gradient(90deg,rgb(0 40 77 / 95%) 0%,rgb(0 40 77 / 82%) 60%,rgb(0 40 77 / 55%) 100%); }
   .course-page-body { margin-top:52px; }
 }

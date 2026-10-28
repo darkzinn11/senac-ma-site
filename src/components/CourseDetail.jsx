@@ -6,7 +6,6 @@ import { courseVisual } from '../data/courseVisuals';
 import { canEnroll, offerSituation, textOf } from '../api/adapters';
 import { searchCourses } from '../api/courses';
 import useAsync from '../api/useAsync';
-import Html from './Html';
 import { Icon } from './Ui';
 import './courseDetail.css';
 
@@ -32,13 +31,12 @@ const echoesTitle = (text, title) => {
 };
 // A seção já tem título próprio: o "Objetivo" que abre o conteúdo do SIG sai.
 const LEADING_OBJECTIVE = /^\s*<h[2-4][^>]*>\s*Objetivos?\s*:?\s*<\/h[2-4]>/i;
-const escapeHtml = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const competency = text => {
   const clean = textOf(text).replace(/\s+/g, ' ').trim().replace(/[;.,]+$/, '');
   return clean ? clean[0].toUpperCase() + clean.slice(1) : '';
 };
 // Depois da frase padrão vêm as competências: uma lista (ol/ul) ou parágrafos curtos. Elas saem do bloco da frase
-// padrão e voltam como parágrafos simples em "Sobre o curso".
+// padrão e servem de chamada quando o texto não tem parágrafo próprio.
 function extractCompetencies(source) {
   BOILERPLATE.lastIndex = 0;
   const match = BOILERPLATE.exec(source);
@@ -68,7 +66,7 @@ function prepareContent(html, title) {
   // Rótulos ("Objetivo geral:") e frases muito curtas não funcionam como chamada.
   const leadParagraph = paragraphs.find(({ text }) => text.length >= 40 && !/:$/.test(text) && !echoesTitle(text, title));
   const lead = leadParagraph ? firstSentence(leadParagraph.text) : '';
-  // Se a chamada do banner já mostra o parágrafo inteiro, ele não se repete em "Sobre o curso".
+  // Se a chamada do banner já mostra o parágrafo inteiro, ele sai do corpo do texto.
   if (leadParagraph && lead.replace(/[.…]$/, '') === leadParagraph.text.replace(/\s+/g, ' ').replace(/[.]$/, '')) body = body.replace(leadParagraph.html, '').trim();
   return { body, lead, competencies: extracted.items };
 }
@@ -168,10 +166,6 @@ export default function CourseDetail({ course, breadcrumb, image }) {
   // Descrição do banner: o parágrafo do conteúdo; sem ele, as competências; por último, o resumo da API.
   const competencyText = content.competencies.map((item, i) => (i ? item[0].toLowerCase() + item.slice(1) : item)).join('; ');
   const lead = content.lead || (competencyText ? competencyText + '.' : firstSentence(textOf(course.excerpt || '').replace(BOILERPLATE, '').trim()));
-  // "Sobre o curso" só aparece quando há conteúdo além da descrição do banner (objetivos, listas, detalhes).
-  // Nesse caso as competências entram como parágrafos, antes do restante do texto.
-  const hasAbout = Boolean(content.body.replace(/<[^>]*>/g, '').trim());
-  const aboutHtml = hasAbout ? content.competencies.map(item => '<p>' + escapeHtml(item) + '.</p>').join('') + content.body : '';
   const status = course.situation;
   const extras = [['Público-alvo', course.audience, Users], ['Pré-requisitos', course.prerequisites, InfoCircle],
     ['Certificação', course.certification, Award]].filter(([, value]) => value);
@@ -181,7 +175,7 @@ export default function CourseDetail({ course, breadcrumb, image }) {
     <header className="course-page-hero">
       {breadcrumb}
       <div className="course-page-banner">
-        {image && <img className="course-page-banner-image" src={image} alt="" loading="eager" decoding="async" />}
+        {image && <img className="course-page-banner-image is-half" src={image} alt="" loading="eager" decoding="async" />}
         <div className="course-page-hero-copy">
           <div className="course-page-tags">
             {course.category && <span className="course-badge">{course.category}</span>}
@@ -201,10 +195,6 @@ export default function CourseDetail({ course, breadcrumb, image }) {
 
     <div className="course-page-body">
       <div className="course-page-main">
-        {hasAbout && <section className="course-page-section" aria-labelledby="course-about-title">
-          <h2 id="course-about-title">Sobre o curso</h2>
-          <div className="course-page-prose"><Html html={aboutHtml} /></div>
-        </section>}
         {extras.length > 0 && <section className="course-page-section" aria-label="Mais informações do curso">
           <dl className="course-page-extras">{extras.map(([label, value, ExtraIcon]) => <div key={label}>
             <dt><ExtraIcon size={20} variant="Bulk" color="currentColor" aria-hidden="true" />{label}</dt><dd>{value}</dd>

@@ -80,6 +80,8 @@ button { color:inherit; }
 .nav-group { position:relative; }
 .nav-trigger { display:flex; align-items:center; gap:6px; border:0; padding:8px 5px 8px 0; background:transparent; white-space:nowrap; color:#04337c; font-size:16px; font-weight:800; }
 .nav-trigger .icon { width:7.5px; height:4.83px; object-fit:contain; transition:transform .18s; }
+/* A seta é desenhada com a cor do texto (máscara do SVG), então acompanha o laranja do hover. */
+.nav-trigger .icon { object-position:-99px 0; background:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; }
 .nav-trigger[aria-expanded=true] .icon { transform:rotate(180deg); }
 .nav-dropdown { position:absolute; top:calc(100% + 12px); left:-16px; width:280px; padding:8px; margin:0; list-style:none; background:#fff; border:0; border-radius:20.8px; box-shadow:var(--shadow-float); max-height:65vh; overflow:auto; }
 .nav-dropdown a { display:block; padding:12px; border-radius:10.4px; line-height:1.4; font-size:15px; }
@@ -231,9 +233,10 @@ button { color:inherit; }
 .main-story h3 { font-family:Poppins,Nexa,sans-serif; font-size:36px; line-height:1; font-weight:600; max-width:542px; margin-top:12px; }
 .main-story p { font-family:Poppins,Nexa,sans-serif; font-size:12px; line-height:18px; color:rgb(255 255 255 / 80%); margin-top:16px; max-width:368px; }
 .secondary-stories { display:grid; gap:20px; grid-template-rows:repeat(3,170px); }
-.small-story { display:grid; grid-template-columns:218px minmax(0,1fr); background:white; border-radius:15.6px; box-shadow:var(--shadow); }
-.small-story-photo { height:170px; width:218px; object-fit:cover; border-radius:15.6px; }
-.small-story > div { min-width:0; padding:12px 10px 12px 20px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:12px; }
+.small-story { display:grid; grid-template-columns:218px minmax(0,1fr); overflow:hidden; background:white; border-radius:26px; box-shadow:var(--shadow); }
+/* A foto segue o canto do card (arredondada só à esquerda). */
+.small-story-photo { height:170px; width:218px; object-fit:cover; border-radius:0; }
+.small-story > div { min-width:0; padding:16px 22px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:12px; }
 .small-story h3 { font-family:Poppins,Nexa,sans-serif; font-size:16px; line-height:24px; font-weight:700; color:#000; }
 .main-story:hover h3,.small-story:hover h3 { text-decoration:none; }
 .notices-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
@@ -325,7 +328,12 @@ button { color:inherit; }
   .main-story { height:calc(100vw * 550.18 / 1440); }
   .small-story { grid-template-columns:calc(100vw * 218 / 1440) minmax(0,1fr); }
   .small-story-photo { width:100%; height:calc(100vw * 170 / 1440); }
-  .secondary-stories { grid-template-rows:repeat(3,calc(100vw * 170 / 1440)); }
+  /* O espaço entre as notícias também escala; senão a coluna da direita fica mais baixa que o destaque. */
+  .secondary-stories { grid-template-rows:repeat(3,calc(100vw * 170 / 1440)); gap:calc(100vw * 20 / 1440); }
+  /* Texto e respiro dos cards menores crescem junto com o card. */
+  .small-story > div { padding:calc(100vw * 16 / 1440) calc(100vw * 24 / 1440); gap:calc(100vw * 12 / 1440); }
+  .small-story h3 { font-size:calc(100vw * 15 / 1440); line-height:1.4; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  .small-story .news-tag { font-size:calc(100vw * 12 / 1440); line-height:1; padding:calc(100vw * 7 / 1440) calc(100vw * 12 / 1440); }
   /* Senac 80 anos: colunas e respiro na proporção de 1440; a marca mantém o tamanho e centraliza na coluna. */
   .video-section { height:auto; min-height:574px; }
   .senac80-inner { grid-template-columns:calc(100vw * 439.56 / 1440) minmax(0,1fr); gap:calc(100vw * 65 / 1440); }
@@ -459,6 +467,7 @@ button { color:inherit; }
   .institutional-shade { background:linear-gradient(90deg,rgba(0,39,75,.87),rgba(0,39,75,.16)); }
   .news-grid { grid-template-columns:1fr; gap:20px; }
   .main-story { height:470px; border-radius:31.2px; }
+  .small-story { border-radius:22px; }
   .main-story h3 { font-size:30px; line-height:1.15; max-width:560px; }
   .main-story-content { left:28px; right:28px; bottom:28px; }
   .secondary-stories { grid-template-rows:repeat(3,minmax(150px,auto)); gap:16px; }
@@ -596,7 +605,7 @@ button { color:inherit; }
     background-color:#eaf3fb; color:#004b8d;
     box-shadow:none;
   }
-  .nav-trigger:hover { color:#ed8617; }
+  .nav-trigger:hover,.nav-trigger[aria-expanded=true] { color:#ed8617; }
   .menu-toggle:hover { background-color:#edf4fb; }
   .site-search button:hover .icon { transform:scale(1.13); }
 }
@@ -744,7 +753,7 @@ html.a11y-legible .site-shell,html.a11y-legible .site-shell * { font-family:Aria
 /* Estados de carregamento / sem foto (conteúdo vindo da API) */
 .hero-placeholder { background:#e9eef5; }
 .main-story.is-placeholder { background:#e9eef5; box-shadow:none; }
-.small-story.is-placeholder { background:#eef3f8; box-shadow:none; min-height:170px; border-radius:15.6px; }
+.small-story.is-placeholder { background:#eef3f8; box-shadow:none; min-height:170px; border-radius:26px; }
 .main-story:not(:has(> img)) { background:linear-gradient(135deg,#0d375f,#004b8d); }
 .small-story-photo:not(:has(img)) { background:#dde7f1; }
 
@@ -752,3 +761,12 @@ html.a11y-legible .site-shell,html.a11y-legible .site-shell * { font-family:Aria
 .main-story h3.is-long { font-size:30px; line-height:1.1; }
 .course-badge { overflow:hidden; text-overflow:ellipsis; }
 .institutional-placeholder { min-height:317px; }
+
+/* Notícia em destaque acima de 1440: texto, largura das linhas e margens crescem junto com o card. */
+@media (min-width:1441px) {
+  .main-story-content { left:calc(100vw * 48 / 1440); right:calc(100vw * 48 / 1440); bottom:calc(100vw * 48 / 1440); }
+  .main-story .news-tag { font-size:calc(100vw * 12 / 1440); line-height:1; padding:calc(100vw * 7 / 1440) calc(100vw * 12 / 1440); }
+  .main-story h3 { font-size:calc(100vw * 36 / 1440); max-width:calc(100vw * 542 / 1440); margin-top:calc(100vw * 12 / 1440); }
+  .main-story h3.is-long { font-size:calc(100vw * 30 / 1440); }
+  .main-story p { font-size:calc(100vw * 13 / 1440); line-height:1.55; max-width:calc(100vw * 400 / 1440); margin-top:calc(100vw * 16 / 1440); }
+}

@@ -1,8 +1,9 @@
 import React from 'react';
-import { ArrowRight, Book1, DocumentText, Teacher, Location, Call, Sms } from 'iconsax-react';
+import { ArrowRight, ArrowRight2, Book1, Briefcase, DocumentText, EmptyWallet, InfoCircle, Monitor, People, Teacher, Location, Call, Sms } from 'iconsax-react';
 import { asset, links } from '../data/content';
 import { routeHref } from '../data/basePath';
-import { ActionLink } from './Ui';
+import { ActionLink, PhotoCard } from './Ui';
+import './courseDetail.css';
 import './serviceDetails.css';
 
 export const servicePaths = new Set([
@@ -11,20 +12,23 @@ export const servicePaths = new Set([
 ]);
 const details = {
   '/encaminhamento-ao-mercado-de-trabalho/': {
-    image:'ff2a6.png',
+    image:'ff2a6.png', focus:'center 45%', half:true, tag:'Empregabilidade',
+    facts:[['Atendimento','Presencial','people'],['Local','São Luís – MA','location'],['Para','Alunos e empresas','briefcase']],
     description:'O Banco de Oportunidades aproxima profissionais formados pelo Senac e empresas que procuram pessoas qualificadas.',
     summary:'O serviço oferece orientação profissional aos estudantes e egressos e apoia o recrutamento de candidatos para empresas.',
-    sections:[
-      {title:'Para ex-alunos',text:'Faça seu cadastro presencialmente no setor, levando CPF, certificado de conclusão de curso do Senac e currículo atualizado. Depois, aguarde o contato sobre possíveis encaminhamentos.'},
-      {title:'Para estudantes',text:'Receba orientação profissional durante o curso e atendimento individualizado. Após obter a certificação, procure o setor para realizar seu cadastro.'},
-      {title:'Para empresas',text:'Cadastre a empresa e suas vagas para solicitar profissionais formados pelo Senac.',href:'https://www.bancodeoportunidade.ma.senac.br/Cadastros/Empresas.aspx',label:'Cadastrar empresa e vaga'},
+    // Mesmas três entradas do site antigo, cada uma com sua página de orientações.
+    cards:[
+      {title:'Para empresas',image:'76a19.png',href:'/banco-de-oportunidades-empresas/'},
+      {title:'Para egressos',image:'0d710.png',href:'/banco-de-oportunidades-egressos/'},
+      {title:'Para estudantes',image:'4f438.png',href:'/banco-de-oportunidades-estudantes/'},
     ],
     contact:{title:'Atendimento do Banco',address:'Rua do Passeio, nº 495 – Centro, Bloco A, São Luís – MA',phones:['(98) 3198-1537','(98) 3198-1538'],email:'baopo@ma.senac.br'},
-    actions:[{label:'Conhecer nossos cursos',href:links.courses,primary:true}],
+    actions:[{label:'Cadastrar empresa e vaga',href:'https://www.bancodeoportunidade.ma.senac.br/Cadastros/Empresas.aspx',primary:true},{label:'Conhecer nossos cursos',href:links.courses}],
     aside:{title:'Quer participar?',text:'Se você concluiu um curso do Senac, procure o Banco de Oportunidades com sua documentação. Empresas podem solicitar candidatos pelo cadastro específico.'},
   },
   '/cadastro-de-interesse/': {
-    image:'966ba.png',
+    image:'966ba.png', tag:'Cursos',
+    facts:[['Cadastro','Online','monitor'],['Você escolhe','Curso, unidade e turno','book']],
     description:'Informe os cursos que deseja fazer no Senac Maranhão e, se quiser, sugira uma nova formação.',
     summary:'O cadastro de interesse permite indicar curso, unidade e turno de preferência e deixar seus dados para um futuro contato.',
     sections:[
@@ -37,7 +41,8 @@ const details = {
     aside:{title:'Cadastre seu interesse',text:'O preenchimento é feito no sistema de interesse em cursos do Senac. Você poderá escolher unidade, turno e formação.'},
   },
   '/cursos-a-distancia/': {
-    image:'dbc66.png',
+    image:'dbc66.png', tag:'Educação a distância',
+    facts:[['Modalidade','A distância','monitor'],['Níveis','Livres à pós-graduação','book']],
     description:'Conheça as opções de formação online do Senac e estude com mais flexibilidade.',
     summary:'A educação a distância do Senac oferece cursos em diferentes níveis e áreas de conhecimento, para quem deseja desenvolver novas competências.',
     sections:[
@@ -51,7 +56,8 @@ const details = {
     aside:{title:'Estude de onde estiver',text:'Consulte a oferta, os requisitos e as condições de matrícula na plataforma de cursos a distância do Senac.'},
   },
   '/psg/': {
-    image:'79629.png',
+    image:'79629.png', tag:'Gratuidade',
+    facts:[['Custo','Gratuito','wallet'],['Seleção','Por edital','document']],
     description:'Conheça o Programa Senac de Gratuidade e consulte a programação de formação profissional gratuita.',
     summary:'O PSG oferece ações educacionais gratuitas a pessoas de baixa renda, ampliando o acesso à educação profissional.',
     sections:[
@@ -64,58 +70,75 @@ const details = {
     aside:{title:'Encontre sua oportunidade',text:'Acesse os editais e confira as seleções, os documentos e as orientações para participar.'},
   },
 };
-function ContactInfo({contact}) {
-  if(!contact)return null;
-  return <section className="service-contact" aria-labelledby="service-contact-heading">
-    <h2 id="service-contact-heading">{contact.title}</h2>
-    <div className="service-contact-lines"><p><Location size={20} variant="Bold" color="currentColor"/>{contact.address}</p>
-      {contact.phones.map(phone=><p key={phone}><Call size={20} variant="Bold" color="currentColor"/><a href={'tel:+55'+phone.replace(/\D/g,'')}>{phone}</a></p>)}
-      {contact.email&&<p><Sms size={20} variant="Bold" color="currentColor"/><a href={'mailto:'+contact.email}>{contact.email}</a></p>}
-    </div>
-  </section>;
-}
+const FACT_ICONS={people:People,location:Location,briefcase:Briefcase,monitor:Monitor,book:Book1,wallet:EmptyWallet,document:DocumentText};
+const STEP_ICONS=[Teacher,Book1,DocumentText];
+const stepsTitle=path=>path==='/cadastro-de-interesse/'||path==='/psg/'?'Como funciona':path==='/cursos-a-distancia/'?'Opções de formação':'Como participar';
+
+// Páginas de serviço no mesmo formato da página do curso: banner com foto, selo, dados-chave e ações;
+// depois as etapas, o aviso e o atendimento em seções de coluna única.
 export default function ServiceDetails({page}) {
   const data=details[page.path];
   if(!data)return null;
   const [main,...others]=data.actions;
-  return <div className="service-detail">
-    <nav className="inner-breadcrumb" aria-label="Você está aqui">
-      <a href={routeHref('/')}>Início</a><ArrowRight size={16} variant="Bold" color="currentColor"/><span aria-current="page">{page.title}</span>
-    </nav>
-    <header className="service-detail-hero">
-      <div className="service-hero-copy"><h1>{page.title}</h1><p>{data.description}</p>
-        <section className="service-intro" aria-labelledby="service-about-heading">
-          <h2 id="service-about-heading">Saiba mais</h2><p>{data.summary}</p>
-        </section>
-        <div className="service-hero-actions">
-          <ActionLink href={main.href} arrow>{main.label}</ActionLink>
-          {others[0]&&<a className="service-secondary-action" href={others[0].href}>{others[0].label}<ArrowRight size={19} variant="Linear" color="currentColor"/></a>}
+  const contact=data.contact;
+  return <div className="course-page service-detail">
+    <header className="course-page-hero">
+      <nav className="inner-breadcrumb" aria-label="Você está aqui">
+        <a href={routeHref('/')}>Início</a><ArrowRight2 size={15} variant="Bold" color="currentColor"/><span aria-current="page">{page.title}</span>
+      </nav>
+      <div className="course-page-banner">
+        <img className={"course-page-banner-image"+(data.half?" is-half":"")} src={asset(data.image)} style={data.focus?{objectPosition:data.focus}:undefined} alt="" loading="eager" decoding="async"/>
+        <div className="course-page-hero-copy">
+          <div className="course-page-tags"><span className="course-badge">{data.tag}</span></div>
+          <h1 className={page.title.length>60?'is-long':undefined}>{page.title}</h1>
+          <p className="course-page-lead">{data.description}</p>
+          <ul className="course-page-facts" aria-label="Informações do serviço">
+            {data.facts.map(([label,value,icon])=>{const FactIcon=FACT_ICONS[icon];return <li className="course-page-fact" key={label}>
+              <FactIcon size={22} variant="Bulk" color="currentColor" aria-hidden="true"/><span><small>{label}</small><strong>{value}</strong></span>
+            </li>})}
+          </ul>
+          <div className="service-hero-actions">
+            <ActionLink href={main.href} arrow>{main.label}</ActionLink>
+            {others[0]&&<a className="button service-hero-secondary" href={others[0].href}>{others[0].label}<ArrowRight size={18} variant="Linear" color="currentColor"/></a>}
+          </div>
         </div>
       </div>
-      <figure className="service-hero-image"><img src={asset(data.image)} alt="" loading="eager" decoding="async"/></figure>
     </header>
-    <div className="service-main-layout">
-      <div className="service-main-copy">
-        <section className="service-steps" aria-labelledby="service-steps-title">
-          <h2 id="service-steps-title">{page.path==='/cadastro-de-interesse/'?'Como funciona':page.path==='/psg/'?'Sobre o programa':'Informações e serviços'}</h2>
-          <div className="service-steps-grid">
-            {data.sections.map((section,index)=><article className="service-step" key={section.title}>
-              <span className="service-step-icon" aria-hidden="true">{index%3===0?<Teacher size={25} variant="Bold" color="currentColor"/>:index%3===1?<Book1 size={25} variant="Bold" color="currentColor"/>:<DocumentText size={25} variant="Bold" color="currentColor"/>}</span>
-              <h3>{section.title}</h3><p>{section.text}</p>
-              {section.href&&<a className="service-text-link" href={section.href}>{section.label}<ArrowRight size={19} variant="Linear" color="currentColor"/></a>}
-            </article>)}
+
+    <div className="course-page-body">
+      <div className="course-page-main">
+        <section className="course-page-section" aria-labelledby="service-steps-title">
+          <h2 id="service-steps-title">{stepsTitle(page.path)}</h2>
+          {data.cards
+            ? <div className="service-photo-grid">{data.cards.map(card=><PhotoCard item={card} key={card.href}/>)}</div>
+            : <div className={'service-steps-grid is-'+data.sections.length}>
+              {data.sections.map((section,index)=>{const StepIcon=STEP_ICONS[index%3];return <article className="service-step" key={section.title}>
+                <span className="service-step-icon" aria-hidden="true"><StepIcon size={24} variant="Bulk" color="currentColor"/></span>
+                <h3>{section.title}</h3><p>{section.text}</p>
+                {section.href&&<a className="service-text-link" href={section.href}>{section.label}<ArrowRight size={18} variant="Linear" color="currentColor"/></a>}
+              </article>})}
+            </div>}
+          {data.notice&&<div className="service-notice"><InfoCircle size={22} variant="Bulk" color="currentColor"/><p>{data.notice}</p></div>}
+        </section>
+
+        <section className="course-page-section" aria-labelledby="service-contact-title">
+          <h2 id="service-contact-title">{contact?contact.title:data.aside.title}</h2>
+          <div className="service-contact-card">
+            <div className="service-contact-copy">
+              <p>{data.aside.text}</p>
+              {contact&&<ul className="service-contact-lines">
+                <li><Location size={20} variant="Bold" color="currentColor"/>{contact.address}</li>
+                {contact.phones.map(phone=><li key={phone}><Call size={20} variant="Bold" color="currentColor"/><a href={'tel:+55'+phone.replace(/\D/g,'')}>{phone}</a></li>)}
+                {contact.email&&<li><Sms size={20} variant="Bold" color="currentColor"/><a href={'mailto:'+contact.email}>{contact.email}</a></li>}
+              </ul>}
+            </div>
+            <div className="service-contact-actions">
+              <ActionLink href={main.href} arrow>{main.label}</ActionLink>
+              {others.slice(1).map(action=><a href={action.href} key={action.href} className="button service-hero-secondary is-light">{action.label}<ArrowRight size={18} variant="Linear" color="currentColor"/></a>)}
+            </div>
           </div>
         </section>
-        {data.notice&&<div className="service-notice"><Book1 size={22} variant="Bold" color="currentColor"/><p>{data.notice}</p></div>}
-        <ContactInfo contact={data.contact}/>
       </div>
-      <aside className="service-side" aria-label="Próximos passos">
-        <h2>{data.aside.title}</h2><p>{data.aside.text}</p>
-        <div className="service-side-actions">
-          <ActionLink href={main.href} arrow>{main.label}</ActionLink>
-          {others.map(action=><a href={action.href} key={action.href} className="service-side-link">{action.label}<ArrowRight size={18} variant="Linear" color="currentColor"/></a>)}
-        </div>
-      </aside>
     </div>
   </div>;
 }

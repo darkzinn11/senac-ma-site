@@ -8,6 +8,7 @@ import { courseStatus } from '../data/courseApi';
 import useAsync from '../api/useAsync';
 import { listChildPages, listNews, listNotices, listResults, listUnits } from '../api/content';
 import Html, { sanitizeHtml } from './Html';
+import { shapeContent } from './contentShape';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
@@ -38,7 +39,7 @@ function Intro({page,subtitle,eyebrow}) {
   return <header className="inner-page-heading">
     <Breadcrumb page={page}/>
     <h1>{page.title}</h1>
-    <p>{subtitle || page.excerpt || 'Conheça informações, serviços e oportunidades do Senac Maranhão.'}</p>
+    {(subtitle || page.excerpt || page.seoDescription) && <p>{subtitle || page.excerpt || page.seoDescription}</p>}
   </header>;
 }
 // Imagem de card: se o arquivo ainda não existe no servidor de mídia, cai no pictograma (sem imagem quebrada).
@@ -81,9 +82,10 @@ function UnitListing() {
   </section>;
 }
 function ContentPage({page}) {
-  const child=page.children||[];
-  const isUnit=page.path.startsWith('/unidades/') && page.path!=='/unidades/';
+  const isUnits=page.path==='/unidades/';
+  const isUnit=page.path.startsWith('/unidades/') && !isUnits;
   const isInstitutional=page.path.startsWith('/institucional/');
+  const child=isUnits?[]:(page.children||[]);
   // "Explore também": outras unidades ou páginas irmãs, vindas da API (sem bloquear a página).
   const related=useAsync(async()=>{
     if(isUnit)return (await listUnits()).filter(unit=>unit.path!==page.path).slice(0,3);
@@ -91,17 +93,21 @@ function ContentPage({page}) {
     return [];
   },[page.path]);
   const relatives=related.data||[];
-  const hasText=Boolean(page.html && page.html.replace(/<[^>]*>/g,'').trim());
-  const hasImage=Boolean(page.html && /<img\s/i.test(page.html));
-  const actionLabel=page.path.includes('unidades/')?'Consultar cursos':page.path.includes('psg')?'Consultar editais':'Explorar cursos';
-  const actionUrl=page.path.includes('unidades/')?links.courses:page.path.includes('psg')?links.notices:links.courses;
+  const shaped=useMemo(()=>shapeContent(page.html,{extractContact:isUnit}),[page.html,isUnit]);
+  const hasText=Boolean(shaped.html.replace(/<[^>]*>/g,'').trim());
+  const hasImage=/<img\s/i.test(shaped.html);
+  // A lateral só aparece quando tem algo desta página (contato da unidade ou páginas da seção);
+  // sem ela, o texto vira uma coluna de leitura em vez de deixar um vazio ao lado.
+  const hasAside=Boolean(shaped.contact)||child.length>0;
+  // Cards e tabelas aproveitam a largura toda; texto corrido fica na coluna de leitura.
+  const isWide=!hasAside&&/class="prose-card-grid"/.test(shaped.html);
   return <>
-    <div className="inner-content-frame">
+    <div className={'inner-content-frame'+(hasAside?'':isWide?' is-wide':' is-single')}>
       <div className="inner-content-primary">
-        <Intro page={page}/>
-        {page.path==='/unidades/' && <UnitListing/>}
+        {/* Na unidade, o resumo repete o primeiro parágrafo do texto. */}
+        <Intro page={isUnit?{...page,excerpt:''}:page}/>
         <article className="inner-content">
-        {hasText||hasImage ? <Html html={page.html}/> : <div className="inner-empty">
+        {hasText||hasImage ? <Html html={shaped.html}/> : <div className="inner-empty">
           <h2>Informações e atendimento</h2>
           <p>Novas informações desta área serão disponibilizadas aqui.</p>
         </div>}
@@ -109,18 +115,20 @@ function ContentPage({page}) {
         </article>
         {page.path==='/licitacoes-2016/' && <NoticesPage kind="licitacao" heading="Editais de licitação"/>}
       </div>
-      <aside className="inner-aside">
-        <div className="inner-aside-card">
-          <h2>Continue sua jornada</h2><p>Encontre outros serviços e conteúdos relacionados à sua busca.</p>
-          <ActionLink href={dest(actionUrl)} arrow>{actionLabel}</ActionLink>
-        </div>
+      {hasAside&&<aside className="inner-aside">
+        {shaped.contact&&<div className="inner-aside-card inner-contact-aside">
+          <h2>Contato da unidade</h2>
+          <Html html={shaped.contact} className="inner-contact-lines"/>
+          <ActionLink href={dest(links.courses)} arrow>Consultar cursos</ActionLink>
+        </div>}
         {child.length>0 && <div className="inner-aside-links"><h3>Nesta seção</h3>
           {child.map(c=><a href={c.path} key={c.id}>{c.title}<ChevronRight size={16} variant="Bold" color="currentColor"/></a>)}
         </div>}
-      </aside>
+      </aside>}
     </div>
-    {relatives.length>0 && <section className="inner-stack"><div className="inner-section-title"><h2>Explore também</h2></div>
-      <div className="inner-tile-grid">{relatives.map(item=><LinkTile item={item} key={item.id}/>)}</div>
+    {isUnits && <UnitListing/>}
+    {relatives.length>0 && <section className="inner-stack"><div className="inner-section-title"><h2>{isUnit?'Outras unidades':'Explore também'}</h2></div>
+      <div className="inner-tile-grid">{relatives.map(item=><LinkTile item={item} detail={isUnit} key={item.id}/>)}</div>
     </section>}
   </>;
 }
@@ -210,22 +218,26 @@ function NewsCard({item}) {
       <h3>{item.title}</h3>{item.excerpt&&<p>{item.excerpt}</p>}<span className="inner-news-link">Ler notícia <ArrowRight size={17} variant="Bold" color="currentColor"/></span></div>
   </a>;
 }
-function NewsListing() {
+// Um único título na página; a busca fica ao lado dele.
+function NewsListing({page}) {
   const [search,setSearch]=useState('');
   const query=useDebounced(search);
   const list=usePagedList(listNews,query,12);
-  return <section className="inner-stack">
-    <div className="inner-section-title"><div>
-      <h2>Últimas notícias</h2><p>Informações e acontecimentos do Senac Maranhão.</p></div>
+  return <>
+    <header className="inner-news-heading">
+      <div className="inner-page-heading"><Breadcrumb page={page}/><h1>{page.title}</h1>
+        <p>Notícias e acontecimentos do Senac Maranhão.</p></div>
       <label className="inner-search"><Search size={20} variant="Linear" color="currentColor"/><input type="search" value={search}
         onChange={e=>setSearch(e.target.value)} placeholder="Buscar notícia" aria-label="Buscar notícia"/></label>
-    </div>
+    </header>
+    <section className="inner-news-results" aria-label="Notícias">
     <div className="inner-news-grid">{list.items.map(a=><NewsCard item={a} key={a.id}/>)}</div>
     {list.status==='loading'&&<p role="status" className="inner-no-results">{list.items.length?'Carregando mais notícias…':'Carregando notícias…'}</p>}
     {list.status==='error'&&<p role="alert" className="inner-no-results">Não foi possível carregar as notícias agora. <button type="button" className="button button-outline" onClick={list.retry}>Tentar novamente</button></p>}
     {list.status==='ready'&&!list.items.length && <p className="inner-no-results">Nenhuma notícia encontrada para esta busca.</p>}
     <div className="inner-list-actions">{list.status==='ready'&&list.page<list.totalPages && <button className="button" onClick={list.loadMore}>Carregar mais notícias <ArrowRight size={18} variant="Bold" color="currentColor"/></button>}</div>
-  </section>;
+    </section>
+  </>;
 }
 // Fotos seguidas no corpo (parágrafos só com imagem) viram uma galeria lado a lado.
 const IMAGE_P=/<p>\s*(?:<a [^>]*>\s*)?<img [^>]*>\s*(?:<\/a>\s*)?<\/p>/;
@@ -313,6 +325,8 @@ function NoticeDetailPage({page}) {
   const paragraphs=(page.blocks||[]).filter(block=>block.type==='p'&&block.text.length>30&&
     !documents.some(doc=>fold(doc.label)===fold(block.text))&&!actions.some(action=>fold(action.label)===fold(block.text)));
   const primaryDoc=documents[0];
+  // Editais PSG levam à inscrição; o documento oficial vira um acesso secundário.
+  const signup=isPsg&&!isResult;
   return <>
     <header className="notice-detail-heading">
       <Breadcrumb page={page}/>
@@ -338,13 +352,17 @@ function NoticeDetailPage({page}) {
         </section>}
       </article>
       <aside className="notice-detail-side">
-        <h2>Acessos rápidos</h2>
-        <p>Consulte o documento oficial{isPsg?' e acompanhe as etapas do Programa Senac de Gratuidade':''}.</p>
-        {primaryDoc&&<ActionLink href={primaryDoc.href} arrow>Abrir documento</ActionLink>}
-        {actions.map(action=><a className="notice-detail-secondary" href={action.href} key={action.href}>
-          {action.label||'Acessar serviço'} <ArrowRight size={17} variant="Linear" color="currentColor"/>
-        </a>)}
-        <a className="notice-detail-back" href={page.parent}>{isResult?'Voltar para resultados':isPsg?'Voltar para editais':'Voltar para licitações'} <ArrowRight size={17} variant="Linear" color="currentColor"/></a>
+        <h2>{signup?'Quer participar?':'Acessos rápidos'}</h2>
+        <p>{signup?'Leia o edital e faça sua inscrição no Programa Senac de Gratuidade.'
+          :'Consulte o documento oficial'+(isPsg?' e acompanhe as etapas do Programa Senac de Gratuidade':'')+'.'}</p>
+        {signup ? <ActionLink href={links.psgSignup} target="_blank" rel="noopener" arrow>Inscreva-se no PSG</ActionLink>
+          : primaryDoc&&<ActionLink href={primaryDoc.href} arrow>Abrir documento</ActionLink>}
+        {!!actions.length&&<div className="notice-detail-links">
+          {actions.map(action=><a className="notice-detail-secondary" href={action.href} key={action.href}>
+            <ArrowUpRight size={20} variant="Bold" color="currentColor"/><span>{action.label||'Acessar serviço'}</span><ArrowRight size={17} variant="Linear" color="currentColor"/>
+          </a>)}
+        </div>}
+        {!signup&&<a className="notice-detail-back" href={page.parent}><ArrowLeft size={17} variant="Linear" color="currentColor"/>{isResult?'Voltar para resultados':isPsg?'Voltar para editais':'Voltar para licitações'}</a>}
       </aside>
     </div>
   </>;
@@ -359,7 +377,7 @@ export default function PortalPages({page,path}) {
     {page.kind==='post' ? <ArticlePage page={page}/> :
       page.kind==='course' ? <CoursePage page={page}/> :
       page.kind==='notice' ? <NoticeDetailPage page={page}/> :
-      isNews(page.path) ? <><Intro page={page} eyebrow="Notícias" subtitle="Notícias e acontecimentos do Senac Maranhão."/><NewsListing/></> :
+      isNews(page.path) ? <NewsListing page={page}/> :
       isCatalog(page.path) ? <>
         <nav className="inner-catalog-breadcrumb" aria-label="Você está aqui">
           <a href={routeHref('/')}>Início</a><ChevronRight size={16} variant="Bold" color="currentColor"/><span aria-current="page">Cursos</span>
