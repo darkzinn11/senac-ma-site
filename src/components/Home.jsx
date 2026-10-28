@@ -14,10 +14,8 @@ const emptyFilters = { query:'', area:'', city:'', unit:'', type:'' };
 
 function HeroBanner() {
   const banners = useAsync(loadBanners, []);
-  // Reserva a altura do carrossel enquanto os banners da API chegam (evita salto de layout).
-  if (banners.status === 'loading') return <section className="banner-carousel hero-carousel" aria-hidden="true">
-    <div className="banner-stage"><div className="banner-track"><div className="banner-slide main-slide hero-placeholder" /></div></div>
-  </section>;
+  // Mostra a arte local imediatamente enquanto a API valida as imagens dos banners.
+  if (banners.status === 'loading') return <BannerCarousel slides={heroSlides} initial={0} label="Destaques do Senac" />;
   // API fora do ar: vale a arte aprovada no layout (reserva). API respondeu com lista vazia: o admin não quer
   // banners, então a seção some (sem carrossel quebrado).
   if (banners.status === 'error') return <BannerCarousel slides={heroSlides} initial={2} label="Destaques do Senac" />;

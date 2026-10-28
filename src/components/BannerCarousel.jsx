@@ -28,7 +28,7 @@ function SlideArtwork({slide,side,variant}) {
     return ()=>{active=false};
   },[slide.mobileImage,withMobile]);
   const image=<img src={bannerSrc(slide.image)} alt={side ? '' : slide.alt} draggable="false" data-landscape={slide.landscape ? '' : undefined}
-    loading="eager" fetchPriority={variant==='hero'&&!side?'high':'auto'} decoding="async"
+    loading="eager" fetchPriority={variant==='hero'&&!side?'high':'auto'} decoding={variant==='hero'&&!side?'sync':'async'}
     onError={()=>setMobileReady(false)}/>;
   if(!withMobile||!slide.mobileImage||!mobileReady)return image;
   return <picture className="banner-picture">
