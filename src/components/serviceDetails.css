@@ -3,6 +3,11 @@
 .service-detail { padding-bottom:76px; }
 .service-detail .course-page-banner-image { object-position:center 30%; }
 
+/* Banner dividido (degradê e foto em courseDetail.css): ajustes de botões e texto do Banco de Oportunidades. */
+@media (min-width:901px) {
+  .service-detail .is-split .service-hero-actions .button { border-radius:15.5px; }
+  .service-detail .is-split .course-page-lead { max-width:578px; }
+}
 /* Ações no banner */
 .service-hero-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:28px; }
 .service-hero-actions .button,.service-contact-actions .button { min-height:52px; padding:11px 20px; font-size:15px; gap:10px; }

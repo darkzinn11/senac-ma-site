@@ -12,15 +12,15 @@ export const servicePaths = new Set([
 ]);
 const details = {
   '/encaminhamento-ao-mercado-de-trabalho/': {
-    image:'ff2a6.png', focus:'center 45%', half:true, tag:'Empregabilidade',
-    facts:[['Atendimento','Presencial','people'],['Local','São Luís – MA','location'],['Para','Alunos e empresas','briefcase']],
+    // Banner no layout do Figma (node 11123:136): foto na metade direita sob um degradê azul, sem os cards de informação.
+    image:'ff2a6.png', split:true, tag:'Empregabilidade',
     description:'O Banco de Oportunidades aproxima profissionais formados pelo Senac e empresas que procuram pessoas qualificadas.',
     summary:'O serviço oferece orientação profissional aos estudantes e egressos e apoia o recrutamento de candidatos para empresas.',
-    // Mesmas três entradas do site antigo, cada uma com sua página de orientações.
+    // Mesmas três entradas do site antigo, cada uma com sua página de orientações. Fotos do Unsplash (licença livre para uso comercial).
     cards:[
-      {title:'Para empresas',image:'76a19.png',href:'/banco-de-oportunidades-empresas/'},
-      {title:'Para egressos',image:'0d710.png',href:'/banco-de-oportunidades-egressos/'},
-      {title:'Para estudantes',image:'4f438.png',href:'/banco-de-oportunidades-estudantes/'},
+      {title:'Para empresas',image:'banco-empresas.png',href:'/banco-de-oportunidades-empresas/'},
+      {title:'Para egressos',image:'banco-egressos.png',href:'/banco-de-oportunidades-egressos/'},
+      {title:'Para estudantes',image:'banco-estudantes.png',href:'/banco-de-oportunidades-estudantes/'},
     ],
     contact:{title:'Atendimento do Banco',address:'Rua do Passeio, nº 495 – Centro, Bloco A, São Luís – MA',phones:['(98) 3198-1537','(98) 3198-1538'],email:'baopo@ma.senac.br'},
     actions:[{label:'Cadastrar empresa e vaga',href:'https://www.bancodeoportunidade.ma.senac.br/Cadastros/Empresas.aspx',primary:true},{label:'Conhecer nossos cursos',href:links.courses}],
@@ -86,17 +86,17 @@ export default function ServiceDetails({page}) {
       <nav className="inner-breadcrumb" aria-label="Você está aqui">
         <a href={routeHref('/')}>Início</a><ArrowRight2 size={15} variant="Bold" color="currentColor"/><span aria-current="page">{page.title}</span>
       </nav>
-      <div className="course-page-banner">
-        <img className={"course-page-banner-image"+(data.half?" is-half":"")} src={asset(data.image)} style={data.focus?{objectPosition:data.focus}:undefined} alt="" loading="eager" decoding="async"/>
+      <div className={'course-page-banner'+(data.split?' is-split':'')}>
+        <img className="course-page-banner-image" src={asset(data.image)} alt="" loading="eager" decoding="async"/>
         <div className="course-page-hero-copy">
           <div className="course-page-tags"><span className="course-badge">{data.tag}</span></div>
           <h1 className={page.title.length>60?'is-long':undefined}>{page.title}</h1>
           <p className="course-page-lead">{data.description}</p>
-          <ul className="course-page-facts" aria-label="Informações do serviço">
+          {data.facts&&<ul className="course-page-facts" aria-label="Informações do serviço">
             {data.facts.map(([label,value,icon])=>{const FactIcon=FACT_ICONS[icon];return <li className="course-page-fact" key={label}>
               <FactIcon size={22} variant="Bulk" color="currentColor" aria-hidden="true"/><span><small>{label}</small><strong>{value}</strong></span>
             </li>})}
-          </ul>
+          </ul>}
           <div className="service-hero-actions">
             <ActionLink href={main.href} arrow>{main.label}</ActionLink>
             {others[0]&&<a className="button service-hero-secondary" href={others[0].href}>{others[0].label}<ArrowRight size={18} variant="Linear" color="currentColor"/></a>}
