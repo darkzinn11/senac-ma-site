@@ -118,7 +118,7 @@ button { color:inherit; }
 .site-search input { width:100%; min-width:0; border:0; background:transparent; outline:none; font-size:16px; }
 .site-search:focus-within { box-shadow:0 0 0 2px var(--blue); }
 .site-search input::placeholder { color:#878b8f; }
-.student-link { height:44px; min-height:44px; padding:11px; white-space:nowrap; }
+.student-link { height:44px; min-height:44px; padding:11px; white-space:nowrap; color:white; }
 .menu-toggle { display:none; }
 
 .banner-carousel { position:relative; isolation:isolate; }
@@ -666,7 +666,7 @@ svg.icon { display:block; flex-shrink:0; visibility:visible; opacity:1; }
 .button .icon, .course-button .icon, .contact-button .icon { width:18px; height:18px; }
 .button-small .icon { width:17px; height:17px; }
 .site-search button .icon { width:24px; height:24px; color:#004b8d; }
-.student-link .icon { width:21px; height:21px; color:white; }
+.student-link .icon { width:21px; height:21px; color:currentColor; }
 .footer-socials .icon { width:23px; height:23px; color:#f7941f; }
 
 /* Acessibilidade flutuante: fica na parte de baixo da tela para não cobrir as setas do banner principal. */
