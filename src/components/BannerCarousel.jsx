@@ -68,6 +68,9 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
     flushSync(() => setCurrent(indexRef.current + activeDirection.current));
     setOffset(0);
     stage.classList.remove('is-animating');
+    // Força o navegador a aplicar o deslocamento zero ainda sem transição. Sem isso, o requestAnimationFrame abaixo
+    // pode tirar o is-resetting antes do recálculo de estilo e o trilho anima de volta (efeito elástico).
+    void stage.offsetWidth;
     requestAnimationFrame(() => {
       stage.classList.remove('is-resetting');
       const target = pendingTarget.current;
