@@ -1,0 +1,227 @@
+/* Missão e Visão: composição própria com cores, tipografia e superfícies do portal. */
+.mission-page { color:#00284d; }
+.mission-page > .inner-breadcrumb { margin-bottom:22px; }
+.mission-hero {
+  display:grid;
+  grid-template-columns:minmax(0,0.84fr) minmax(0,1.16fr);
+  min-height:440px;
+  overflow:hidden;
+  border-radius:32px;
+  background:#e6f2ff;
+}
+.mission-hero-copy {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0;
+  padding:48px;
+}
+.mission-hero h1 {
+  color:var(--blue);
+  font-size:46px;
+  line-height:1.1;
+  letter-spacing:-.035em;
+  font-weight:800;
+}
+.mission-hero-copy > p {
+  max-width:34ch;
+  margin-top:18px;
+  color:#3e5a71;
+  font-size:18px;
+  line-height:1.6;
+}
+.mission-hero-link {
+  align-self:flex-start;
+  margin-top:24px;
+}
+.mission-hero-photos {
+  display:grid;
+  grid-template-columns:1.65fr 1fr;
+  grid-template-rows:1fr 1fr;
+  min-width:0;
+  min-height:440px;
+  gap:8px;
+  overflow:hidden;
+}
+.mission-hero-photos img { width:100%; height:100%; object-fit:cover; }
+.mission-hero-photos .mission-photo-main { grid-row:1 / 3; object-position:52% center; }
+.mission-hero-photos .mission-photo-side:nth-child(2) { object-position:42% center; }
+.mission-history {
+  display:grid;
+  grid-template-columns:minmax(0,.36fr) minmax(0,.64fr);
+  gap:7%;
+  align-items:start;
+  margin:72px 0;
+}
+.mission-history-dates { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.mission-history-dates p { display:grid; gap:8px; padding:20px; border-radius:22px; background:white; }
+.mission-history-dates strong {
+  color:var(--orange);
+  font-size:56px;
+  line-height:1;
+  letter-spacing:-.06em;
+  font-weight:900;
+}
+.mission-history-dates span { max-width:24ch; color:#53697c; font-size:15px; line-height:1.4; }
+.mission-history-photo { grid-column:1 / -1; margin:0; }
+.mission-history-photo img { width:100%; height:auto; aspect-ratio:3 / 2; object-fit:cover; border-radius:24px; }
+.mission-history-copy.inner-prose { max-width:690px; color:#3e5a71; font-size:16px; line-height:1.75; }
+.mission-history-copy.inner-prose h2 {
+  margin:0 0 22px;
+  color:var(--blue);
+  font-size:32px;
+  line-height:1.2;
+  letter-spacing:-.02em;
+  font-weight:800;
+}
+.mission-history-copy.inner-prose p { max-width:61ch; margin:0 0 22px; }
+.mission-principles { padding:48px; border-radius:32px; background:var(--blue); color:white; }
+.mission-principles > h2 {
+  margin-bottom:36px;
+  font-size:32px;
+  line-height:1.2;
+  letter-spacing:-.02em;
+  font-weight:800;
+}
+.mission-principles-content.inner-prose { color:white; }
+.mission-principles-content.inner-prose .prose-purpose {
+  display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);
+  grid-template-areas:"mission vision" "mission values";
+  gap:16px;
+  margin:0;
+}
+.mission-principles-content.inner-prose .prose-purpose-card,
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao {
+  grid-column:auto;
+  min-width:0;
+  padding:28px;
+  border-radius:24px;
+  background:#00284d;
+  box-shadow:none;
+}
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao {
+  grid-area:mission;
+  display:flex;
+  min-height:310px;
+  flex-direction:column;
+  justify-content:space-between;
+  background:#e6f2ff;
+  color:#00284d;
+}
+.mission-principles-content.inner-prose .prose-purpose-card.is-visao { grid-area:vision; }
+.mission-principles-content.inner-prose .prose-purpose-card.is-valores {
+  grid-area:values;
+  background:white;
+  color:#00284d;
+}
+.mission-principles-content.inner-prose .prose-purpose-card h3,
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao h3 {
+  display:block;
+  margin:0 0 14px;
+  color:var(--orange);
+  font-size:20px;
+  font-weight:800;
+  line-height:1.2;
+  letter-spacing:-.015em;
+  text-transform:none;
+}
+.mission-principles-content.inner-prose .prose-purpose-card h3::before,
+.mission-principles-content.inner-prose .prose-purpose-card h3::after { display:none; }
+.mission-principles-content.inner-prose .prose-purpose-card.is-visao h3,
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao h3,
+.mission-principles-content.inner-prose .prose-purpose-card.is-valores h3 {
+  padding-left:12px;
+  border-left:3px solid var(--orange);
+}
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao h3,
+.mission-principles-content.inner-prose .prose-purpose-card.is-valores h3 {
+  color:var(--blue);
+}
+.mission-principles-content.inner-prose .prose-purpose-card p,
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao p {
+  max-width:33ch;
+  margin:0;
+  color:white;
+  font-size:20px;
+  line-height:1.5;
+  font-weight:700;
+}
+.mission-principles-content.inner-prose .prose-purpose-card.is-missao p {
+  max-width:25ch;
+  color:#00284d;
+  font-size:28px;
+  line-height:1.35;
+}
+.mission-principles-content.inner-prose .prose-purpose-card ul {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.mission-principles-content.inner-prose .prose-purpose-card li {
+  margin:0;
+  padding:10px 14px;
+  border-radius:10px;
+  background:#e6f2ff;
+  color:#00284d;
+  font-size:15px;
+  font-weight:700;
+  line-height:1.25;
+}
+@media(max-width:980px) {
+  .mission-hero { grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr); min-height:420px; }
+  .mission-hero-copy { padding:32px; }
+  .mission-hero h1 { font-size:40px; }
+  .mission-hero-copy > p { font-size:16px; }
+  .mission-hero-photos { min-height:420px; }
+  .mission-history { gap:5%; }
+  .mission-history-dates { grid-template-columns:1fr; }
+  .mission-principles { padding:36px; }
+  .mission-principles-content.inner-prose .prose-purpose { grid-template-columns:1fr 1fr; grid-template-areas:"mission mission" "vision values"; }
+  .mission-principles-content.inner-prose .prose-purpose-card.is-missao { min-height:0; }
+  .mission-principles-content.inner-prose .prose-purpose-card.is-missao p { max-width:34ch; font-size:24px; }
+}
+@media(max-width:767px) {
+  .mission-page > .inner-breadcrumb { margin-bottom:18px; }
+  .mission-hero { display:flex; flex-direction:column; border-radius:26px; }
+  .mission-hero-copy { padding:32px 24px; }
+  .mission-hero h1 { font-size:32px; }
+  .mission-hero-copy > p { max-width:40ch; margin-top:16px; font-size:16px; }
+  .mission-hero-link { margin-top:22px; }
+  .mission-hero-photos { height:320px; min-height:0; }
+  .mission-history { display:flex; flex-direction:column; gap:36px; margin:48px 0; }
+  .mission-history-dates { grid-template-columns:1fr 1fr; gap:16px; width:100%; }
+  .mission-history-photo { grid-column:1 / -1; }
+  .mission-history-dates strong { font-size:52px; }
+  .mission-history-copy.inner-prose h2 { font-size:27px; }
+  .mission-principles { padding:28px 24px; border-radius:26px; }
+  .mission-principles > h2 { margin-bottom:28px; font-size:27px; }
+  .mission-principles-content.inner-prose .prose-purpose { grid-template-columns:1fr; grid-template-areas:"mission" "vision" "values"; gap:12px; }
+  .mission-principles-content.inner-prose .prose-purpose-card { padding:22px; }
+  .mission-principles-content.inner-prose .prose-purpose-card.is-missao p { font-size:20px; }
+  .mission-principles-content.inner-prose .prose-purpose-card p { font-size:18px; }
+  .mission-principles-content.inner-prose .prose-purpose-card h3 { font-size:19px; }
+}
+@media(max-width:560px) {
+  .mission-hero-photos { height:270px; grid-template-columns:1fr; }
+  .mission-photo-main { grid-column:1; }
+  .mission-hero-photos .mission-photo-side { display:none; }
+  .mission-history-dates { gap:12px; }
+  .mission-history-dates p { padding:18px 16px; }
+  .mission-history-dates strong { font-size:40px; }
+  .mission-history-dates span { font-size:14px; }
+  .mission-principles-content.inner-prose .prose-purpose-card.is-valores { grid-column:auto; }
+  .mission-principles-content.inner-prose .prose-purpose-card ul { gap:8px; }
+  .mission-principles-content.inner-prose .prose-purpose-card li { padding:9px 12px; font-size:14px; }
+}
+@media(prefers-reduced-motion:no-preference) {
+  .mission-hero-photos { animation:mission-photo-open 900ms cubic-bezier(.2,.7,.2,1) both; }
+  .mission-hero-photos img { animation:mission-photo-settle 1100ms cubic-bezier(.2,.7,.2,1) both; }
+  .mission-reveal-active { animation:mission-reveal 620ms cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes mission-photo-open { from { clip-path:inset(0 100% 0 0); } to { clip-path:inset(0); } }
+  @keyframes mission-photo-settle { from { transform:scale(1.08); } to { transform:scale(1); } }
+  @keyframes mission-reveal { from { opacity:.68; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+}
