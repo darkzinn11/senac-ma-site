@@ -74,7 +74,7 @@ export function News() {
 }
 export function Notices() {
   return <section className="container section-block" id="editais" aria-labelledby="notices-heading">
-    <SectionHeading id="notices-heading" title="Nossos editais" subtitle="Confira as oportunidades do Senac Maranhão em aberto." />
+    <SectionHeading id="notices-heading" title="Nossos editais" subtitle="Confira as oportunidades do Senac Maranhão em aberto" />
     <div className="notices-grid">{notices.map(item => <PhotoCard key={item.title} item={item} notice />)}</div>
   </section>;
 }
@@ -121,7 +121,7 @@ export function InstitutionalVideo() {
 export function Contact() {
   return <section className="container contact-section section-block" id="contato" aria-labelledby="contact-heading">
     <div><h2 id="contact-heading">Fale conosco</h2>
-      <p>Tire suas dúvidas e encontre o atendimento<br className="desktop-break" /> ideal para o que você precisa.</p>
+      <p>Tire suas dúvidas e encontre o atendimento<br className="desktop-break" /> ideal para o que você precisa</p>
       <ActionLink href={links.contact} className="contact-button" arrow>Entrar em contato</ActionLink>
     </div>
     <img className="contact-logo" src={publicUrl('/assets/logo-branca-senac.svg')} alt="Senac" width="342" height="163" loading="lazy" />

@@ -12,7 +12,7 @@ import { shapeContent } from './contentShape';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
-import { ActionLink } from './Ui';
+import { ActionLink, noFinalPeriod } from './Ui';
 import './portalPages.css';
 import './articlePage.css';
 import './missionPage.css';
@@ -40,7 +40,7 @@ function Intro({page,subtitle,eyebrow}) {
   return <header className="inner-page-heading">
     <Breadcrumb page={page}/>
     <h1>{page.title}</h1>
-    {(subtitle || page.excerpt || page.seoDescription) && <p>{subtitle || page.excerpt || page.seoDescription}</p>}
+    {(subtitle || page.excerpt || page.seoDescription) && <p>{noFinalPeriod(subtitle || page.excerpt || page.seoDescription)}</p>}
   </header>;
 }
 // Imagem de card: se o arquivo ainda não existe no servidor de mídia, cai no pictograma (sem imagem quebrada).
@@ -83,7 +83,7 @@ function UnitListing() {
   const units=useAsync(listUnits,[]);
   return <section className="inner-stack">
     <div className="inner-section-title"><div><h2>Encontre uma unidade</h2>
-      <p>Escolha a unidade e confira estrutura, localização e informações de contato.</p></div></div>
+      <p>Escolha a unidade e confira estrutura, localização e informações de contato</p></div></div>
     {units.status==='loading'&&<p role="status" className="inner-no-results">Carregando unidades…</p>}
     {units.status==='error'&&<p role="alert" className="inner-no-results">Não foi possível carregar a lista de unidades agora.</p>}
     <div className="inner-tile-grid">{(units.data||[]).map(item=><LinkTile item={item} detail key={item.id}/>)}</div>
@@ -124,7 +124,7 @@ function MissionVisionPage({page}) {
     <section className="mission-hero" aria-labelledby="mission-title">
       <div className="mission-hero-copy">
         <h1 id="mission-title">Missão e Visão</h1>
-        <p>Desde 1947, a educação profissional do Senac impulsiona trajetórias e fortalece o comércio no Maranhão.</p>
+        <p>Desde 1947, a educação profissional do Senac impulsiona trajetórias e fortalece o comércio no Maranhão</p>
         <ActionLink className="mission-hero-link" href={dest(links.courses)} arrow>Conheça nossos cursos</ActionLink>
       </div>
       <div className="mission-hero-photos" aria-label="Fotografias de pessoas e atividades do Senac">
@@ -184,11 +184,11 @@ function AdministrationRegionalPage({page}) {
   return <div className="administration-page">
     <Breadcrumb page={page}/>
     <header className="administration-hero">
-      <div><h1>Administração Regional</h1><p>Conheça a composição do Conselho Regional e a estrutura de gestão do Senac no Maranhão.</p></div>
+      <div><h1>Administração Regional</h1><p>Conheça a composição do Conselho Regional e a estrutura de gestão do Senac no Maranhão</p></div>
       <p className="administration-hero-note"><span>Gestão vigente</span><strong>{period}</strong></p>
     </header>
     {council&&<section className="administration-council" aria-labelledby="council-title">
-      <div className="administration-section-heading"><h2 id="council-title">{councilTitle}</h2><p>Representação institucional e participação dos setores que integram o Conselho.</p></div>
+      <div className="administration-section-heading"><h2 id="council-title">{councilTitle}</h2><p>Representação institucional e participação dos setores que integram o Conselho</p></div>
       <div className="administration-council-layout">
         {council.cards[0]&&<article className="administration-president">
           <h3>{council.cards[0].title}</h3>
@@ -205,7 +205,7 @@ function AdministrationRegionalPage({page}) {
       </div>
     </section>}
     {department&&<section className="administration-directory" aria-labelledby="directory-title">
-      <div className="administration-section-heading"><h2 id="directory-title">{department.title}</h2><p>Diretorias, assessorias, núcleos e unidades responsáveis pela gestão regional.</p></div>
+      <div className="administration-section-heading"><h2 id="directory-title">{department.title}</h2><p>Diretorias, assessorias, núcleos e unidades responsáveis pela gestão regional</p></div>
       {department.cards[0]&&<article className="administration-director">
         <div><span>Direção regional</span><h3>{department.cards[0].title}</h3></div><Html html={department.cards[0].html}/>
       </article>}
@@ -303,11 +303,11 @@ function ContactPage({page}) {
   const groups=useMemo(()=>contactGroups(page),[page]);
   const ombudsman=page.links.find(item=>fold(item.label).includes('ouvidoria'));
   return <>
-    <Intro page={page} subtitle="Encontre os canais de atendimento, endereços e contatos das unidades do Senac Maranhão."/>
+    <Intro page={page} subtitle="Encontre os canais de atendimento, endereços e contatos das unidades do Senac Maranhão"/>
     <section className="inner-contact-section" aria-labelledby="contact-units-heading">
       <div className="inner-section-title"><div>
         <h2 id="contact-units-heading">Canais e unidades</h2>
-        <p>Escolha a unidade ou setor que você precisa e consulte as informações de atendimento.</p>
+        <p>Escolha a unidade ou setor que você precisa e consulte as informações de atendimento</p>
       </div></div>
       <div className="inner-contact-grid">
         {groups.map(({title,html})=><article className="inner-contact-card" key={title}>
@@ -321,7 +321,7 @@ function ContactPage({page}) {
     {ombudsman&&<section className="inner-contact-support">
       <div>
         <h2>Ouvidoria Senac</h2>
-        <p>Use a Ouvidoria para registrar solicitações, sugestões, elogios, reclamações ou denúncias.</p>
+        <p>Use a Ouvidoria para registrar solicitações, sugestões, elogios, reclamações ou denúncias</p>
       </div>
       <ActionLink href={ombudsman.href} arrow>Acessar ouvidoria</ActionLink>
     </section>}
@@ -365,7 +365,7 @@ function NewsListing({page}) {
   return <>
     <header className="inner-news-heading">
       <div className="inner-page-heading"><Breadcrumb page={page}/><h1>{page.title}</h1>
-        <p>Notícias e acontecimentos do Senac Maranhão.</p></div>
+        <p>Notícias e acontecimentos do Senac Maranhão</p></div>
       <label className="inner-search"><Search size={20} variant="Linear" color="currentColor"/><input type="search" value={search}
         onChange={e=>setSearch(e.target.value)} placeholder="Buscar notícia" aria-label="Buscar notícia"/></label>
     </header>
@@ -439,7 +439,7 @@ function NoticesPage({kind='psg',heading='Consulte os documentos'}) {
   const list=usePagedList(fetcher,term,18);
   return <section className="inner-stack">
     <div className="inner-section-title"><div><h2>{heading}</h2>
-      <p>Consulte editais, documentos e comunicados disponíveis nesta página.</p></div>
+      <p>Consulte editais, documentos e comunicados disponíveis nesta página</p></div>
       <label className="inner-search"><Search size={20} variant="Linear" color="currentColor"/><input type="search" aria-label="Buscar edital" value={query}
         onChange={e=>setQuery(e.target.value)} placeholder={kind==='results'?'Buscar resultado':'Buscar edital'}/></label>
     </div>
@@ -471,18 +471,18 @@ function NoticeDetailPage({page}) {
       <Breadcrumb page={page}/>
       <span className="notice-detail-type">{typeLabel}</span>
       <h1>{page.title}</h1>
-      {page.excerpt&&<p>{page.excerpt}</p>}
+      {page.excerpt&&<p>{noFinalPeriod(page.excerpt)}</p>}
     </header>
     <div className="notice-detail-layout">
       <article className="notice-detail-main">
         <section className="notice-detail-summary">
           <h2>Informações do {isResult?'resultado':'documento'}</h2>
           {paragraphs.length ? paragraphs.map((block,index)=><p key={index}>{block.text}</p>)
-            : <p>Consulte abaixo os documentos e acessos relacionados a esta publicação{isPsg?' do Programa Senac de Gratuidade':''}.</p>}
+            : <p>Consulte abaixo os documentos e acessos relacionados a esta publicação{isPsg?' do Programa Senac de Gratuidade':''}</p>}
         </section>
         {!!documents.length&&<section className="notice-detail-documents" aria-labelledby="notice-documents-title">
           <div className="notice-detail-section-heading"><div><h2 id="notice-documents-title">Documentos</h2>
-            <p>Acesse os arquivos oficiais relacionados a esta publicação.</p></div></div>
+            <p>Acesse os arquivos oficiais relacionados a esta publicação</p></div></div>
           <div className="notice-document-grid">{documents.map((item,index)=><a href={item.href} className="notice-document-card" key={item.href}>
             <span className="notice-document-icon"><FileText size={25} variant="Bold" color="currentColor"/></span>
             <span className="notice-document-copy"><strong>{item.label||('Documento '+(index+1))}</strong><small>{/\.pdf($|\?)/i.test(item.href)?'Documento oficial em PDF':'Documento oficial'}</small></span>

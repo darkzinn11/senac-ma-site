@@ -72,7 +72,7 @@ export default function SearchResults({query=''}) {
       <a href={routeHref('/')}>Início</a><ArrowRight2 size={15} variant="Bold" color="currentColor"/><span aria-current="page">Pesquisa</span>
     </nav>
     <header className="inner-page-heading">
-      <h1>Pesquisa no site</h1><p>Encontre cursos, notícias e informações do Senac Maranhão.</p>
+      <h1>Pesquisa no site</h1><p>Encontre cursos, notícias e informações do Senac Maranhão</p>
     </header>
     <form className="site-search-page-form" role="search" action="/pesquisa/" method="get">
       <label htmlFor="search-page-input">O que você está procurando?</label>

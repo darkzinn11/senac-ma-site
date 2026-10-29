@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowRight, ArrowRight2, Book1, Briefcase, DocumentText, EmptyWallet, InfoCircle, Monitor, People, Teacher, Location, Call, Sms } from 'iconsax-react';
 import { asset, links } from '../data/content';
 import { routeHref } from '../data/basePath';
-import { ActionLink, PhotoCard } from './Ui';
+import { ActionLink, PhotoCard, noFinalPeriod } from './Ui';
 import './courseDetail.css';
 import './serviceDetails.css';
 
@@ -91,7 +91,7 @@ export default function ServiceDetails({page}) {
         <div className="course-page-hero-copy">
           <div className="course-page-tags"><span className="course-badge">{data.tag}</span></div>
           <h1 className={page.title.length>60?'is-long':undefined}>{page.title}</h1>
-          <p className="course-page-lead">{data.description}</p>
+          <p className="course-page-lead">{noFinalPeriod(data.description)}</p>
           {data.facts&&<ul className="course-page-facts" aria-label="Informações do serviço">
             {data.facts.map(([label,value,icon])=>{const FactIcon=FACT_ICONS[icon];return <li className="course-page-fact" key={label}>
               <FactIcon size={22} variant="Bulk" color="currentColor" aria-hidden="true"/><span><small>{label}</small><strong>{value}</strong></span>

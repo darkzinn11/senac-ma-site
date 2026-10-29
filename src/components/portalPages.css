@@ -225,6 +225,9 @@
 .inner-course-status { display:inline-flex; align-self:flex-start; background:#eaf3fe; color:#004b8d;
   font-size:12px; font-weight:800; padding:6px 11px; border-radius:10.4px; margin:0 0 18px; }
 .inner-course-status.is-past { background:#f0f1f4; color:#576577; }
+/* Mesmo verde da lista "Turmas disponíveis" (.course-offer-status.is-open) e amarelo para turmas em andamento. */
+.inner-course-status.is-open { background:#e3f5e9; color:#1d7a3e; }
+.inner-course-status.is-ongoing { background:#fff3b0; color:#7a5c00; }
 .inner-course-card .course-button { min-height:58px; }
 
 

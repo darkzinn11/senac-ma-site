@@ -36,7 +36,7 @@ export default function QuickAccess() {
     <div className="container">
       <div className="section-heading"><div>
         <h2 id="quick-links-heading">Acesso rápido</h2>
-        <p>Encontre o que você precisa no Senac Maranhão.</p></div>
+        <p>Encontre o que você precisa no Senac Maranhão</p></div>
       </div>
       <div className="quick-links-grid" style={fromApi && shortcuts.length < 5 ? { '--quick-cols':Math.max(shortcuts.length, 1) } : undefined}>
         {loading ? [0,1,2,3,4].map(n => <div className="quick-links-card is-placeholder" key={n} aria-hidden="true" />)

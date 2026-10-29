@@ -3,10 +3,10 @@ import { ArrowRight, Calendar as CalendarDays, CalendarTick, Clock as Clock3, Lo
 import { brl, dateISO } from '../data/courseApi';
 import { routeHref } from '../data/basePath';
 import { courseVisual } from '../data/courseVisuals';
-import { canEnroll, offerSituation, textOf } from '../api/adapters';
+import { canEnroll, offerSituation, situationClass, textOf } from '../api/adapters';
 import { searchCourses } from '../api/courses';
 import useAsync from '../api/useAsync';
-import { Icon } from './Ui';
+import { Icon, noFinalPeriod } from './Ui';
 import './courseDetail.css';
 
 const MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
@@ -93,7 +93,7 @@ function OfferCard({ offer, status }) {
       {start ? <><strong>{start.day}</strong><span>{start.month}</span></> : <span>A confirmar</span>}
     </div>
     <div className="course-offer-main">
-      <span className={'course-offer-status' + (open ? ' is-open' : '')}>{status}</span>
+      <span className={'course-offer-status ' + situationClass(status)}>{status}</span>
       <h3>{offer.unidade || 'Unidade a confirmar'}</h3>
       <ul className="course-offer-meta">
         {offer.localidade && <li><MapPin size={16} variant="Bold" color="currentColor" aria-hidden="true" />{offer.localidade}</li>}
@@ -141,7 +141,7 @@ function RelatedCourses({ course }) {
             {item.carga_horaria && <span><Clock3 size={16} variant="Bold" color="currentColor" />{item.carga_horaria} horas</span>}
             {item.inicio && <span><CalendarDays size={16} variant="Bold" color="currentColor" />{item.inicio}</span>}
           </div>
-          <span className="inner-course-status">{item.situation}</span>
+          <span className={'inner-course-status ' + situationClass(item.situation)}>{item.situation}</span>
           <span className="button course-button">Saiba mais <Icon name="arrow" /></span>
         </div>
       </a>;
@@ -179,10 +179,10 @@ export default function CourseDetail({ course, breadcrumb, image }) {
         <div className="course-page-hero-copy">
           <div className="course-page-tags">
             {course.category && <span className="course-badge">{course.category}</span>}
-            {status && <span className={'course-page-status' + (openOffers.length ? ' is-open' : '')}>{status}</span>}
+            {status && <span className={'course-page-status ' + situationClass(status)}>{status}</span>}
           </div>
           <h1 className={course.title.length > 60 ? 'is-long' : undefined}>{course.title}</h1>
-          {lead && <p className="course-page-lead">{lead}</p>}
+          {lead && <p className="course-page-lead">{noFinalPeriod(lead)}</p>}
           <ul className="course-page-facts" aria-label="Informações do curso">
             <Fact icon={Clock3} label="Carga horária" value={course.workload ? course.workload + ' horas' : null} />
             <Fact icon={Teacher} label="Modalidade" value={course.modality} />

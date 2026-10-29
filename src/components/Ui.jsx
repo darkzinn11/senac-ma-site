@@ -32,9 +32,17 @@ export function ActionLink({ href, children, className = '', arrow = false, ...p
     {children}{arrow && <Icon name="arrow" />}
   </a>;
 }
+// Subtítulo não leva ponto final. Só tira o ponto de uma frase única: texto com mais de uma frase, reticências ou
+// abreviação (etc., Ltda., S.A.) fica como está.
+export function noFinalPeriod(text) {
+  const t = String(text ?? '').trim();
+  if (!/[^.\s]\.$/.test(t)) return t;
+  if (/\b(etc|ltda|s\.a|sr|sra|dr|dra|av|nº)\.$/i.test(t) || /[.!?]\s+\S/.test(t.slice(0, -1))) return t;
+  return t.slice(0, -1);
+}
 export function SectionHeading({ id, title, subtitle, action }) {
   return <div className="section-heading">
-    <div><h2 id={id}>{title}</h2>{subtitle && <p>{subtitle}</p>}</div>
+    <div><h2 id={id}>{title}</h2>{subtitle && <p>{noFinalPeriod(subtitle)}</p>}</div>
     {action && <ActionLink href={action.href}>{action.label}</ActionLink>}
   </div>;
 }

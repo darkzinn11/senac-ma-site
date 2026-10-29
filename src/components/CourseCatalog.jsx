@@ -3,6 +3,7 @@ import { ArrowRight, ArrowLeft2 as ChevronLeft, ArrowRight2 as ChevronRight, Ele
 import { courseVisual } from '../data/courseVisuals';
 import { loadCategories, loadOffers, searchCourses } from '../api/courses';
 import { useSiteData } from '../api/SiteData';
+import { situationClass } from '../api/adapters';
 import { Icon } from './Ui';
 const fold=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 // A API só expõe turmas abertas ou programadas; turmas encerradas não são públicas.
@@ -78,7 +79,7 @@ export default function CourseCatalog() {
   return <section className="inner-stack" aria-labelledby="catalog-title">
     <div className="inner-section-title"><div>
       <h1 id="catalog-title">Encontre o curso ideal</h1>
-      <p>Consulte cursos, datas, valores e turmas disponíveis no Senac Maranhão.</p>
+      <p>Consulte cursos, datas, valores e turmas disponíveis no Senac Maranhão</p>
     </div></div>
     <div className="inner-catalog-layout">
       <aside className="inner-catalog-sidebar" aria-label="Filtros de cursos">
@@ -130,7 +131,7 @@ export default function CourseCatalog() {
               {item.carga_horaria&&<span><Clock3 size={16} variant="Bold" color="currentColor"/>{item.carga_horaria} horas</span>}
               {item.inicio&&<span><CalendarDays size={16} variant="Bold" color="currentColor"/>{item.inicio}</span>}
             </div>
-            <span className={'inner-course-status '+(status==='Encerrada'?'is-past':'')}>{status}</span>
+            <span className={'inner-course-status '+situationClass(status)}>{status}</span>
             <span className="button course-button">Saiba mais <Icon name="arrow"/></span>
           </div>
         </a>;
