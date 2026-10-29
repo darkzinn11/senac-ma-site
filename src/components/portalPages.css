@@ -228,6 +228,7 @@
 /* Mesmo verde da lista "Turmas disponíveis" (.course-offer-status.is-open) e amarelo para turmas em andamento. */
 .inner-course-status.is-open { background:#e3f5e9; color:#1d7a3e; }
 .inner-course-status.is-ongoing { background:#fff3b0; color:#7a5c00; }
+.inner-course-status.is-tbd { background:#fde8e8; color:#b42318; }
 .inner-course-card .course-button { min-height:58px; }
 
 

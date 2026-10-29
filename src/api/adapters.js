@@ -71,8 +71,8 @@ export function adaptOffer(offer) {
 export const canEnroll = offer => offer.apiStatus === 'open' && Boolean(offer.link_para_matricula);
 export const offerSituation = offer => (canEnroll(offer) ? 'Matrículas abertas' : courseStatus(offer));
 // Cor da etiqueta de situação (uma regra só, usada no catálogo, na página do curso e na lista de turmas):
-// matrículas abertas = verde, em andamento = amarelo, encerrada = cinza; as demais seguem o estilo padrão.
-export const situationClass = situation => ({ 'Matrículas abertas':'is-open', 'Em andamento':'is-ongoing', 'Encerrada':'is-past' }[situation] || '');
+// matrículas abertas = verde, em andamento = amarelo, a confirmar = vermelho, encerrada = cinza; as demais seguem o estilo padrão.
+export const situationClass = situation => ({ 'Matrículas abertas':'is-open', 'Em andamento':'is-ongoing', 'A confirmar':'is-tbd', 'Encerrada':'is-past' }[situation] || '');
 // Situação do curso a partir das turmas que a API expõe (só abertas/programadas; as encerradas não são públicas).
 export function courseSituation(offers) {
   const states = (offers || []).map(offerSituation);
