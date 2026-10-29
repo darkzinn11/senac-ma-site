@@ -37,6 +37,11 @@ function SlideArtwork({slide,side,variant}) {
   </picture>;
 }
 
+// Passagem automática: a cada AUTOPLAY_MS o carrossel avança sozinho. Para por completo quando o visitante prefere menos
+// movimento, e fica em espera enquanto o mouse está sobre o banner, há foco nele (teclado), a aba está oculta, ou há
+// arrasto/animação em curso. Qualquer troca manual reinicia a contagem (o efeito depende do slide atual).
+const AUTOPLAY_MS = 6000;
+
 export default function BannerCarousel({ slides, label, variant = 'hero', initial = 0 }) {
   const [index, setIndex] = useState(initial);
   const indexRef = useRef(initial);
@@ -57,6 +62,8 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
   const setOffset = (value) => stageRef.current?.style.setProperty('--slide-offset', value + 'px');
   const stepSize = () => stageRef.current.clientWidth + (window.innerWidth <= 767 ? 12 : 29);
   const activeDirection = useRef(0);
+  const hovering = useRef(false);
+  const focused = useRef(false);
   function finish() {
     if (!animating.current) return;
     animating.current = false;
@@ -159,6 +166,14 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
     stage.addEventListener('wheel', wheel, { passive:false });
     return () => { stage.removeEventListener('wheel', wheel); clearTimeout(transitionTimer.current); };
   }, []);
+  useEffect(() => {
+    if (slides.length < 2 || reducedMotion()) return undefined;
+    const id = setInterval(() => {
+      if (document.hidden || hovering.current || focused.current || animating.current || pointer.current || pendingTarget.current !== null) return;
+      changeRef.current?.(1);
+    }, AUTOPLAY_MS);
+    return () => clearInterval(id);
+  }, [slides.length, index]);
   function contents(slide, side = false) {
     return <>
       <SlideArtwork key={slide.id||slide.image} slide={slide} side={side} variant={variant}/>
@@ -169,7 +184,9 @@ export default function BannerCarousel({ slides, label, variant = 'hero', initia
         </div></>}
     </>;
   }
-  return <section className={'banner-carousel ' + variant + '-carousel'} aria-roledescription="carrossel" aria-label={label}>
+  return <section className={'banner-carousel ' + variant + '-carousel'} aria-roledescription="carrossel" aria-label={label}
+    onMouseEnter={() => { hovering.current = true; }} onMouseLeave={() => { hovering.current = false; }}
+    onFocus={() => { focused.current = true; }} onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget)) focused.current = false; }}>
     <div className="banner-stage" ref={stageRef} onPointerDown={start} onPointerMove={move}
       onPointerUp={end} onPointerCancel={cancel}>
       <div className="banner-track"
