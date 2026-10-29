@@ -27,9 +27,9 @@ export function Institutional() {
   // Carrega do admin (aba "Carrossel institucional"). API fora do ar: slides de reserva. Lista vazia: o admin não
   // quer banners aqui, então o bloco some. Enquanto carrega, reserva a altura para evitar salto de layout.
   if (banners.status === 'loading') return <div className="section-block container institutional-placeholder" aria-hidden="true" />;
-  // O banner do Banco de Oportunidades segue o layout do Figma (foto + logo e texto em HTML), no lugar da arte com texto embutido.
-  const slides = banners.status === 'error' ? fallback
-    : banners.data?.map(slide => slide.href === links.opportunities ? { ...opportunitiesSlide, id:slide.id, newTab:slide.newTab } : slide);
+  // O admin manda em TODOS os slides (imagem, link e texto alternativo). O layout do Figma do Banco de Oportunidades
+  // (foto + logo e texto em HTML) só entra como reserva, quando a API está fora do ar (veja `fallback`).
+  const slides = banners.status === 'error' ? fallback : banners.data;
   if (!slides?.length) return null;
   return <div className="section-block container"><BannerCarousel slides={slides} variant="institutional" label="Serviços institucionais" /></div>;
 }
