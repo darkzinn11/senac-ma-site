@@ -15,17 +15,21 @@ export function Services() {
     <div className="services-grid">{services.map(item => <PhotoCard key={item.title} item={item} />)}</div>
   </section>;
 }
+const opportunitiesSlide = { image:'a7d1b.png', title:'Conheça o banco de oportunidades', alt:'Conheça o Banco de Oportunidades do Senac Maranhão.',
+  href:links.opportunities, description:'O Banco de Oportunidades tem como objetivo realizar a intermediação entre os alunos egressos do Senac e as oportunidades existentes no mundo do trabalho.' };
 export function Institutional() {
   const banners = useAsync(() => loadBanners('institutional'), []);
   const fallback = [
     { image:'5e143.png', title:'Ouvidoria Senac', alt:'Ouvidoria Senac — acesse nosso canal de atendimento',
       href:links.ombudsman, description:'A Ouvidoria é um canal de comunicação direto e eficiente para o recebimento de reclamações, solicitações, elogios, sugestões e denúncias.' },
-    { image:'b86aa.png', alt:'Conheça o Banco de Oportunidades do Senac Maranhão.', href:links.opportunities },
+    opportunitiesSlide,
   ];
   // Carrega do admin (aba "Carrossel institucional"). API fora do ar: slides de reserva. Lista vazia: o admin não
   // quer banners aqui, então o bloco some. Enquanto carrega, reserva a altura para evitar salto de layout.
   if (banners.status === 'loading') return <div className="section-block container institutional-placeholder" aria-hidden="true" />;
-  const slides = banners.status === 'error' ? fallback : banners.data;
+  // O banner do Banco de Oportunidades segue o layout do Figma (foto + logo e texto em HTML), no lugar da arte com texto embutido.
+  const slides = banners.status === 'error' ? fallback
+    : banners.data?.map(slide => slide.href === links.opportunities ? { ...opportunitiesSlide, id:slide.id, newTab:slide.newTab } : slide);
   if (!slides?.length) return null;
   return <div className="section-block container"><BannerCarousel slides={slides} variant="institutional" label="Serviços institucionais" /></div>;
 }

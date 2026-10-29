@@ -26,6 +26,22 @@ function applyTextScale(scale){
   });
 }
 
+// VLibras 7.x: o painel fica no shadow DOM de #vlibras-app-root; fechado, o #vlibras-app recebe o atributo inert.
+const vlibrasShadow=()=>document.getElementById('vlibras-app-root')?.shadowRoot;
+const vlibrasIsOpen=()=>{const app=vlibrasShadow()?.getElementById('vlibras-app');return Boolean(app&&!app.hasAttribute('inert'))};
+// Os ícones do painel (inclusive o X de fechar) são máscaras CSS sem o prefixo -webkit-, que o Safari do iPhone exige:
+// sem isso o botão Fechar fica invisível. O painel também é limitado à largura da tela.
+const VLIBRAS_FIX='i[style*="--icon"]{-webkit-mask-image:var(--icon);-webkit-mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat}'
+  +'#vlibras-app{max-width:calc(100vw - 16px)}';
+function patchVlibrasApp(){
+  const shadow=vlibrasShadow();
+  if(!shadow)return false;
+  if(!shadow.getElementById('senac-vlibras-fix')){
+    const style=document.createElement('style');style.id='senac-vlibras-fix';style.textContent=VLIBRAS_FIX;shadow.appendChild(style);
+  }
+  return true;
+}
+
 export default function AccessibilityMenu(){
   const [open,setOpen]=useState(false);
   const [prefs,setPrefs]=useState(readPrefs);
@@ -44,13 +60,32 @@ export default function AccessibilityMenu(){
   useEffect(()=>{
     const onKey=e=>{if(e.key==='Escape')setOpen(false)};
     window.addEventListener('keydown',onKey);
+    // O botão do VLibras fica num shadow DOM fixado no meio da tela, onde cobre as setas do banner
+    // principal; um estilo dentro do shadow root o leva para baixo, na altura do botão de acessibilidade.
+    const placeVlibras=()=>{
+      const root=document.getElementById('vlibras-access-wrapper')?.shadowRoot;
+      if(!root)return false;
+      if(!root.getElementById('senac-vlibras-position')){
+        const style=document.createElement('style');style.id='senac-vlibras-position';
+        style.textContent='#vlibras-access{top:auto;bottom:37px}@media (max-width:640px){#vlibras-access{bottom:22px}}';
+        root.appendChild(style);
+      }
+      return true;
+    };
+    // O painel do VLibras só é criado quando aberto pela primeira vez (ou ao recarregar, se ficou aberto).
+    let placed=placeVlibras(),patched=patchVlibrasApp();
+    const vlibrasObserver=new MutationObserver(()=>{
+      placed=placed||placeVlibras();patched=patched||patchVlibrasApp();
+      if(placed&&patched)vlibrasObserver.disconnect();
+    });
+    if(!placed||!patched)vlibrasObserver.observe(document.body,{childList:true});
     if(!document.getElementById('vlibras-plugin-script')){
       const script=document.createElement('script');
       script.id='vlibras-plugin-script';script.src='https://vlibras.gov.br/app/vlibras-plugin.js';script.async=true;
       script.onload=()=>{if(window.VLibras?.Widget&&!window.__senacVlibras)window.__senacVlibras=new window.VLibras.Widget('https://vlibras.gov.br/app')};
       document.body.appendChild(script);
     }else if(window.VLibras?.Widget&&!window.__senacVlibras) window.__senacVlibras=new window.VLibras.Widget('https://vlibras.gov.br/app');
-    return()=>window.removeEventListener('keydown',onKey);
+    return()=>{window.removeEventListener('keydown',onKey);vlibrasObserver.disconnect()};
   },[]);
 
   const toggle=key=>setPrefs(value=>({...value,[key]:!value[key]}));
@@ -61,7 +96,15 @@ export default function AccessibilityMenu(){
   const row=(label,Icon,onClick,active=false,extra='')=><button type="button" className={'a11y-menu-row '+(active?'is-active':'')} aria-pressed={active||undefined} onClick={onClick}>
     <Icon size={19} variant="Bold" color="currentColor" aria-hidden="true"/><span>{label}</span>{extra&&<small>{extra}</small>}
   </button>;
-  const openVlibras=()=>{document.querySelector('[vw-access-button]')?.click();setOpen(false)};
+  // Abre o VLibras ou, se já estiver aberto, fecha: uma saída garantida mesmo se o X do painel não aparecer.
+  const [vlibrasOpen,setVlibrasOpen]=useState(false);
+  useEffect(()=>{if(open)setVlibrasOpen(vlibrasIsOpen())},[open]);
+  const toggleVlibras=()=>{
+    if(vlibrasIsOpen())vlibrasShadow()?.querySelector('button[aria-label="Fechar"]')?.click();
+    else if(window.VLibrasWidget?.open)window.VLibrasWidget.open();
+    else document.getElementById('vlibras-access-wrapper')?.shadowRoot?.getElementById('vlibras-button')?.click();
+    setOpen(false);
+  };
   const reset=()=>{setPrefs(defaults);applyTextScale(1)};
   return <>
     <div className="accessibility-widget">
@@ -81,8 +124,8 @@ export default function AccessibilityMenu(){
           {row('Luz de Cor de Fundo',Sun,()=>toggle('background'),prefs.background)}
           {row('Links Sublinhados',Link,()=>toggle('links'),prefs.links)}
           {row('Fonte Legível',Text,()=>toggle('legible'),prefs.legible)}
-          <button type="button" className="a11y-menu-row a11y-vlibras-row" onClick={openVlibras}>
-            <AccessibilityMark/><span>VLibras</span><small>Libras</small>
+          <button type="button" className="a11y-menu-row a11y-vlibras-row" onClick={toggleVlibras}>
+            <AccessibilityMark/><span>{vlibrasOpen?'Fechar VLibras':'VLibras'}</span><small>Libras</small>
           </button>
         </div>
         <button type="button" className="accessibility-reset" onClick={reset}>

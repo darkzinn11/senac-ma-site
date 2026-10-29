@@ -16,6 +16,7 @@ export const links = {
   ead: '/cursos-a-distancia/',
   psg: '/psg/',
   notices: '/editais-psg/',
+  psgSignup: 'https://psg.ma.senac.br/',
   results: '/resultados-psg/',
   tenders: '/licitacoes-2016/',
   news: '/noticias/',

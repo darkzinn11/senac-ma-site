@@ -7,7 +7,19 @@ import { Icon } from './Ui';
 const fold=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 // A API só expõe turmas abertas ou programadas; turmas encerradas não são públicas.
 const SITUATIONS=['Matrículas abertas','Programada','Em andamento','A confirmar'];
-const PAGE_SIZE=6;
+// Telas largas (1600px+) mostram 4 cursos por linha; a página tem 2 linhas completas em qualquer largura.
+const WIDE_GRID='(min-width:1600px)';
+function usePageSize() {
+  const query=typeof window==='undefined'?null:window.matchMedia(WIDE_GRID);
+  const [wide,setWide]=useState(()=>Boolean(query?.matches));
+  useEffect(()=>{
+    if(!query)return undefined;
+    const update=()=>setWide(query.matches);
+    query.addEventListener('change',update);
+    return ()=>query.removeEventListener('change',update);
+  },[]);
+  return wide?8:6;
+}
 function paginationNumbers(current,total) {
   if (total<=7) return Array.from({length:total},(_,i)=>i+1);
   const start=Math.max(2,Math.min(current-1,total-3));
@@ -26,6 +38,7 @@ export default function CourseCatalog() {
   const [query,setQuery]=useState(''),[city,setCity]=useState('');
   const [segment,setSegment]=useState(''),[period,setPeriod]=useState('');
   const [page,setPage]=useState(1);
+  const PAGE_SIZE=usePageSize();
   const [view,setView]=useState('grid');
   const resultsRef=useRef(null);
   const { units }=useSiteData();

@@ -56,6 +56,24 @@ export default function Header() {
     return () => window.removeEventListener('scroll', update);
   }, []);
   function toggleMenu() { setMenu(!menu); setDropdown(null); setOpenSub(null); }
+  // No desktop com mouse, o submenu abre no hover. O fechamento espera um pouco para o cursor
+  // conseguir atravessar o espaço entre o item e a lista de opções.
+  const hoverTimer = useRef(null);
+  const hovered = useRef(null);
+  const canHover = () => window.matchMedia('(hover:hover) and (min-width:1101px)').matches;
+  function hoverOpen(i) {
+    if (!canHover()) return;
+    clearTimeout(hoverTimer.current);
+    hovered.current = i;
+    if (dropdown !== i) { setDropdown(i); setOpenSub(null); }
+  }
+  function hoverClose() {
+    if (!canHover()) return;
+    clearTimeout(hoverTimer.current);
+    hovered.current = null;
+    hoverTimer.current = setTimeout(() => { setDropdown(null); setOpenSub(null); }, 180);
+  }
+  useEffect(() => () => clearTimeout(hoverTimer.current), []);
   return <>
     <div className="utility-bar">
       <div className="container utility-content">
@@ -73,9 +91,10 @@ export default function Header() {
         <img src={asset('64710.svg')} alt="Senac" width="84" height="49" />
       </a>
       <nav className={'main-navigation' + (menu ? ' is-open' : '')} id="main-navigation" aria-label="Navegação principal">
-        {groups.map((group, i) => <div className="nav-group" key={group.label}>
+        {groups.map((group, i) => <div className="nav-group" key={group.label}
+          onMouseEnter={() => hoverOpen(i)} onMouseLeave={hoverClose}>
           <button className="nav-trigger" aria-expanded={dropdown === i} aria-controls={'nav-group-' + i}
-            onClick={() => { setDropdown(dropdown === i ? null : i); setOpenSub(null); }}>
+            onClick={() => { if (hovered.current === i && dropdown === i) return; setDropdown(dropdown === i ? null : i); setOpenSub(null); }}>
             {group.label}<Icon name="chevron" />
           </button>
           <ul id={'nav-group-' + i} className="nav-dropdown" hidden={dropdown !== i}>

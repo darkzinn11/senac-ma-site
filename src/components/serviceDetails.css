@@ -1,74 +1,71 @@
+/* Páginas de serviço (Banco de Oportunidades, Cadastro de interesse, EAD, PSG): usam o layout da página do curso
+   (courseDetail.css) e acrescentam só as ações do banner, as etapas e o card de atendimento. */
 .service-detail { padding-bottom:76px; }
-.service-detail-hero { display:grid; grid-template-columns:minmax(0,1.12fr) minmax(320px,.88fr); gap:48px; align-items:start; margin-top:24px; }
-.service-hero-copy { min-width:0; }
-.service-hero-copy h1 { max-width:680px; color:#004b8d; font-size:clamp(34px,3.45vw,48px); font-weight:900; letter-spacing:-.04em; line-height:1.08; overflow-wrap:anywhere; }
-.service-hero-copy > p { margin-top:22px; max-width:620px; font-size:17px; line-height:1.62; color:#52677c; }
-.service-hero-image { margin:0; overflow:hidden; border-radius:30px; background:#e4effa; }
-.service-hero-image img { width:100%; aspect-ratio:1/1; object-fit:cover; display:block; }
-.service-hero-actions { display:flex; flex-wrap:wrap; gap:12px 20px; align-items:center; margin-top:24px; }
-.service-hero-actions .button { min-height:53px; padding:11px 20px; font-size:15px; }
-.service-secondary-action { min-height:48px; display:inline-flex; gap:9px; align-items:center; justify-content:center; padding:10px 16px;
-  border:1px solid #004b8d; border-radius:14px; color:#004b8d; background:transparent; font-size:14px; font-weight:800;
-  transition:background-color .2s ease,color .2s ease,transform .2s ease; }
-.service-secondary-action svg { flex:none; }
-.service-main-layout { margin-top:28px; display:grid; grid-template-columns:minmax(0,1fr) 304px; gap:56px; align-items:start; }
-.service-main-copy { min-width:0; }
-.service-intro h2,.service-steps h2,.service-contact h2 { font-size:clamp(25px,2.8vw,32px); line-height:1.25; color:#004b8d; margin:0 0 16px; font-weight:900; }
-.service-intro { margin-top:30px; }
-.service-intro h2 { font-size:27px; margin-bottom:13px; }
-.service-intro p { font-size:16px; line-height:1.75; color:#52677c; max-width:none; }
-.service-steps { margin-top:0; }
-.service-steps-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:17px; }
-.service-step { display:flex; flex-direction:column; min-width:0; background:white; padding:25px; border-radius:25px; box-shadow:var(--shadow); }
-.service-step-icon { width:44px; height:44px; display:grid; place-items:center; color:#004b8d; }
-.service-step h3 { margin:16px 0 9px; color:#004b8d; font-size:20px; font-weight:800; line-height:1.35; }
-.service-step p { color:#52677c; font-size:15px; line-height:1.7; overflow-wrap:anywhere; }
-.service-text-link { min-height:42px; display:inline-flex; gap:9px; align-items:center; align-self:start; justify-content:center;
-  margin-top:19px; padding:9px 13px; border:1px solid #f7941f; border-radius:13px; color:#dd7000; background:transparent;
-  font-weight:800; font-size:14px; transition:background-color .2s ease,color .2s ease,transform .2s ease; }
-.service-text-link svg { flex:none; }
-.service-notice { display:flex; align-items:start; gap:13px; margin-top:26px; padding:23px; border-radius:20px; color:#004b8d; background:#e6f2ff; }
-.service-notice > svg { flex:none; }
-.service-notice p { font-size:15px; line-height:1.65; }
-.service-contact { margin-top:45px; }
-.service-contact-lines { display:grid; gap:12px; padding:24px; border-radius:24px; background:white; }
-.service-contact-lines p { display:flex; align-items:start; gap:12px; color:#52677c; font-size:15px; line-height:1.6; overflow-wrap:anywhere; }
-.service-contact-lines svg { flex:none; color:#f7941f; }
-.service-contact-lines a { color:#004b8d; font-weight:700; text-decoration:none; }
-.service-side { min-width:0; align-self:start; background:#e6f2ff; padding:30px; border-radius:26px; }
-.service-side h2 { color:#004b8d; font-size:25px; font-weight:800; line-height:1.25; }
-.service-side > p { color:#3e5a71; margin:12px 0 23px; font-size:15px; line-height:1.6; }
-.service-side-actions { display:grid; gap:10px; }
-.service-side-actions .button { width:100%; min-height:50px; font-size:14px; padding:10px 13px; text-align:center; }
-.service-side-link { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:10px 12px; font-size:14px; font-weight:800; color:#004b8d; background:white; border-radius:14px; }
-.service-side-link svg { flex:none; }
+.service-detail .course-page-banner-image { object-position:center 30%; }
+
+/* Banner dividido (degradê e foto em courseDetail.css): ajustes de botões e texto do Banco de Oportunidades. */
+@media (min-width:901px) {
+  .service-detail .is-split .service-hero-actions .button { border-radius:15.5px; }
+  .service-detail .is-split .course-page-lead { max-width:578px; }
+}
+/* Ações no banner */
+.service-hero-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:28px; }
+.service-hero-actions .button,.service-contact-actions .button { min-height:52px; padding:11px 20px; font-size:15px; gap:10px; }
+.button.service-hero-secondary { background:white; color:var(--blue); }
+.button.service-hero-secondary.is-light { background:#eaf3fb; }
+.button.service-hero-secondary svg { transition:transform .25s ease; }
+/* Hover igual ao do botão laranja (sobe 2px e a seta avança), só escurecendo o próprio fundo em vez de ficar laranja. */
 @media (hover:hover) {
-  .service-secondary-action:hover { transform:translateY(-2px); background:#e9f3fc; color:#003d75; }
-  .service-text-link:hover { transform:translateY(-2px); background:#fff3e5; color:#c86600; }
-  .service-side-link:hover { background:#f8fbff; }
+  .button.service-hero-secondary:not(:disabled):hover { background-color:#eaf3fb; color:var(--blue); }
+  .button.service-hero-secondary.is-light:not(:disabled):hover { background-color:#dcebf9; }
+  .button.service-hero-secondary:not(:disabled):hover svg { transform:translateX(4px); }
+}
+
+/* Entradas com foto (Banco de Oportunidades): mesmo card da home, três por linha. */
+.service-photo-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:22px; }
+.service-photo-grid .photo-card { height:400px; }
+/* Etapas: três em uma linha; quatro em 2×2 (sem card sobrando sozinho). */
+.service-steps-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:22px; }
+.service-steps-grid.is-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.service-step { display:flex; flex-direction:column; min-width:0; padding:24px; background:white; border-radius:22px; box-shadow:var(--shadow); }
+.service-step-icon { width:48px; height:48px; display:grid; place-items:center; border-radius:14px; background:#fff1dd; color:var(--orange); }
+.service-step h3 { margin:16px 0 8px; color:var(--blue); font-size:19px; font-weight:800; line-height:1.3; }
+.service-step p { color:#3e5a71; font-size:15px; line-height:1.65; overflow-wrap:anywhere; }
+.service-text-link { display:inline-flex; gap:8px; align-items:center; align-self:start; margin-top:auto; padding-top:18px;
+  color:#dd7000; font-weight:800; font-size:14px; }
+.service-text-link svg { flex:none; transition:transform .2s ease; }
+.service-notice { display:flex; align-items:start; gap:12px; margin-top:16px; padding:20px 22px; border-radius:20px; color:var(--blue); background:#e6f2ff; }
+.service-notice > svg { flex:none; color:var(--orange); }
+.service-notice p { font-size:15px; line-height:1.6; }
+
+/* Atendimento: mesmo card branco das turmas do curso, com contato à esquerda e ações à direita. */
+.service-contact-card { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px 40px; margin-top:22px;
+  padding:28px; background:white; border-radius:22px; box-shadow:var(--shadow); }
+.service-contact-copy { flex:1 1 420px; min-width:0; }
+.service-contact-copy > p { max-width:62ch; color:#3e5a71; font-size:16px; line-height:1.65; }
+.service-contact-lines { list-style:none; display:flex; flex-wrap:wrap; gap:10px 24px; margin:16px 0 0; padding:0; }
+.service-contact-lines li { display:flex; align-items:center; gap:8px; color:#3e5a71; font-size:15px; line-height:1.45; overflow-wrap:anywhere; }
+.service-contact-lines svg { flex:none; color:var(--orange); }
+.service-contact-lines a { color:var(--blue); font-weight:700; }
+.service-contact-actions { display:flex; flex-direction:column; gap:10px; flex:0 1 auto; }
+
+@media (hover:hover) {
+  .service-text-link:hover svg { transform:translateX(3px); }
 }
 @media (max-width:1100px) {
-  .service-detail-hero { grid-template-columns:minmax(0,1fr) minmax(280px,.8fr); gap:30px; }
-  .service-hero-copy h1 { font-size:clamp(32px,4.2vw,40px); }
-  .service-main-layout { grid-template-columns:minmax(0,1fr) 260px; gap:30px; }
-  .service-steps-grid { grid-template-columns:1fr; }
-  .service-side { padding:24px; }
+  .service-photo-grid .photo-card { height:340px; }
+  .service-steps-grid.is-3 { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:767px) {
+  .service-photo-grid { grid-template-columns:1fr; gap:14px; }
+  .service-photo-grid .photo-card { height:300px; }
   .service-detail { padding-bottom:48px; }
-  .service-detail-hero { grid-template-columns:1fr; gap:24px; }
-  .service-hero-copy h1 { font-size:clamp(30px,7vw,42px); }
-  .service-hero-copy > p { font-size:16px; margin-top:14px; }
-  .service-hero-image img { aspect-ratio:16/10; }
-  .service-main-layout { display:flex; flex-direction:column; gap:30px; margin-top:42px; }
-  .service-main-copy,.service-side { width:100%; }
-  .service-steps { margin-top:0; }
-  .service-step { padding:22px; }
-  .service-intro p { font-size:15px; }
-  .service-side { padding:24px; }
+  .service-steps-grid,.service-steps-grid.is-3 { grid-template-columns:1fr; }
+  .service-step { padding:20px; }
+  .service-contact-card { padding:22px; }
+  .service-contact-actions { width:100%; }
 }
 @media (max-width:460px) {
   .service-hero-actions { align-items:stretch; flex-direction:column; }
-  .service-hero-actions .button { width:100%; }
-  .service-hero-image { border-radius:23px; }
+  .service-hero-actions .button,.service-contact-actions .button { width:100%; }
 }

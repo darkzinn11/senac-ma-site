@@ -1,0 +1,261 @@
+.administration-page { color:#00284d; }
+.administration-page > .inner-breadcrumb { margin-bottom:22px; }
+.administration-hero {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:40px;
+  align-items:end;
+  padding:44px 48px;
+  border-radius:32px;
+  background:var(--blue);
+  color:white;
+}
+.administration-hero h1 {
+  margin:0;
+  font-size:56px;
+  line-height:1.08;
+  letter-spacing:-.035em;
+  font-weight:900;
+}
+.administration-hero > div > p {
+  max-width:58ch;
+  margin:18px 0 0;
+  color:#d9eaff;
+  font-size:18px;
+  line-height:1.55;
+}
+.administration-hero-note {
+  display:grid;
+  gap:4px;
+  min-width:210px;
+  margin:0;
+  padding:20px 24px;
+  border-radius:20px;
+  background:#00284d;
+}
+.administration-hero-note span { color:#bcd9f5; font-size:14px; font-weight:700; }
+.administration-hero-note strong { color:var(--orange); font-size:25px; line-height:1.15; }
+.administration-council,.administration-directory { margin-top:72px; }
+.administration-section-heading {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(300px,.65fr);
+  gap:40px;
+  align-items:end;
+  margin-bottom:28px;
+}
+.administration-section-heading h2 {
+  max-width:24ch;
+  margin:0;
+  color:var(--blue);
+  font-size:32px;
+  line-height:1.18;
+  letter-spacing:-.02em;
+  font-weight:900;
+}
+.administration-section-heading p {
+  max-width:52ch;
+  margin:0;
+  color:#3e5a71;
+  font-size:16px;
+  line-height:1.6;
+}
+.administration-council-layout {
+  display:grid;
+  grid-template-columns:minmax(250px,.34fr) minmax(0,.66fr);
+  gap:16px;
+  padding:16px;
+  border-radius:32px;
+  background:var(--blue);
+}
+.administration-president {
+  display:flex;
+  min-height:100%;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:30px;
+  border-radius:24px;
+  background:#00284d;
+  color:white;
+}
+.administration-president h3 {
+  margin:0 0 28px;
+  padding-left:12px;
+  border-left:3px solid var(--orange);
+  color:var(--orange);
+  font-size:18px;
+  line-height:1.25;
+}
+.administration-president-photo {
+  width:100%;
+  margin:0 0 28px;
+  overflow:hidden;
+  border-radius:18px;
+  background:#e6f2ff;
+  aspect-ratio:4 / 5;
+}
+.administration-president-photo img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:38% center;
+}
+.administration-president .inner-prose ul { margin:0; padding:0; list-style:none; }
+.administration-president .inner-prose li {
+  margin:0;
+  color:white;
+  font-size:24px;
+  line-height:1.35;
+  font-weight:800;
+}
+.administration-representatives {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px 28px;
+  padding:26px;
+  border-radius:24px;
+  background:white;
+}
+.administration-representative { min-width:0; padding:14px 0; }
+.administration-representative.is-large {
+  grid-column:1 / -1;
+  padding:22px;
+  border-radius:18px;
+  background:#e6f2ff;
+}
+.administration-representative h3 {
+  max-width:42ch;
+  margin:0 0 12px;
+  padding-left:11px;
+  border-left:3px solid var(--orange);
+  color:var(--blue);
+  font-size:15px;
+  line-height:1.35;
+  font-weight:800;
+}
+.administration-representative .inner-prose ul {
+  display:grid;
+  gap:8px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+.administration-representative.is-large .inner-prose ul { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 26px; }
+.administration-representative .inner-prose li {
+  position:relative;
+  margin:0;
+  padding-left:14px;
+  color:#294861;
+  font-size:16px;
+  line-height:1.45;
+}
+.administration-representative .inner-prose li::before {
+  content:"";
+  position:absolute;
+  left:0;
+  top:.58em;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--orange);
+}
+.administration-directory { padding-top:20px; }
+.administration-director {
+  display:grid;
+  grid-template-columns:minmax(0,.75fr) minmax(280px,.45fr);
+  gap:32px;
+  align-items:center;
+  margin-bottom:16px;
+  padding:30px 34px;
+  border-radius:26px;
+  background:#e6f2ff;
+}
+.administration-director span { color:#53697c; font-size:14px; font-weight:700; }
+.administration-director h3 {
+  margin:6px 0 0;
+  padding-left:12px;
+  border-left:3px solid var(--orange);
+  color:var(--blue);
+  font-size:22px;
+  line-height:1.25;
+}
+.administration-director .inner-prose ul { margin:0; padding:0; list-style:none; }
+.administration-director .inner-prose li { margin:0; color:#00284d; font-size:20px; line-height:1.4; font-weight:800; }
+.administration-areas { display:grid; gap:10px; }
+.administration-areas details { overflow:hidden; border-radius:20px; background:white; }
+.administration-areas summary {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:22px 26px;
+  color:var(--blue);
+  font-size:17px;
+  line-height:1.35;
+  font-weight:800;
+  cursor:pointer;
+  list-style:none;
+}
+.administration-areas summary::-webkit-details-marker { display:none; }
+.administration-areas summary span {
+  flex:none;
+  color:var(--orange);
+  font-size:25px;
+  line-height:1;
+  transition:transform .2s ease;
+}
+.administration-areas details[open] summary span { transform:rotate(45deg); }
+.administration-areas summary:focus-visible { outline:3px solid var(--orange); outline-offset:-3px; }
+.administration-area-content {
+  columns:2;
+  column-gap:40px;
+  padding:0 26px 24px;
+  color:#294861;
+}
+.administration-area-content p {
+  break-inside:avoid;
+  margin:0 0 16px;
+  font-size:16px;
+  line-height:1.55;
+}
+.administration-area-content strong { display:inline-block; margin-bottom:2px; color:#00284d; }
+.administration-page > .institutional-explore { margin-top:88px; }
+@media(max-width:980px) {
+  .administration-hero { padding:36px; }
+  .administration-hero h1 { font-size:46px; }
+  .administration-section-heading { grid-template-columns:1fr; gap:12px; }
+  .administration-council-layout { grid-template-columns:1fr; }
+  .administration-president { min-height:220px; }
+}
+@media(max-width:767px) {
+  .administration-page > .inner-breadcrumb { margin-bottom:18px; }
+  .administration-hero { grid-template-columns:1fr; gap:26px; padding:30px 24px; border-radius:26px; }
+  .administration-hero h1 { font-size:36px; }
+  .administration-hero > div > p { font-size:18px; }
+  .administration-hero-note { min-width:0; padding:18px 20px; }
+  .administration-council,.administration-directory { margin-top:52px; }
+  .administration-section-heading h2 { font-size:27px; }
+  .administration-council-layout { padding:10px; border-radius:26px; }
+  .administration-president { min-height:190px; padding:24px; border-radius:20px; }
+  .administration-president-photo { margin-bottom:24px; aspect-ratio:4 / 3; }
+  .administration-president-photo img { object-position:38% 36%; }
+  .administration-president .inner-prose li { font-size:21px; }
+  .administration-representatives { grid-template-columns:1fr; padding:18px; border-radius:20px; }
+  .administration-representative.is-large { grid-column:auto; padding:18px; }
+  .administration-representative.is-large .inner-prose ul { grid-template-columns:1fr; }
+  .administration-director { grid-template-columns:1fr; gap:18px; padding:24px; border-radius:22px; }
+  .administration-director h3 { font-size:19px; }
+  .administration-director .inner-prose li { font-size:18px; }
+  .administration-areas summary { padding:20px; font-size:16px; }
+  .administration-area-content { columns:1; padding:0 20px 20px; }
+  .administration-page > .institutional-explore { margin-top:56px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .administration-areas summary span { transition:none; }
+}
+@media(prefers-reduced-motion:no-preference) {
+  .administration-reveal-active { animation:administration-reveal 620ms cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes administration-reveal {
+    from { opacity:.65; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+}
