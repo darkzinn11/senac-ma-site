@@ -80,20 +80,18 @@ button { color:inherit; }
 .main-navigation { display:flex; gap:16px; margin-left:auto; align-items:center; }
 .nav-group { position:relative; }
 .nav-trigger { display:flex; align-items:center; gap:6px; border:0; padding:8px 5px 8px 0; background:transparent; white-space:nowrap; color:#04337c; font-size:16px; font-weight:800; }
-.nav-trigger .icon { width:7.5px; height:4.83px; object-fit:contain; transition:transform .18s; }
-/* A seta é desenhada com a cor do texto (máscara do SVG), então acompanha o laranja do hover. */
-.nav-trigger .icon { object-position:-99px 0; background:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; }
+.nav-trigger .icon { width:7.5px; height:4.83px; object-fit:contain; object-position:-99px 0; background-color:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; transition:transform .18s; }
 .nav-trigger[aria-expanded=true] .icon { transform:rotate(180deg); }
 .nav-dropdown { position:absolute; top:calc(100% + 12px); left:-16px; width:280px; padding:8px; margin:0; list-style:none; background:#fff; border:0; border-radius:20.8px; box-shadow:var(--shadow-float); max-height:65vh; overflow:auto; }
-.nav-dropdown a { display:block; padding:12px; border-radius:10.4px; line-height:1.4; font-size:15px; transition:color .18s ease,background-color .18s ease; }
-.nav-dropdown a:hover,.nav-dropdown a:focus-visible { color:#fff; background:var(--orange); }
+.nav-dropdown a { display:block; padding:12px; border-radius:10.4px; line-height:1.4; font-size:15px; }
+.nav-dropdown a:hover,.nav-dropdown a:focus-visible { background:#eef4fa; }
 /* Grupos com subitens: base = acordeão (celular); a partir de 1101px vira painel lateral. */
-.nav-dropdown .nav-row { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; border-radius:10.4px; transition:color .18s ease,background-color .18s ease; }
+.nav-dropdown .nav-row { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; border-radius:10.4px; }
 .nav-dropdown .nav-row > a { flex:1; }
 .nav-dropdown .nav-group-button,.nav-dropdown .sub-toggle { border:0; background:transparent; color:inherit; font:inherit; cursor:pointer; }
 .nav-dropdown .nav-group-button { padding:12px; font-size:15px; line-height:1.4; text-align:left; }
 .nav-dropdown .sub-toggle { padding:12px; display:grid; place-items:center; align-self:stretch; }
-.nav-dropdown .nav-row:hover,.nav-dropdown .nav-row:focus-within,.nav-dropdown .is-open > .nav-row { color:#fff; background:var(--orange); }
+.nav-dropdown .nav-row:hover,.nav-dropdown .nav-row:focus-within { background:#eef4fa; }
 .nav-dropdown .nav-row .icon { width:7.5px; height:4.83px; flex:none; object-fit:contain; object-position:-99px 0; background:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; transition:transform .18s; }
 .nav-dropdown .is-open > .nav-row .icon { transform:rotate(180deg); }
 .nav-dropdown .nav-row:focus-visible,.nav-dropdown .sub-toggle:focus-visible { outline:3px solid #f7941f; outline-offset:-3px; border-radius:10.4px; }
@@ -102,6 +100,8 @@ button { color:inherit; }
 .nav-dropdown .nav-sub a { padding:10px 12px; font-size:14px; }
 @media (min-width:1101px) {
   .nav-dropdown { max-height:none; overflow:visible; }
+  /* Mantém o menu aberto ao atravessar o espaço entre o botão e o painel. */
+  .nav-dropdown::before { content:''; position:absolute; left:0; right:0; top:-12px; height:12px; }
   .nav-dropdown .has-sub { position:relative; }
   .nav-dropdown .nav-row .icon,.nav-dropdown .is-open > .nav-row .icon { transform:rotate(-90deg); }
   .nav-dropdown .nav-sub { position:absolute; top:-8px; left:calc(100% + 8px); width:280px; margin:0; padding:8px; background:#fff; border:0; border-radius:20.8px; box-shadow:var(--shadow-float); z-index:2; }
@@ -611,6 +611,7 @@ button { color:inherit; }
   transition-timing-function:ease;
 }
 .button .icon { transition-duration:.25s; }
+.nav-trigger { transition:none; }
 @media (hover:hover) {
   .button:not(:disabled):hover {
     background-color:#eb7e0d;

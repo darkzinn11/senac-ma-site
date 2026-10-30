@@ -64,8 +64,9 @@
 .inner-aside-card .button + .button { margin-top:14px; }
 .inner-aside-links { background:white; border:0; border-radius:26px; padding:24px; }
 .inner-aside-links h3 { font-size:18px; margin-bottom:14px; }
-.inner-aside-links a { display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:14px; padding:12px 0; border-bottom:1px solid #e9eef5; }
+.inner-aside-links a { display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:14px; padding:12px 8px; margin-inline:-8px; border:0; border-bottom:1px solid #e9eef5; border-radius:10.4px; }
 .inner-aside-links a:last-child { border:0; }
+.inner-aside-links a:hover,.inner-aside-links a:focus-visible { background:#eef4fa; }
 .inner-resources { margin-top:42px; }
 .inner-resources h2 { font-size:25px; color:#004b8d; margin:0 0 18px; }
 .inner-resource-list { display:grid; gap:10px; }
