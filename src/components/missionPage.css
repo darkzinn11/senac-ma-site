@@ -217,11 +217,3 @@
   .mission-principles-content.inner-prose .prose-purpose-card ul { gap:8px; }
   .mission-principles-content.inner-prose .prose-purpose-card li { padding:9px 12px; font-size:14px; }
 }
-@media(prefers-reduced-motion:no-preference) {
-  .mission-hero-photos { animation:mission-photo-open 900ms cubic-bezier(.2,.7,.2,1) both; }
-  .mission-hero-photos img { animation:mission-photo-settle 1100ms cubic-bezier(.2,.7,.2,1) both; }
-  .mission-reveal-active { animation:mission-reveal 620ms cubic-bezier(.2,.7,.2,1) both; }
-  @keyframes mission-photo-open { from { clip-path:inset(0 100% 0 0); } to { clip-path:inset(0); } }
-  @keyframes mission-photo-settle { from { transform:scale(1.08); } to { transform:scale(1); } }
-  @keyframes mission-reveal { from { opacity:.68; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-}

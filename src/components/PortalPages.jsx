@@ -108,16 +108,6 @@ function MissionVisionPage({page}) {
   },[page.html]);
   const related=useAsync(async()=>(await listChildPages('/institucional/'))
     .filter(item=>item.path!==page.path).slice(0,3),[page.path]);
-  useEffect(()=>{
-    const root=document.querySelector('.mission-page');
-    if(!root||!('IntersectionObserver' in window))return undefined;
-    const targets=root.querySelectorAll('.mission-history-dates p,.mission-history-photo,.mission-history-copy > *,.mission-principles > h2,.mission-principles .prose-purpose-card,.institutional-explore .inner-section-title,.institutional-explore a');
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(entry.isIntersecting){entry.target.classList.add('mission-reveal-active');observer.unobserve(entry.target);}
-    }),{threshold:.1});
-    targets.forEach(target=>observer.observe(target));
-    return()=>observer.disconnect();
-  },[page.html,related.data]);
   if(!parts)return <ContentPage page={page}/>;
   return <div className="mission-page">
     <Breadcrumb page={page}/>
@@ -167,16 +157,6 @@ function AdministrationRegionalPage({page}) {
   },[page.html]);
   const related=useAsync(async()=>(await listChildPages('/institucional/'))
     .filter(item=>item.path!==page.path).slice(0,3),[page.path]);
-  useEffect(()=>{
-    const root=document.querySelector('.administration-page');
-    if(!root||!('IntersectionObserver' in window))return undefined;
-    const targets=root.querySelectorAll('.administration-hero > *,.administration-section-heading > *,.administration-council-layout,.administration-director,.administration-areas details,.institutional-explore .inner-section-title,.institutional-explore a');
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(entry.isIntersecting){entry.target.classList.add('administration-reveal-active');observer.unobserve(entry.target);}
-    }),{threshold:.08});
-    targets.forEach(target=>observer.observe(target));
-    return()=>observer.disconnect();
-  },[page.html,related.data]);
   const council=sections[0];
   const department=sections[1];
   const councilTitle=council?.title.replace(/\s*-\s*Per[ií]odo:.*/i,'')||'Conselho Regional do Senac/MA';

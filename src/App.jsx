@@ -5,7 +5,6 @@ import Home from './components/Home';
 import PortalPages from './components/PortalPages';
 import SearchResults from './components/SearchResults';
 import AccessibilityMenu from './components/AccessibilityMenu';
-import SiteMotion from './components/SiteMotion';
 import { ActionLink } from './components/Ui';
 import { SiteDataProvider } from './api/SiteData';
 import { peekRoute, resolveRoute } from './api/content';
@@ -171,7 +170,6 @@ export default function App() {
     <a className="skip-link" href="#main">Ir para o conteúdo</a>
     <div className="site-shell" onClickCapture={navigate}><Header key={route} />
       <main id="main">{main}</main>
-      <SiteMotion />
       <Footer />
     </div>
     <AccessibilityMenu />
