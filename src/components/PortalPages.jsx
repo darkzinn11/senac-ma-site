@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, C
 import { isCatalog, isNews, isNotices, localHref } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
 import { publicUrl, routeHref } from '../data/basePath';
+import { sentenceCase } from '../utils/sentenceCase';
 import { courseVisual } from '../data/courseVisuals';
 import { courseStatus } from '../data/courseApi';
 import useAsync from '../api/useAsync';
@@ -148,11 +149,11 @@ function AdministrationRegionalPage({page}) {
     return [...doc.body.querySelectorAll(':scope > h2')].map(heading=>{
       const grid=heading.nextElementSibling?.classList.contains('prose-card-grid')?heading.nextElementSibling:null;
       const cards=grid?[...grid.querySelectorAll(':scope > .prose-card')].map(card=>{
-        const title=cleanTitle(card.querySelector('h3')?.textContent);
+        const title=sentenceCase(cleanTitle(card.querySelector('h3')?.textContent));
         card.querySelector('h3')?.remove();
         return {title,html:card.innerHTML};
       }):[];
-      return {title:cleanTitle(heading.textContent),cards};
+      return {title:sentenceCase(cleanTitle(heading.textContent)),cards};
     }).filter(section=>section.cards.length);
   },[page.html]);
   const related=useAsync(async()=>(await listChildPages('/institucional/'))

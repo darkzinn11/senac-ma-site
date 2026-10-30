@@ -3,6 +3,7 @@
 import { mediaUrl } from './client';
 import { courseStatus } from '../data/courseApi';
 import { normalizePath } from '../data/portalRoutes';
+import { sentenceCase } from '../utils/sentenceCase';
 
 export const textOf = (html) => {
   if (!html) return '';
@@ -28,7 +29,7 @@ export const modalityLabels = { presencial: 'Presencial', ead: 'EAD', semipresen
 export function adaptNewsItem(item) {
   const cover = mediaUrl(item.cover_image_url);
   return {
-    id: item.id, kind: 'post', title: item.title, slug: item.slug, path: item.path,
+    id: item.id, kind: 'post', title: sentenceCase(item.title), slug: item.slug, path: item.path,
     date: item.published_at, excerpt: item.subtitle || '', cover, image: cover,
     category: item.category_name || '', categorySlug: item.category_slug || '',
   };
@@ -43,9 +44,9 @@ export function adaptNews(data) {
 export function adaptPage(data, unit = null) {
   const cover = mediaUrl(unit?.image_url || data.cover_image_url);
   return {
-    id: data.id, kind: 'page', title: data.title, slug: data.slug, path: data.path, parent: data.parent_path || null,
+    id: data.id, kind: 'page', title: sentenceCase(data.title), slug: data.slug, path: data.path, parent: data.parent_path || null,
     excerpt: unit ? brief(unit.description) : '', html: data.content_html || '', ...htmlToBlocks(data.path === '/fale-conosco/' ? data.content_html : ''),
-    children: (data.children || []).map(child => ({ id: child.path, title: child.title, path: child.path })),
+    children: (data.children || []).map(child => ({ id: child.path, title: sentenceCase(child.title), path: child.path })),
     cover, image: cover, unit,
     seoTitle: data.seo_title || '', seoDescription: data.seo_description || '',
   };
@@ -87,7 +88,7 @@ const filled = value => (value && String(value).trim() !== 'None' ? String(value
 export function adaptCourse(data) {
   const offers = (data.offers || []).map(adaptOffer);
   return {
-    id: data.id, kind: 'course', title: data.name, slug: data.slug, path: data.path,
+    id: data.id, kind: 'course', title: sentenceCase(data.name), slug: data.slug, path: data.path,
     excerpt: data.short_description || '', html: data.about_html || '', blocks: [], links: [], parent: '/cursos-senac/',
     category: data.category_name || '', categorySlug: data.category_slug || '',
     workload: data.workload_hours, modality: modalityLabels[data.modality] || data.modality || '',
@@ -103,7 +104,7 @@ export function adaptNotice(data) {
     label: doc.name || doc.file_name, href: mediaUrl(doc.url), mime: doc.mime_type || '', type: doc.type || '',
   }));
   return {
-    id: data.id, kind: 'notice', title: data.title, slug: data.slug, path: data.path, parent: noticeParent(data.notice_type),
+    id: data.id, kind: 'notice', title: sentenceCase(data.title), slug: data.slug, path: data.path, parent: noticeParent(data.notice_type),
     noticeType: data.notice_type, excerpt: data.description || '', date: data.published_at,
     blocks: paragraphs(data.description).map(text => ({ type: 'p', text })), links: documents,
     seoTitle: '', seoDescription: brief(data.description, 30),
@@ -115,7 +116,7 @@ export function adaptResult(data) {
   if (data.notice_slug) links.push({ label: data.notice_title ? 'Ver ' + data.notice_title : 'Ver edital', href: `/editais_psg/${data.notice_slug}/` });
   const summary = [data.notice_title, data.result_date && 'Resultado de ' + brDate(data.result_date)].filter(Boolean).join(' · ');
   return {
-    id: data.id, kind: 'notice', title: data.title, slug: data.slug, path: data.path, parent: '/resultados-psg/',
+    id: data.id, kind: 'notice', title: sentenceCase(data.title), slug: data.slug, path: data.path, parent: '/resultados-psg/',
     noticeType: 'result', excerpt: summary, date: data.result_date,
     blocks: summary ? [{ type: 'p', text: summary }] : [], links, seoTitle: '', seoDescription: summary,
   };

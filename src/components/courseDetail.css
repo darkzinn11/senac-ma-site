@@ -62,7 +62,7 @@
 .course-offer { display:grid; grid-template-columns:76px minmax(0,1fr) auto; align-items:center; gap:22px; padding:20px 22px; background:white; border-radius:22px; box-shadow:var(--course-card-shadow); }
 .course-offer-date { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; height:76px; border-radius:18px; background:var(--course-soft); color:var(--blue); text-align:center; }
 .course-offer-date strong { font-size:28px; line-height:1; font-weight:800; }
-.course-offer-date span { font-size:13px; line-height:1; font-weight:700; text-transform:uppercase; letter-spacing:.6px; }
+.course-offer-date span { font-size:13px; line-height:1; font-weight:700; text-transform:none; letter-spacing:.6px; }
 .course-offer.is-muted .course-offer-date { background:#eef1f5; color:#5d7186; }
 .course-offer-status { display:inline-block; padding:5px 10px; border-radius:999px; background:#fff1dd; color:#a3540a; font-size:12px; font-weight:800; line-height:1; }
 .course-offer-status.is-open { background:#e3f5e9; color:#1d7a3e; }
