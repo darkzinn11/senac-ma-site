@@ -10,6 +10,8 @@ import useAsync from '../api/useAsync';
 import { listChildPages, listNews, listNotices, listResults, listUnits } from '../api/content';
 import Html, { sanitizeHtml } from './Html';
 import { shapeContent } from './contentShape';
+import Breadcrumb from './PageBreadcrumb';
+import InformationPage from './InformationPages';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
@@ -25,18 +27,6 @@ const cleanTitle = text => String(text || '').replace(/\s+/g,' ').trim();
 const dest = (link) => localHref(link);
 const safeImage = (image) => image && (image.startsWith('https://') || (image.startsWith('/') && !image.startsWith('//'))) ? image : null;
 
-function Breadcrumb({ page }) {
-  const ancestor = page.path.startsWith('/unidades/') ? {title:'Unidades',path:'/unidades/'}
-    : page.path.startsWith('/institucional/') ? {title:'O Senac',path:'/institucional/'}
-    : page.kind==='post' ? {title:'Notícias',path:'/noticias/'}
-    : page.kind==='course' ? {title:'Cursos',path:'/cursos-senac/'}
-    : page.kind==='notice' ? {title:page.parent==='/resultados-psg/'?'Resultados PSG':page.parent==='/licitacoes-2016/'?'Licitações':'Editais PSG',path:page.parent} : null;
-  return <nav className="inner-breadcrumb" aria-label="Você está aqui">
-    <a href={routeHref('/')}>Início</a><ChevronRight size={15} variant="Bold" color="currentColor"/>
-    {ancestor && <><a href={ancestor.path}>{ancestor.title}</a><ChevronRight size={15} variant="Bold" color="currentColor"/></>}
-    <span aria-current="page">{page.title}</span>
-  </nav>;
-}
 function Intro({page,subtitle,eyebrow}) {
   return <header className="inner-page-heading">
     <Breadcrumb page={page}/>
@@ -205,47 +195,17 @@ function ContentPage({page}) {
   const isUnits=page.path==='/unidades/';
   const isUnit=page.path.startsWith('/unidades/') && !isUnits;
   const isInstitutional=page.path.startsWith('/institucional/');
-  const child=isUnits?[]:(page.children||[]);
   // "Explore também": outras unidades ou páginas irmãs, vindas da API (sem bloquear a página).
   const related=useAsync(async()=>{
     if(isUnit)return (await listUnits()).filter(unit=>unit.path!==page.path).slice(0,3);
-    if(isInstitutional)return (await listChildPages('/institucional/')).filter(item=>item.path!==page.path).slice(0,3);
+    if(isInstitutional && page.path!=='/institucional/')return (await listChildPages('/institucional/')).filter(item=>item.path!==page.path).slice(0,3);
     return [];
   },[page.path]);
   const relatives=related.data||[];
-  const shaped=useMemo(()=>shapeContent(page.html,{extractContact:isUnit}),[page.html,isUnit]);
-  const hasText=Boolean(shaped.html.replace(/<[^>]*>/g,'').trim());
-  const hasImage=/<img\s/i.test(shaped.html);
-  // A lateral só aparece quando tem algo desta página (contato da unidade ou páginas da seção);
-  // sem ela, o texto vira uma coluna de leitura em vez de deixar um vazio ao lado.
-  const hasAside=Boolean(shaped.contact)||child.length>0;
-  // Cards e tabelas aproveitam a largura toda; texto corrido fica na coluna de leitura.
-  const isWide=!hasAside&&/class="prose-card-grid"/.test(shaped.html);
   return <>
-    <div className={'inner-content-frame'+(hasAside?'':isWide?' is-wide':' is-single')}>
-      <div className="inner-content-primary">
-        {/* Na unidade, o resumo repete o primeiro parágrafo do texto. */}
-        <Intro page={isUnit?{...page,excerpt:''}:page}/>
-        <article className="inner-content">
-        {hasText||hasImage ? <Html html={shaped.html}/> : <div className="inner-empty">
-          <h2>Informações e atendimento</h2>
-          <p>Novas informações desta área serão disponibilizadas aqui.</p>
-        </div>}
-        <ResourceLinks items={page.links||[]} title={page.path.includes('psg')?'Editais e documentos':'Acessos e documentos'}/>
-        </article>
-        {page.path==='/licitacoes-2016/' && <NoticesPage kind="licitacao" heading="Editais de licitação"/>}
-      </div>
-      {hasAside&&<aside className="inner-aside">
-        {shaped.contact&&<div className="inner-aside-card inner-contact-aside">
-          <h2>Contato da unidade</h2>
-          <Html html={shaped.contact} className="inner-contact-lines"/>
-          <ActionLink href={dest(links.courses)} arrow>Consultar cursos</ActionLink>
-        </div>}
-        {child.length>0 && <div className="inner-aside-links"><h3>Nesta seção</h3>
-          {child.map(c=><a href={c.path} key={c.id}>{c.title}<ChevronRight size={16} variant="Bold" color="currentColor"/></a>)}
-        </div>}
-      </aside>}
-    </div>
+    <InformationPage page={isUnits?{...page,children:[]}:page}/>
+    <ResourceLinks items={page.links||[]} title={page.path.includes('psg')?'Editais e documentos':'Acessos e documentos'}/>
+    {page.path==='/licitacoes-2016/' && <NoticesPage kind="licitacao" heading="Editais de licitação"/>}
     {isUnits && <UnitListing/>}
     {relatives.length>0 && <section className="inner-stack"><div className="inner-section-title"><h2>{isUnit?'Outras unidades':'Explore também'}</h2></div>
       <div className="inner-tile-grid">{relatives.map(item=><LinkTile item={item} detail={isUnit} key={item.id}/>)}</div>
