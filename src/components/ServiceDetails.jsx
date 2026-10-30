@@ -56,23 +56,45 @@ const details = {
     aside:{title:'Estude de onde estiver',text:'Consulte a oferta, os requisitos e as condições de matrícula na plataforma de cursos a distância do Senac.'},
   },
   '/psg/': {
-    image:'79629.png', tag:'Gratuidade',
-    facts:[['Custo','Gratuito','wallet'],['Seleção','Por edital','document']],
+    image:'79629.png', split:true, tag:'Gratuidade',
     description:'Conheça o Programa Senac de Gratuidade e consulte a programação de formação profissional gratuita.',
-    summary:'O PSG oferece ações educacionais gratuitas a pessoas de baixa renda, ampliando o acesso à educação profissional.',
-    sections:[
-      {title:'O que é o PSG?',text:'O programa oferece cursos de formação inicial e continuada e cursos técnicos de nível médio sem custo, conforme suas regras e ofertas.'},
-      {title:'Como participar',text:'Acompanhe os editais para consultar cursos, localidades, público atendido, critérios e etapas de inscrição de cada seleção.',href:'/editais-psg/',label:'Consultar editais'},
-      {title:'Resultados',text:'Consulte os resultados e comunicados das seleções do programa.',href:'/resultados-psg/',label:'Ver resultados'},
-    ],
-    notice:'A oferta de vagas e as condições de participação variam conforme o edital. Verifique os requisitos e os prazos da seleção desejada.',
-    actions:[{label:'Consultar editais PSG',href:'/editais-psg/',primary:true},{label:'Consultar resultados',href:'/resultados-psg/'},{label:'Portal PSG',href:'https://www.portal-psg.ma.senac.br/#/programa-senac-de-gratuidade'}],
-    aside:{title:'Encontre sua oportunidade',text:'Acesse os editais e confira as seleções, os documentos e as orientações para participar.'},
+    actions:[{label:'Consultar editais PSG',href:'/editais-psg/',primary:true},{label:'Consultar resultados',href:'/resultados-psg/'}],
   },
 };
 const FACT_ICONS={people:People,location:Location,briefcase:Briefcase,monitor:Monitor,book:Book1,wallet:EmptyWallet,document:DocumentText};
 const STEP_ICONS=[Teacher,Book1,DocumentText];
 const stepsTitle=path=>path==='/cadastro-de-interesse/'||path==='/psg/'?'Como funciona':path==='/cursos-a-distancia/'?'Opções de formação':'Como participar';
+
+function PsgContent() {
+  return <div className="psg-content">
+    <section className="psg-overview" aria-labelledby="psg-about-title">
+      <div className="psg-overview-copy">
+        <h2 id="psg-about-title">O que é o PSG?</h2>
+        <p>O Programa Senac de Gratuidade oferece cursos gratuitos de formação inicial e continuada e cursos técnicos de nível médio, ampliando o acesso à educação profissional.</p>
+        <a className="psg-inline-link" href="https://www.portal-psg.ma.senac.br/#/programa-senac-de-gratuidade">Conheça o programa <ArrowRight size={19} color="currentColor" aria-hidden="true"/></a>
+      </div>
+      <aside className="psg-audience">
+        <h3>Para quem é o programa?</h3>
+        <p>O PSG é voltado a pessoas de baixa renda, incluindo estudantes e egressos da educação básica e trabalhadores empregados ou desempregados.</p>
+        <p>Os critérios de participação e os documentos necessários devem ser conferidos no edital de cada seleção.</p>
+      </aside>
+    </section>
+
+    <section className="psg-participation" aria-labelledby="psg-steps-title">
+      <div className="psg-section-heading"><h2 id="psg-steps-title">Como participar</h2><p>Consulte as oportunidades disponíveis e acompanhe cada etapa da seleção.</p></div>
+      <ol className="psg-steps">
+        <li><span className="psg-step-number" aria-hidden="true">1</span><div><h3>Consulte os editais</h3><p>Confira os cursos, as unidades, os prazos e as regras da seleção.</p><a className="psg-inline-link" href={routeHref('/editais-psg/')}>Ver editais <ArrowRight size={19} color="currentColor" aria-hidden="true"/></a></div></li>
+        <li><span className="psg-step-number" aria-hidden="true">2</span><div><h3>Faça sua inscrição</h3><p>Leia as orientações do edital e siga as instruções de inscrição da seleção escolhida.</p><a className="psg-inline-link" href={routeHref('/editais-psg/')}>Ver orientações no edital <ArrowRight size={19} color="currentColor" aria-hidden="true"/></a></div></li>
+        <li><span className="psg-step-number" aria-hidden="true">3</span><div><h3>Acompanhe o resultado</h3><p>Consulte os resultados e comunicados para saber os próximos passos.</p><a className="psg-inline-link" href={routeHref('/resultados-psg/')}>Ver resultados <ArrowRight size={19} color="currentColor" aria-hidden="true"/></a></div></li>
+      </ol>
+      <div className="psg-notice"><InfoCircle size={24} variant="Bulk" color="currentColor" aria-hidden="true"/><p>As vagas e as condições de participação variam conforme o edital. Antes de se inscrever, confira os requisitos e os prazos da seleção.</p></div>
+    </section>
+    <section className="psg-more" aria-labelledby="psg-more-title">
+      <div><h2 id="psg-more-title">Acompanhe as oportunidades</h2><p>Acesse os editais e encontre as informações da próxima seleção.</p></div>
+      <ActionLink href={routeHref('/editais-psg/')} arrow>Consultar editais PSG</ActionLink>
+    </section>
+  </div>;
+}
 
 // Páginas de serviço no mesmo formato da página do curso: banner com foto, selo, dados-chave e ações;
 // depois as etapas, o aviso e o atendimento em seções de coluna única.
@@ -105,7 +127,7 @@ export default function ServiceDetails({page}) {
       </div>
     </header>
 
-    <div className="course-page-body">
+    {page.path==='/psg/' ? <PsgContent/> : <div className="course-page-body">
       <div className="course-page-main">
         <section className="course-page-section" aria-labelledby="service-steps-title">
           <h2 id="service-steps-title">{stepsTitle(page.path)}</h2>
@@ -139,6 +161,6 @@ export default function ServiceDetails({page}) {
           </div>
         </section>
       </div>
-    </div>
+    </div>}
   </div>;
 }
