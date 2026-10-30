@@ -6,7 +6,7 @@ import { normalizePath, virtualPages } from '../data/portalRoutes';
 import { sentenceCase } from '../utils/sentenceCase';
 
 const API = '/v1/public';
-const ROUTE_TTL = 5 * 60 * 1000;
+const ROUTE_TTL = 30 * 1000;
 const resolved = new Map(); // caminho -> { at, value }
 
 const fresh = entry => entry && Date.now() - entry.at < ROUTE_TTL;

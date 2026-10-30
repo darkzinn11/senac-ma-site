@@ -5,6 +5,7 @@ import { localHref } from '../data/portalRoutes';
 import { routeHref } from '../data/basePath';
 import Html, { sanitizeHtml } from './Html';
 import Breadcrumb from './PageBreadcrumb';
+import { unitContactHtml } from './unitContact';
 import { ActionLink } from './Ui';
 import { contentKey, contentText, informationContent, libraryContent, libraryRanking, parseHtml } from './informationContent';
 import './informationPages.css';
@@ -175,7 +176,11 @@ function EditorialPage({ page, data }) {
 }
 
 export default function InformationPage({ page }) {
-  const data=useMemo(()=>informationContent(page.html,{path:page.path}),[page.html,page.path]);
+  const data=useMemo(()=>{
+    const content=informationContent(page.html,{path:page.path});
+    const contact=page.path.startsWith('/unidades/')?unitContactHtml(page.unit):'';
+    return contact?{...content,contact}:content;
+  },[page.html,page.path,page.unit]);
   const library=useMemo(()=>page.path==='/biblioteca/'?libraryContent(page.html):null,[page.html,page.path]);
   const ranking=useMemo(()=>page.path==='/biblioteca/fique-ligado/'?libraryRanking(page.html):null,[page.html,page.path]);
   if(library)return <LibraryPage page={page} data={library}/>;

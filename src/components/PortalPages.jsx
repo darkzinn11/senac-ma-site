@@ -7,12 +7,14 @@ import { sentenceCase } from '../utils/sentenceCase';
 import { courseVisual } from '../data/courseVisuals';
 import { courseStatus } from '../data/courseApi';
 import useAsync from '../api/useAsync';
+import { useSiteData } from '../api/SiteData';
 import { listChildPages, listNews, listNotices, listResults, listUnits } from '../api/content';
 import Html, { sanitizeHtml } from './Html';
 import { shapeContent } from './contentShape';
 import Breadcrumb from './PageBreadcrumb';
 import InformationPage from './InformationPages';
 import ContactDirectory from './ContactDirectory';
+import { unitContactHtml } from './unitContact';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
@@ -241,8 +243,29 @@ function contactGroups(page) {
   return groups;
 }
 
+// Cartões de contato: Sede (Configurações) + Unidades (cadastro do admin) + contatos do texto da página que NÃO são
+// unidade (ex.: Assessoria de Imprensa). Se a API de unidades não respondeu, vale o texto antigo inteiro.
+function buildContactCards(page,units,apiUnits,settings) {
+  const fromPage=contactGroups(page);
+  const withData=(units||[]).filter(unit=>unitContactHtml(unit));
+  if(!apiUnits||!withData.length) return fromPage;
+  const covers=title=>{
+    const t=fold(title);
+    if(/^sede/.test(t)) return Boolean(settings?.address);
+    if(!/^(centro|posto|restaurante|unidade|nucleo)/.test(t)) return false;
+    return withData.some(unit=>t.includes(fold(unit.city))||(t.includes('restaurante')&&fold(unit.name).includes('restaurante')));
+  };
+  const sede=settings?.address?[{title:'Sede Administrativa',html:'<p>'+[
+    ...String(settings.address).split(/\r?\n/).map(escapeHtml),settings.phone&&escapeHtml(settings.phone),
+    settings.email&&'Email: <a href="mailto:'+escapeHtml(settings.email)+'">'+escapeHtml(settings.email)+'</a>'].filter(Boolean).join('<br>')+'</p>'}]:[];
+  const cards=withData.slice().sort((a,b)=>(a.order-b.order)||a.name.localeCompare(b.name,'pt-BR'))
+    .map(unit=>({title:unit.name,html:unitContactHtml(unit)}));
+  return [...sede,...cards,...fromPage.filter(group=>!covers(group.title))];
+}
+
 function ContactPage({page}) {
-  const groups=useMemo(()=>contactGroups(page),[page]);
+  const {units,apiUnits,settings}=useSiteData();
+  const groups=useMemo(()=>buildContactCards(page,units,apiUnits,settings),[page,units,apiUnits,settings]);
   const ombudsman=(page.links||[]).find(item=>fold(item.label).includes('ouvidoria'));
   return <ContactDirectory page={page} groups={groups} ombudsman={ombudsman}/>;
 }

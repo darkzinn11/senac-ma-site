@@ -16,7 +16,7 @@ export class ApiError extends Error {
 }
 
 const TIMEOUT_MS = 10000;
-const DEFAULT_TTL = 5 * 60 * 1000;
+const DEFAULT_TTL = 20 * 1000;
 const cache = new Map(); // caminho -> { promise, expires }
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 

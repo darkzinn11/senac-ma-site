@@ -147,10 +147,8 @@ export function Footer() {
           <h2>{column.title}</h2><ul>{column.items.map(([label, href]) => <li key={label}><a href={href}>{label}</a></li>)}</ul>
         </nav>)}
         <div className="footer-address"><h2>Endereço do Departamento Regional</h2>
-          <address>
-            {settings.address || <>Condomínio Fecomércio/Sesc/Senac – Edifício Francisco Guimarães e Souza. Av. dos Holandeses, S/N, Quadra 04, Bairro Jardim Renascença.<br />CEP: 65075-650 – São Luís-MA</>}
-            <br /><a href="tel:+559831946400">(98) 3194 - 6400</a>
-          </address>
+          {settings.address ? <address>{settings.address}</address> : <address>Condomínio Fecomércio/Sesc/Senac – Edifício Francisco Guimarães e Souza. Av. dos Holandeses, S/N, Quadra 04, Bairro Jardim Renascença.<br />CEP: 65075-650 – São Luís-MA</address>}
+          <p className="footer-phone">Central de atendimento: <a href={'tel:+55' + String((settings.phone || '(98) 3194-6400')).replace(/\D/g, '')}>{(settings.phone || '(98) 3194-6400')}</a></p>
         </div>
       </div>
     </div>

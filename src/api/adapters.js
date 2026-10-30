@@ -56,7 +56,8 @@ export function adaptUnit(unit) {
   return {
     id: unit.id, kind: 'page', title: unit.name, path: `/unidades/${unit.slug}/`, slug: unit.slug, city: unit.city || '',
     excerpt: brief(unit.description), cover, image: cover, name: unit.name,
-    address: unit.address || '', phone: unit.phone || '', email: unit.email || '',
+    address: unit.address || '', zip: unit.zip_code || '', phone: unit.phone || '', otherPhones: unit.other_phones || '',
+    whatsapp: unit.whatsapp || '', email: unit.email || '', hours: unit.opening_hours || '', order: unit.sort_order ?? 0,
   };
 }
 export function adaptOffer(offer) {
