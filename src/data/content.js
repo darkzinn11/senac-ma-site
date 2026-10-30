@@ -140,7 +140,7 @@ export const navigation = [
     { label:'Banco de Oportunidades', href:links.opportunities },
     { label:'Aprendizagem', href:'/para-sua-empresa/aprendizagem/' },
     { label:'Licitações', href:links.tenders },
-    { label:'Compras e contratos', href:'http://www.processo.ma.senac.br/Admin/Cadastros/Fornecedores.aspx' },
+    { label:'Compras e contratos', href:'https://processo.ma.senac.br/Admin/Cadastros/Fornecedores.aspx' },
   ] },
 ];
 export const videoId = 'si7hKHgLuSw';
