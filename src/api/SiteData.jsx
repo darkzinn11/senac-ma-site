@@ -11,7 +11,7 @@ export function SiteDataProvider({ children }) {
   const [settings, setSettings] = useState({});
   useEffect(() => {
     let active = true;
-    listUnits().then(list => { if (active && list.length) setUnits(list.map(unit => ({ city: unit.city, name: unit.name, href: unit.path }))); }).catch(() => {});
+    listUnits().then(list => { if (active && list.length) setUnits(list.map(unit => ({ ...unit, href: unit.path }))); }).catch(() => {});
     loadSettings().then(value => { if (active) setSettings(value); }).catch(() => {});
     return () => { active = false; };
   }, []);

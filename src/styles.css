@@ -798,3 +798,6 @@ html.a11y-legible .site-shell,html.a11y-legible .site-shell * { font-family:Aria
   .main-story h3.is-long { font-size:calc(100vw * 30 / 1440); }
   .main-story p { font-size:calc(100vw * 13 / 1440); line-height:1.55; max-width:calc(100vw * 400 / 1440); margin-top:calc(100vw * 16 / 1440); }
 }
+
+/* Endereço do rodapé vem das Configurações (várias linhas): respeita as quebras de linha digitadas no admin. */
+.footer-address address { white-space:pre-line; }
