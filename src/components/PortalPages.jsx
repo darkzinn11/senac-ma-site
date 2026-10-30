@@ -12,6 +12,7 @@ import Html, { sanitizeHtml } from './Html';
 import { shapeContent } from './contentShape';
 import Breadcrumb from './PageBreadcrumb';
 import InformationPage from './InformationPages';
+import ContactDirectory from './ContactDirectory';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
 import ServiceDetails, { servicePaths } from './ServiceDetails';
@@ -242,31 +243,8 @@ function contactGroups(page) {
 
 function ContactPage({page}) {
   const groups=useMemo(()=>contactGroups(page),[page]);
-  const ombudsman=page.links.find(item=>fold(item.label).includes('ouvidoria'));
-  return <>
-    <Intro page={page} subtitle="Encontre os canais de atendimento, endereços e contatos das unidades do Senac Maranhão"/>
-    <section className="inner-contact-section" aria-labelledby="contact-units-heading">
-      <div className="inner-section-title"><div>
-        <h2 id="contact-units-heading">Canais e unidades</h2>
-        <p>Escolha a unidade ou setor que você precisa e consulte as informações de atendimento</p>
-      </div></div>
-      <div className="inner-contact-grid">
-        {groups.map(({title,html})=><article className="inner-contact-card" key={title}>
-          <span className="inner-contact-icon"><MapPin size={26} variant="Bold" color="currentColor"/></span>
-          <div className="inner-contact-card-copy"><h3>{title}</h3>
-            {html&&<Html html={html} className="inner-contact-lines"/>}
-          </div>
-        </article>)}
-      </div>
-    </section>
-    {ombudsman&&<section className="inner-contact-support">
-      <div>
-        <h2>Ouvidoria Senac</h2>
-        <p>Use a Ouvidoria para registrar solicitações, sugestões, elogios, reclamações ou denúncias</p>
-      </div>
-      <ActionLink href={ombudsman.href} arrow>Acessar ouvidoria</ActionLink>
-    </section>}
-  </>;
+  const ombudsman=(page.links||[]).find(item=>fold(item.label).includes('ouvidoria'));
+  return <ContactDirectory page={page} groups={groups} ombudsman={ombudsman}/>;
 }
 
 // Busca com atraso: evita uma requisição a cada tecla digitada.
