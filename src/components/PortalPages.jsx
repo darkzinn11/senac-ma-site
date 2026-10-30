@@ -156,7 +156,7 @@ function AdministrationRegionalPage({page}) {
     <Breadcrumb page={page}/>
     <header className="administration-hero">
       <div><h1>Administração Regional</h1><p>Conheça a composição do Conselho Regional e a estrutura de gestão do Senac no Maranhão</p></div>
-      <p className="administration-hero-note"><span>Gestão vigente</span><strong>{period}</strong></p>
+      <p className="administration-hero-note"><span>Período do Conselho</span><strong>{period}</strong></p>
     </header>
     {council&&<section className="administration-council" aria-labelledby="council-title">
       <div className="administration-section-heading"><h2 id="council-title">{councilTitle}</h2><p>Representação institucional e participação dos setores que integram o Conselho</p></div>
