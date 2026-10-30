@@ -12,6 +12,13 @@ export function unitContactFields(unit) {
   };
 }
 
+// Link para abrir conversa no WhatsApp (wa.me) a partir do número digitado no painel; '' se não parecer um telefone.
+export function whatsappUrl(value) {
+  const digits = String(value ?? '').replace(/\D/g, '');
+  if (digits.length < 10 || digits.length > 13) return '';
+  return 'https://wa.me/' + (digits.length >= 12 && digits.startsWith('55') ? digits : '55' + digits);
+}
+
 export function unitContactHtml(unit) {
   const f = unitContactFields(unit);
   if (!f) return '';
@@ -20,7 +27,10 @@ export function unitContactHtml(unit) {
   if (f.zip) lines.push('CEP: ' + esc(f.zip));
   const phones = [f.phone, f.otherPhones].filter(Boolean).join(' / ');
   if (phones) lines.push(esc(phones));
-  if (f.whatsapp) lines.push('WhatsApp: ' + esc(f.whatsapp));
+  if (f.whatsapp) {
+    const link = whatsappUrl(f.whatsapp);
+    lines.push('WhatsApp: ' + (link ? '<a href="' + link + '" target="_blank" rel="noopener noreferrer">' + esc(f.whatsapp) + '</a>' : esc(f.whatsapp)));
+  }
   if (f.email) lines.push('Email: <a href="mailto:' + esc(f.email) + '">' + esc(f.email) + '</a>');
   if (f.hours) lines.push('Horário: ' + esc(f.hours).replace(/\r?\n/g, ' · '));
   return lines.length ? '<p>' + lines.join('<br>') + '</p>' : '';

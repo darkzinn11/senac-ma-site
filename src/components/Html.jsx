@@ -32,7 +32,7 @@ export const sanitizeHtml = (html) => {
   installHooks();
   return DOMPurify.sanitize(String(html || ''), {
     USE_PROFILES: { html: true }, FORBID_TAGS: ['style', 'form', 'input', 'button', 'iframe', 'object', 'embed', 'svg', 'math'],
-    FORBID_ATTR: ['style', 'srcdoc', 'formaction'], ALLOW_DATA_ATTR: false,
+    FORBID_ATTR: ['style', 'srcdoc', 'formaction'], ALLOW_DATA_ATTR: false, ADD_ATTR: ['target'],
   });
 };
 
