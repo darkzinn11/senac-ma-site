@@ -67,7 +67,7 @@ const ROUTES = [
   { path: '/unidades/', label: 'unidades (lista)', h1: 'Unidades', needs: [sample.unit.name] },
   { path: `/unidades/${sample.unit.slug}/`, label: 'unidade (detalhe)', h1: sample.unit.name, needs: ['Contato'] },
   { path: sample.institutional.path, label: 'página institucional', h1: sample.institutional.title, needs: [] },
-  { path: '/fale-conosco/', label: 'fale conosco', h1: 'Fale Conosco', needs: ['Canais e unidades'] },
+  { path: '/fale-conosco/', label: 'fale conosco', h1: 'Fale Conosco', needs: ['Encontre um contato'] },
   { path: '/psg/', label: 'serviço PSG', h1: 'Programa Senac de Gratuidade', needs: [] },
   { path: '/noticias-senac/', label: 'redirect 301 (página)', h1: 'Notícias', final: '/noticias/' },
   { path: '/quem-somos/', label: 'redirect 301 (página)', h1: 'Quem somos', final: '/institucional/' },

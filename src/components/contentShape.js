@@ -122,7 +122,7 @@ function purpose(body) {
   found.forEach(({ heading, answer }) => [heading, ...answer].forEach(node => node.remove()));
 }
 
-export function shapeContent(html, { extractContact = false } = {}) {
+export function shapeContent(html, { extractContact = false, groupCards = true } = {}) {
   const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
   const body = doc.body;
   // Marcação que o editor antigo salvou como texto (ex.: "<span style=...>Nome</span>" aparecendo na tela).
@@ -155,6 +155,6 @@ export function shapeContent(html, { extractContact = false } = {}) {
   }
   purpose(body);
   faq(body);
-  cards(body);
+  if (groupCards) cards(body);
   return { html: body.innerHTML, contact };
 }

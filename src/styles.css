@@ -14,7 +14,7 @@
   /* Sombras suaves: cards (--shadow), hover de cards e elementos flutuantes (menus, painéis). */
   --shadow-hover:0 12px 30px rgb(12 49 86 / 8%);
   --shadow-float:0 14px 36px rgb(12 49 86 / 10%);
-  --motion-ease:cubic-bezier(.2,0,0,1);
+
 }
 * { box-sizing:border-box; corner-shape:squircle; }
 *::before,*::after { corner-shape:squircle; }
@@ -28,6 +28,7 @@ button { cursor:pointer; }
 button:disabled { cursor:default; }
 button,input,select { border-radius:0; }
 a { color:inherit; text-decoration:none; }
+u,ins { text-decoration:none; }
 h1,h2,h3,p { margin:0; }
 img { display:block; max-width:100%; }
 button { color:inherit; }
@@ -64,7 +65,7 @@ button { color:inherit; }
 .utility-bar { height:39px; background:var(--blue); color:#fff; }
 .utility-content { height:36px; display:flex; justify-content:space-between; align-items:center; }
 .utility-links { display:flex; gap:16px; font-size:14px; line-height:20px; }
-.utility-links a:hover { text-decoration:underline; }
+.utility-links a:hover { color:var(--orange); }
 .utility-socials { position:relative; display:flex; align-items:center; width:55px; height:28px; flex:none; }
 .utility-socials > img { width:55px; height:20px; max-width:none; }
 /* Preserve exatamente os ícones originais do Figma; links transparentes sobre a arte. */
@@ -80,27 +81,18 @@ button { color:inherit; }
 .main-navigation { display:flex; gap:16px; margin-left:auto; align-items:center; }
 .nav-group { position:relative; }
 .nav-trigger { display:flex; align-items:center; gap:6px; border:0; padding:8px 5px 8px 0; background:transparent; white-space:nowrap; color:#04337c; font-size:16px; font-weight:800; }
-.nav-trigger .icon { width:7.5px; height:4.83px; object-fit:contain; transition:transform .18s; }
-/* A seta é desenhada com a cor do texto (máscara do SVG), então acompanha o laranja do hover. */
-.nav-trigger .icon { object-position:-99px 0; background:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; }
+.nav-trigger .icon { width:7.5px; height:4.83px; object-fit:contain; object-position:-99px 0; background-color:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; transition:transform .18s; }
 .nav-trigger[aria-expanded=true] .icon { transform:rotate(180deg); }
 .nav-dropdown { position:absolute; top:calc(100% + 12px); left:-16px; width:280px; padding:8px; margin:0; list-style:none; background:#fff; border:0; border-radius:20.8px; box-shadow:var(--shadow-float); max-height:65vh; overflow:auto; }
-@media (prefers-reduced-motion:no-preference) {
-  .nav-dropdown:not([hidden]),.nav-dropdown .nav-sub:not([hidden]) { animation:menu-enter 220ms var(--motion-ease) both; transform-origin:top left; }
-  @keyframes menu-enter {
-    from { opacity:.65; transform:translateY(-6px) scale(.985); }
-    to { opacity:1; transform:translateY(0) scale(1); }
-  }
-}
-.nav-dropdown a { display:block; padding:12px; border-radius:10.4px; line-height:1.4; font-size:15px; transition:color .18s ease,background-color .18s ease; }
-.nav-dropdown a:hover,.nav-dropdown a:focus-visible { color:#fff; background:var(--orange); }
+.nav-dropdown a { display:block; padding:12px; border-radius:10.4px; line-height:1.4; font-size:15px; }
+.nav-dropdown a:hover,.nav-dropdown a:focus-visible { background:#eef4fa; }
 /* Grupos com subitens: base = acordeão (celular); a partir de 1101px vira painel lateral. */
-.nav-dropdown .nav-row { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; border-radius:10.4px; transition:color .18s ease,background-color .18s ease; }
+.nav-dropdown .nav-row { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; border-radius:10.4px; }
 .nav-dropdown .nav-row > a { flex:1; }
 .nav-dropdown .nav-group-button,.nav-dropdown .sub-toggle { border:0; background:transparent; color:inherit; font:inherit; cursor:pointer; }
 .nav-dropdown .nav-group-button { padding:12px; font-size:15px; line-height:1.4; text-align:left; }
 .nav-dropdown .sub-toggle { padding:12px; display:grid; place-items:center; align-self:stretch; }
-.nav-dropdown .nav-row:hover,.nav-dropdown .nav-row:focus-within,.nav-dropdown .is-open > .nav-row { color:#fff; background:var(--orange); }
+.nav-dropdown .nav-row:hover,.nav-dropdown .nav-row:focus-within { background:#eef4fa; }
 .nav-dropdown .nav-row .icon { width:7.5px; height:4.83px; flex:none; object-fit:contain; object-position:-99px 0; background:currentColor; -webkit-mask:url(/assets/figma/1b387.svg) center / contain no-repeat; mask:url(/assets/figma/1b387.svg) center / contain no-repeat; transition:transform .18s; }
 .nav-dropdown .is-open > .nav-row .icon { transform:rotate(180deg); }
 .nav-dropdown .nav-row:focus-visible,.nav-dropdown .sub-toggle:focus-visible { outline:3px solid #f7941f; outline-offset:-3px; border-radius:10.4px; }
@@ -109,6 +101,8 @@ button { color:inherit; }
 .nav-dropdown .nav-sub a { padding:10px 12px; font-size:14px; }
 @media (min-width:1101px) {
   .nav-dropdown { max-height:none; overflow:visible; }
+  /* Mantém o menu aberto ao atravessar o espaço entre o botão e o painel. */
+  .nav-dropdown::before { content:''; position:absolute; left:0; right:0; top:-12px; height:12px; }
   .nav-dropdown .has-sub { position:relative; }
   .nav-dropdown .nav-row .icon,.nav-dropdown .is-open > .nav-row .icon { transform:rotate(-90deg); }
   .nav-dropdown .nav-sub { position:absolute; top:-8px; left:calc(100% + 8px); width:280px; margin:0; padding:8px; background:#fff; border:0; border-radius:20.8px; box-shadow:var(--shadow-float); z-index:2; }
@@ -150,6 +144,16 @@ button { color:inherit; }
 .banner-arrow .icon { width:35px; height:35px; color:white; }
 .banner-next .icon { transform:rotate(180deg); }
 @media (min-width:768px) { .hero-carousel .banner-arrow .icon { color:var(--blue); } }
+/* Convite ao clique apenas nos controles da hero; a pulsação mantém o centro
+   da seta e não altera o posicionamento dos demais carrosséis. */
+@media (prefers-reduced-motion:no-preference) {
+  .hero-carousel .banner-arrow { animation:hero-arrow-pulse 2.8s ease-in-out .8s infinite; }
+  .hero-carousel .banner-arrow:hover,.hero-carousel .banner-arrow:focus-visible { animation:none; }
+  @keyframes hero-arrow-pulse {
+    0%,60%,100% { transform:translateY(-50%) scale(1); opacity:.8; }
+    30% { transform:translateY(-50%) scale(1.15); opacity:1; }
+  }
+}
 .banner-dots { position:absolute; bottom:49px; left:50%; transform:translateX(-50%); display:flex; gap:1px; z-index:2; }
 .banner-dots button { display:grid; place-items:center; width:25px; height:34px; border:0; padding:0; background:transparent; }
 .banner-dots span { display:block; width:9.27px; height:9.27px; border-radius:26px; background:white; }
@@ -313,7 +317,7 @@ button { color:inherit; }
 .footer-columns a { transition:color .2s ease; }
 .footer-columns a:hover { color:var(--orange); text-decoration:none; }
 .copyright { text-align:center; min-height:58px; padding:24px 16px 19px; font-size:13px; line-height:1.5; }
-.copyright a:hover { text-decoration:underline; }
+.copyright a:hover { color:var(--orange); }
 .copyright p { margin:0; }
 .copyright .footer-company { max-width:980px; margin-inline:auto; line-height:18px; }
 .copyright .footer-company + p { margin-top:12px; }
@@ -618,6 +622,7 @@ button { color:inherit; }
   transition-timing-function:ease;
 }
 .button .icon { transition-duration:.25s; }
+.nav-trigger { transition:none; }
 @media (hover:hover) {
   .button:not(:disabled):hover {
     background-color:#eb7e0d;
@@ -645,10 +650,6 @@ button { color:inherit; }
   .video-poster:hover .youtube-play { transform:translate(-50%,-50%) scale(1.08); }
 }
 .button:disabled, .course-arrow:disabled { transform:none; cursor:default; }
-@media (prefers-reduced-motion:no-preference) {
-  .button:not(:disabled):active,.course-arrow:not(:disabled):active { transform:scale(.97); transition-duration:120ms; }
-  .quick-links-card:active,.inner-tile:active { transform:scale(.985); transition-duration:120ms; }
-}
 .button:focus-visible, .course-arrow:focus-visible, .banner-arrow:focus-visible,
 .menu-toggle:focus-visible, .nav-trigger:focus-visible,
 .site-search button:focus-visible { outline:3px solid #f7941f; outline-offset:3px; }
@@ -720,9 +721,7 @@ svg.icon { display:block; flex-shrink:0; visibility:visible; opacity:1; }
   .accessibility-reset:hover { background:#ffe7c8; }
 }
 html.a11y-high-contrast .site-shell { filter:contrast(1.28) saturate(.94); }
-html.a11y-links .site-shell a:not(.button):not(.photo-card):not(.course-card):not(.main-story):not(.small-story) {
-  text-decoration:underline !important; text-underline-offset:3px; text-decoration-thickness:2px;
-}
+
 html.a11y-reduce-motion, html.a11y-reduce-motion * { scroll-behavior:auto !important; }
 html.a11y-reduce-motion *, html.a11y-reduce-motion *::before, html.a11y-reduce-motion *::after {
   animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;
@@ -767,7 +766,7 @@ html.a11y-background .quick-links-card,
 html.a11y-background .inner-detail-fact,
 html.a11y-background .inner-contact-card,
 html.a11y-background .site-result-card { background:#fffdf1; }
-html.a11y-links .site-shell a { text-decoration:underline !important; text-underline-offset:3px; text-decoration-thickness:2px; }
+html.a11y-links .site-shell a { outline:2px solid currentColor; outline-offset:2px; }
 html.a11y-legible .site-shell,html.a11y-legible .site-shell * { font-family:Arial,Helvetica,sans-serif !important; letter-spacing:.015em; }
 @media (max-width:640px) {
   .accessibility-panel { left:12px; right:12px; bottom:76px; top:auto; width:auto; max-height:calc(100dvh - 110px);
@@ -803,4 +802,4 @@ html.a11y-legible .site-shell,html.a11y-legible .site-shell * { font-family:Aria
 .footer-address address { white-space:pre-line; }
 
 .footer-phone { margin-top:8px; font-size:16px; line-height:25px; }
-.footer-phone a { color:inherit; font-weight:700; text-decoration:underline; }
+.footer-phone a { color:inherit; font-weight:700; text-decoration:none; }

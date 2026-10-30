@@ -49,6 +49,52 @@
 .service-contact-lines a { color:var(--blue); font-weight:700; }
 .service-contact-actions { display:flex; flex-direction:column; gap:10px; flex:0 1 auto; }
 
+/* PSG: informação sobre o programa seguida do caminho para participar. */
+.psg-content { margin-top:72px; }
+.psg-content h2 { color:var(--blue); font-size:28px; line-height:1.25; font-weight:800; }
+.psg-content h3 { color:#00284d; font-size:20px; line-height:1.35; font-weight:800; }
+.psg-content p { color:#3e5a71; font-size:16px; line-height:1.7; }
+.psg-overview { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,.65fr); align-items:start; gap:64px; }
+.psg-overview-copy p { max-width:65ch; margin-top:18px; }
+.psg-inline-link { display:inline-flex; align-items:center; gap:10px; min-height:44px; color:#004b8d; font-weight:800; font-size:15px; }
+.psg-inline-link svg { flex:none; }
+.psg-inline-link:hover { color:#ed8617; }
+.psg-inline-link:focus-visible { outline:3px solid #004b8d; outline-offset:4px; }
+.psg-overview-copy .psg-inline-link { margin-top:12px; }
+.psg-audience { padding:30px; border-radius:26px; background:#e6f2ff; }
+.psg-audience h3 { color:#004b8d; }
+.psg-audience p { font-size:15px; margin-top:14px; }
+.psg-participation { margin-top:72px; }
+.psg-section-heading p { margin-top:10px; }
+.psg-steps { list-style:none; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:0; margin:24px 0 0; }
+.psg-steps li { display:flex; gap:18px; align-items:flex-start; min-width:0; padding:26px; background:white; border-radius:22px; box-shadow:var(--shadow); }
+.psg-step-number { display:grid; place-items:center; flex:none; width:40px; height:40px; border-radius:12px; background:#e6f2ff; color:#004b8d; font-size:18px; font-weight:800; }
+.psg-steps li > div { display:flex; flex-direction:column; align-items:flex-start; min-width:0; height:100%; }
+.psg-steps h3 { font-size:19px; margin:7px 0 12px; }
+.psg-steps p { font-size:15px; }
+.psg-steps .psg-inline-link { margin-top:auto; padding-top:14px; }
+.psg-notice { display:flex; align-items:start; gap:14px; margin-top:18px; padding:22px 24px; border-radius:20px; background:#e6f2ff; }
+.psg-notice svg { flex:none; color:#e9840f; }
+.psg-notice p { font-size:15px; }
+.psg-more { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:72px; padding:32px; border-radius:26px; background:white; box-shadow:var(--shadow); }
+.psg-more p { margin-top:10px; }
+.psg-more .button { flex:none; }
+@media (max-width:1000px) {
+  .psg-overview { gap:32px; }
+  .psg-steps { grid-template-columns:1fr; }
+  .psg-steps li { align-items:start; }
+}
+@media (max-width:767px) {
+  .psg-content { margin-top:44px; }
+  .psg-content h2 { font-size:24px; }
+  .psg-overview { grid-template-columns:1fr; gap:24px; }
+  .psg-audience { padding:24px; }
+  .psg-participation,.psg-more { margin-top:48px; }
+  .psg-steps li { padding:22px; }
+  .psg-more { align-items:stretch; flex-direction:column; padding:24px; }
+  .psg-more .button { width:100%; }
+}
+
 @media (hover:hover) {
   .service-text-link:hover svg { transform:translateX(3px); }
 }

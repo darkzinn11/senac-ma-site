@@ -1,6 +1,7 @@
 import { getJSON, mediaUrl, query } from './client';
 import { adaptOffer, courseSituation } from './adapters';
 import { courseVisual } from '../data/courseVisuals';
+import { sentenceCase } from '../utils/sentenceCase';
 
 const MAX_PAGES = 6;
 
@@ -34,7 +35,7 @@ const firstDate = (offers) => offers.map(offer => offer.inicio).find(Boolean) ||
 function adaptCatalogItem(item, offers) {
   const cities = [...new Set(offers.map(offer => offer.localidade).filter(Boolean))];
   return {
-    id: item.id, slug: item.slug, title: item.name, path: item.path,
+    id: item.id, slug: item.slug, title: sentenceCase(item.name), path: item.path,
     segmento: item.category_slug || '', area: item.category_name || '',
     carga_horaria: item.workload_hours, localidade: cities.join(', '), cities,
     units: [...new Set(offers.map(offer => offer.unidade).filter(Boolean))],

@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, Buildings2, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
+import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, Buildings2, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search, Clock, Copy, TickCircle } from 'iconsax-react';
 import { isCatalog, isNews, isNotices, localHref } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
 import { publicUrl, routeHref } from '../data/basePath';
+import { sentenceCase } from '../utils/sentenceCase';
 import { courseVisual } from '../data/courseVisuals';
 import { courseStatus } from '../data/courseApi';
 import useAsync from '../api/useAsync';
@@ -10,6 +11,9 @@ import { useSiteData } from '../api/SiteData';
 import { listChildPages, listNews, listNotices, listResults, listUnits } from '../api/content';
 import Html, { sanitizeHtml } from './Html';
 import { shapeContent } from './contentShape';
+import Breadcrumb from './PageBreadcrumb';
+import InformationPage from './InformationPages';
+import ContactDirectory from './ContactDirectory';
 import { unitContactHtml } from './unitContact';
 import CourseCatalog from './CourseCatalog';
 import CourseDetail from './CourseDetail';
@@ -26,18 +30,6 @@ const cleanTitle = text => String(text || '').replace(/\s+/g,' ').trim();
 const dest = (link) => localHref(link);
 const safeImage = (image) => image && (image.startsWith('https://') || (image.startsWith('/') && !image.startsWith('//'))) ? image : null;
 
-function Breadcrumb({ page }) {
-  const ancestor = page.path.startsWith('/unidades/') ? {title:'Unidades',path:'/unidades/'}
-    : page.path.startsWith('/institucional/') ? {title:'O Senac',path:'/institucional/'}
-    : page.kind==='post' ? {title:'Notícias',path:'/noticias/'}
-    : page.kind==='course' ? {title:'Cursos',path:'/cursos-senac/'}
-    : page.kind==='notice' ? {title:page.parent==='/resultados-psg/'?'Resultados PSG':page.parent==='/licitacoes-2016/'?'Licitações':'Editais PSG',path:page.parent} : null;
-  return <nav className="inner-breadcrumb" aria-label="Você está aqui">
-    <a href={routeHref('/')}>Início</a><ChevronRight size={15} variant="Bold" color="currentColor"/>
-    {ancestor && <><a href={ancestor.path}>{ancestor.title}</a><ChevronRight size={15} variant="Bold" color="currentColor"/></>}
-    <span aria-current="page">{page.title}</span>
-  </nav>;
-}
 function Intro({page,subtitle,eyebrow}) {
   return <header className="inner-page-heading">
     <Breadcrumb page={page}/>
@@ -110,16 +102,6 @@ function MissionVisionPage({page}) {
   },[page.html]);
   const related=useAsync(async()=>(await listChildPages('/institucional/'))
     .filter(item=>item.path!==page.path).slice(0,3),[page.path]);
-  useEffect(()=>{
-    const root=document.querySelector('.mission-page');
-    if(!root||!('IntersectionObserver' in window))return undefined;
-    const targets=root.querySelectorAll('.mission-history-dates p,.mission-history-photo,.mission-history-copy > *,.mission-principles > h2,.mission-principles .prose-purpose-card,.institutional-explore .inner-section-title,.institutional-explore a');
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(entry.isIntersecting){entry.target.classList.add('mission-reveal-active');observer.unobserve(entry.target);}
-    }),{threshold:.1});
-    targets.forEach(target=>observer.observe(target));
-    return()=>observer.disconnect();
-  },[page.html,related.data]);
   if(!parts)return <ContentPage page={page}/>;
   return <div className="mission-page">
     <Breadcrumb page={page}/>
@@ -160,25 +142,15 @@ function AdministrationRegionalPage({page}) {
     return [...doc.body.querySelectorAll(':scope > h2')].map(heading=>{
       const grid=heading.nextElementSibling?.classList.contains('prose-card-grid')?heading.nextElementSibling:null;
       const cards=grid?[...grid.querySelectorAll(':scope > .prose-card')].map(card=>{
-        const title=cleanTitle(card.querySelector('h3')?.textContent);
+        const title=sentenceCase(cleanTitle(card.querySelector('h3')?.textContent));
         card.querySelector('h3')?.remove();
         return {title,html:card.innerHTML};
       }):[];
-      return {title:cleanTitle(heading.textContent),cards};
+      return {title:sentenceCase(cleanTitle(heading.textContent)),cards};
     }).filter(section=>section.cards.length);
   },[page.html]);
   const related=useAsync(async()=>(await listChildPages('/institucional/'))
     .filter(item=>item.path!==page.path).slice(0,3),[page.path]);
-  useEffect(()=>{
-    const root=document.querySelector('.administration-page');
-    if(!root||!('IntersectionObserver' in window))return undefined;
-    const targets=root.querySelectorAll('.administration-hero > *,.administration-section-heading > *,.administration-council-layout,.administration-director,.administration-areas details,.institutional-explore .inner-section-title,.institutional-explore a');
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(entry.isIntersecting){entry.target.classList.add('administration-reveal-active');observer.unobserve(entry.target);}
-    }),{threshold:.08});
-    targets.forEach(target=>observer.observe(target));
-    return()=>observer.disconnect();
-  },[page.html,related.data]);
   const council=sections[0];
   const department=sections[1];
   const councilTitle=council?.title.replace(/\s*-\s*Per[ií]odo:.*/i,'')||'Conselho Regional do Senac/MA';
@@ -187,7 +159,7 @@ function AdministrationRegionalPage({page}) {
     <Breadcrumb page={page}/>
     <header className="administration-hero">
       <div><h1>Administração Regional</h1><p>Conheça a composição do Conselho Regional e a estrutura de gestão do Senac no Maranhão</p></div>
-      <p className="administration-hero-note"><span>Gestão vigente</span><strong>{period}</strong></p>
+      <p className="administration-hero-note"><span>Período do Conselho</span><strong>{period}</strong></p>
     </header>
     {council&&<section className="administration-council" aria-labelledby="council-title">
       <div className="administration-section-heading"><h2 id="council-title">{councilTitle}</h2><p>Representação institucional e participação dos setores que integram o Conselho</p></div>
@@ -226,49 +198,17 @@ function ContentPage({page}) {
   const isUnits=page.path==='/unidades/';
   const isUnit=page.path.startsWith('/unidades/') && !isUnits;
   const isInstitutional=page.path.startsWith('/institucional/');
-  const child=isUnits?[]:(page.children||[]);
   // "Explore também": outras unidades ou páginas irmãs, vindas da API (sem bloquear a página).
   const related=useAsync(async()=>{
     if(isUnit)return (await listUnits()).filter(unit=>unit.path!==page.path).slice(0,3);
-    if(isInstitutional)return (await listChildPages('/institucional/')).filter(item=>item.path!==page.path).slice(0,3);
+    if(isInstitutional && page.path!=='/institucional/')return (await listChildPages('/institucional/')).filter(item=>item.path!==page.path).slice(0,3);
     return [];
   },[page.path]);
   const relatives=related.data||[];
-  const shaped=useMemo(()=>shapeContent(page.html,{extractContact:isUnit}),[page.html,isUnit]);
-  const hasText=Boolean(shaped.html.replace(/<[^>]*>/g,'').trim());
-  const hasImage=/<img\s/i.test(shaped.html);
-  // A lateral só aparece quando tem algo desta página (contato da unidade ou páginas da seção);
-  // sem ela, o texto vira uma coluna de leitura em vez de deixar um vazio ao lado.
-  // Contato: do cadastro de Unidades (admin); só se ele estiver vazio vale o texto antigo da página.
-  const unitContact=useMemo(()=>isUnit?unitContactHtml(page.unit):'',[isUnit,page.unit]);
-  const hasAside=Boolean(unitContact||shaped.contact)||child.length>0;
-  // Cards e tabelas aproveitam a largura toda; texto corrido fica na coluna de leitura.
-  const isWide=!hasAside&&/class="prose-card-grid"/.test(shaped.html);
   return <>
-    <div className={'inner-content-frame'+(hasAside?'':isWide?' is-wide':' is-single')}>
-      <div className="inner-content-primary">
-        {/* Na unidade, o resumo repete o primeiro parágrafo do texto. */}
-        <Intro page={isUnit?{...page,excerpt:''}:page}/>
-        <article className="inner-content">
-        {hasText||hasImage ? <Html html={shaped.html}/> : <div className="inner-empty">
-          <h2>Informações e atendimento</h2>
-          <p>Novas informações desta área serão disponibilizadas aqui.</p>
-        </div>}
-        <ResourceLinks items={page.links||[]} title={page.path.includes('psg')?'Editais e documentos':'Acessos e documentos'}/>
-        </article>
-        {page.path==='/licitacoes-2016/' && <NoticesPage kind="licitacao" heading="Editais de licitação"/>}
-      </div>
-      {hasAside&&<aside className="inner-aside">
-        {(unitContact||shaped.contact)&&<div className="inner-aside-card inner-contact-aside">
-          <h2>Contato da unidade</h2>
-          <Html html={unitContact||shaped.contact} className="inner-contact-lines"/>
-          <ActionLink href={dest(links.courses)} arrow>Consultar cursos</ActionLink>
-        </div>}
-        {child.length>0 && <div className="inner-aside-links"><h3>Nesta seção</h3>
-          {child.map(c=><a href={c.path} key={c.id}>{c.title}<ChevronRight size={16} variant="Bold" color="currentColor"/></a>)}
-        </div>}
-      </aside>}
-    </div>
+    <InformationPage page={isUnits?{...page,children:[]}:page}/>
+    <ResourceLinks items={page.links||[]} title={page.path.includes('psg')?'Editais e documentos':'Acessos e documentos'}/>
+    {page.path==='/licitacoes-2016/' && <NoticesPage kind="licitacao" heading="Editais de licitação"/>}
     {isUnits && <UnitListing/>}
     {relatives.length>0 && <section className="inner-stack"><div className="inner-section-title"><h2>{isUnit?'Outras unidades':'Explore também'}</h2></div>
       <div className="inner-tile-grid">{relatives.map(item=><LinkTile item={item} detail={isUnit} key={item.id}/>)}</div>
@@ -326,31 +266,8 @@ function buildContactCards(page,units,apiUnits,settings) {
 function ContactPage({page}) {
   const {units,apiUnits,settings}=useSiteData();
   const groups=useMemo(()=>buildContactCards(page,units,apiUnits,settings),[page,units,apiUnits,settings]);
-  const ombudsman=page.links.find(item=>fold(item.label).includes('ouvidoria'));
-  return <>
-    <Intro page={page} subtitle="Encontre os canais de atendimento, endereços e contatos das unidades do Senac Maranhão"/>
-    <section className="inner-contact-section" aria-labelledby="contact-units-heading">
-      <div className="inner-section-title"><div>
-        <h2 id="contact-units-heading">Canais e unidades</h2>
-        <p>Escolha a unidade ou setor que você precisa e consulte as informações de atendimento</p>
-      </div></div>
-      <div className="inner-contact-grid">
-        {groups.map(({title,html})=><article className="inner-contact-card" key={title}>
-          <span className="inner-contact-icon"><MapPin size={26} variant="Bold" color="currentColor"/></span>
-          <div className="inner-contact-card-copy"><h3>{title}</h3>
-            {html&&<Html html={html} className="inner-contact-lines"/>}
-          </div>
-        </article>)}
-      </div>
-    </section>
-    {ombudsman&&<section className="inner-contact-support">
-      <div>
-        <h2>Ouvidoria Senac</h2>
-        <p>Use a Ouvidoria para registrar solicitações, sugestões, elogios, reclamações ou denúncias</p>
-      </div>
-      <ActionLink href={ombudsman.href} arrow>Acessar ouvidoria</ActionLink>
-    </section>}
-  </>;
+  const ombudsman=(page.links||[]).find(item=>fold(item.label).includes('ouvidoria'));
+  return <ContactDirectory page={page} groups={groups} ombudsman={ombudsman}/>;
 }
 
 // Busca com atraso: evita uma requisição a cada tecla digitada.
@@ -414,11 +331,23 @@ const SHARE_TARGETS=[
   {name:'Facebook',icon:'facebook',href:url=>'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)},
 ];
 function ArticleShare({title}) {
-  const url=typeof window==='undefined'?'':window.location.href;
-  return <div className="article-share">
-    <span>Compartilhe:</span>
+  const [copyState,setCopyState]=useState('ready');
+  useEffect(()=>{
+    if(copyState==='ready')return undefined;
+    const timer=setTimeout(()=>setCopyState('ready'),4000);
+    return()=>clearTimeout(timer);
+  },[copyState]);
+  const url=typeof window==='undefined'?'':window.location.origin+window.location.pathname;
+  async function copyLink(){
+    try{await navigator.clipboard.writeText(url);setCopyState('copied');}
+    catch{setCopyState('error');}
+  }
+  return <div className="article-share" aria-label="Compartilhar notícia">
+    <span className="article-share-label">Compartilhe esta notícia</span>
     <ul>{SHARE_TARGETS.map(t=><li key={t.icon}><a href={t.href(url,title)} target="_blank" rel="noopener noreferrer" aria-label={'Compartilhar no '+t.name}>
-      <img src={publicUrl('/assets/share/'+t.icon+'.svg')} alt="" width="34" height="34"/></a></li>)}</ul>
+      <img src={publicUrl('/assets/share/'+t.icon+'.svg')} alt="" width="28" height="28"/></a></li>)}</ul>
+    <button type="button" className="article-copy-link" onClick={copyLink}>{copyState==='copied'?<TickCircle size={19} color="currentColor" aria-hidden="true"/>:<Copy size={19} color="currentColor" aria-hidden="true"/>}{copyState==='copied'?'Link copiado':'Copiar link'}</button>
+    <span role="status" className={copyState==='error'?'article-share-status':'sr-only'}>{copyState==='copied'?'Link da notícia copiado.':copyState==='error'?'Não foi possível copiar. Copie o endereço na barra do navegador.':''}</span>
   </div>;
 }
 
@@ -426,21 +355,35 @@ function ArticlePage({page}) {
   const related=useAsync(async()=>(await listNews({perPage:5})).items.filter(a=>a.id!==page.id).slice(0,4),[page.id]);
   const articleImage=safeImage(page.image) || safeImage(page.cover);
   const [coverFailed,setCoverFailed]=useState(false);
+  useEffect(()=>setCoverFailed(false),[articleImage]);
   const body=useMemo(()=>groupImages(page.html),[page.html]);
+  const readingMinutes=useMemo(()=>{
+    const doc=new DOMParser().parseFromString(sanitizeHtml(page.html),'text/html');
+    return Math.max(1,Math.ceil((doc.body.textContent.trim().match(/\S+/g)||[]).length/200));
+  },[page.html]);
+  const hasCover=Boolean(articleImage&&!coverFailed);
   return <>
       <article className="article-page">
-        <header className="article-heading">
-          <Breadcrumb page={page}/>
-          <h1>{page.title}</h1>
-          {page.date&&<ul className="article-meta"><li><CalendarDays size={16} variant="Bold" color="currentColor"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li></ul>}
-        </header>
-        {articleImage && !coverFailed && <figure className="article-cover">
-          <img src={articleImage} alt={page.coverAlt||''} loading="eager" decoding="async" onError={()=>setCoverFailed(true)}/>
-        </figure>}
-        <div className="article-body"><Html html={body}/></div>
+        <Breadcrumb page={page}/>
+        <div className={'article-intro'+(hasCover?' has-cover':'')}>
+          <header className="article-heading">
+            <h1>{page.title}</h1>
+            {page.excerpt&&<p className="article-subtitle">{page.excerpt}</p>}
+            <ul className="article-meta">
+              {page.date&&<li><CalendarDays size={17} color="currentColor" aria-hidden="true"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li>}
+              <li><Clock size={17} color="currentColor" aria-hidden="true"/><span>Leitura estimada: {readingMinutes} min</span></li>
+            </ul>
+            {page.author&&<p className="article-author">Por {page.author}</p>}
+          </header>
+          {hasCover&&<figure className="article-cover">
+            <img src={articleImage} alt={page.coverAlt||''} loading="eager" fetchPriority="high" decoding="async" onError={()=>setCoverFailed(true)}/>
+          </figure>}
+        </div>
         <ArticleShare title={page.title}/>
+        <div className="article-body"><Html html={body}/></div>
         <footer className="article-end">
           <a href={routeHref('/noticias/')} className="button button-soft"><ArrowLeft size={18} variant="Linear" color="currentColor"/>Voltar para notícias</a>
+          <a href="#main" className="article-top-link">Voltar ao início da notícia</a>
         </footer>
       </article>
     {(related.data||[]).length>0&&<section className="article-related" aria-labelledby="article-related-title">
@@ -533,10 +476,14 @@ function NoticeDetailPage({page}) {
 }
 
 export default function PortalPages({page,path}) {
-  if (!page) return <div className="container inner-not-found"><h1>Página não encontrada</h1>
-    <p>Não foi possível localizar esta página nesta versão do portal.</p>
-      <ActionLink href={routeHref('/')} arrow>Voltar para a Home</ActionLink>
-  </div>;
+  if (!page) return <section className="container not-found-page" aria-labelledby="not-found-title">
+    <img className="not-found-illustration" src={publicUrl('/assets/illustrations/erro-404.webp')} alt="" aria-hidden="true" width="1600" height="1073" />
+    <div className="not-found-content">
+      <h1 id="not-found-title">Página não encontrada</h1>
+      <p>Não encontramos a página que você procura. Ela pode ter mudado de endereço ou não estar mais disponível.</p>
+      <ActionLink href={routeHref('/')} arrow>Voltar para a página inicial</ActionLink>
+    </div>
+  </section>;
   return <div className={'container inner-page'+(isCatalog(page.path)?' is-course-catalog':'')} key={page.path}>
     {page.kind==='post' ? <ArticlePage page={page}/> :
       page.kind==='course' ? <CoursePage page={page}/> :

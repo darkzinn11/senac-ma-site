@@ -3,6 +3,7 @@ import {
   adaptContent, adaptNews, adaptNewsItem, adaptPage, adaptUnit, brief, textOf,
 } from './adapters';
 import { normalizePath, virtualPages } from '../data/portalRoutes';
+import { sentenceCase } from '../utils/sentenceCase';
 
 const API = '/v1/public';
 const ROUTE_TTL = 30 * 1000;
@@ -46,11 +47,11 @@ const paged = (response, adapt) => ({
 export async function listNews({ page = 1, perPage = 12, q = '', category = '' } = {}) {
   return paged(await getJSON(`${API}/news` + query({ page, per_page: perPage, q, category })), adaptNewsItem);
 }
-const noticeItem = item => ({ id: item.id, title: item.title, path: item.path, date: item.published_at, state: item.registration_state });
+const noticeItem = item => ({ id: item.id, title: sentenceCase(item.title), path: item.path, date: item.published_at, state: item.registration_state });
 export async function listNotices({ type = 'psg', page = 1, perPage = 18, q = '' } = {}) {
   return paged(await getJSON(`${API}/notices` + query({ type, page, per_page: perPage, q })), noticeItem);
 }
-const resultItem = item => ({ id: item.id, title: item.title, path: item.path, date: item.result_date });
+const resultItem = item => ({ id: item.id, title: sentenceCase(item.title), path: item.path, date: item.result_date });
 export async function listResults({ page = 1, perPage = 18, q = '' } = {}) {
   return paged(await getJSON(`${API}/results` + query({ page, per_page: perPage, q })), resultItem);
 }
@@ -60,7 +61,7 @@ export async function listUnits() {
 }
 export async function listChildPages(parentPath) {
   const response = await getJSON(`${API}/pages` + query({ parent_path: parentPath, per_page: 100 }));
-  return (response.data || []).map(item => ({ id: item.id, kind: 'page', title: item.title, path: item.path, cover: mediaUrl(item.cover_image_url), excerpt: '' }));
+  return (response.data || []).map(item => ({ id: item.id, kind: 'page', title: sentenceCase(item.title), path: item.path, cover: mediaUrl(item.cover_image_url), excerpt: '' }));
 }
 export async function loadSettings() {
   const settings = await getJSON(`${API}/settings`);
@@ -79,7 +80,7 @@ export async function loadQuickLinks() {
   return ((await getJSON(`${API}/quick-links`)).data || [])
     .filter(item => item.title && item.link_url)
     .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-    .map(item => ({ id: item.id, title: item.title, detail: item.description || '', href: item.link_url, icon: item.icon || '', newTab: item.open_in_new_tab }));
+    .map(item => ({ id: item.id, title: sentenceCase(item.title), detail: item.description || '', href: item.link_url, icon: item.icon || '', newTab: item.open_in_new_tab }));
 }
 
 const canLoad = (url, timeout = 5000) => new Promise(resolve => {
@@ -134,7 +135,7 @@ export async function searchSite(term) {
   const items = [
     ...(courses.data || []).map(item => ({ id: item.id, kind: 'course', title: item.name, path: item.path, excerpt: item.short_description || '', carga_horaria: item.workload_hours })),
     ...(news.data || []).map(adaptNewsItem),
-    ...(pages.data || []).map(item => ({ id: item.id, kind: 'page', title: item.title, path: item.path, excerpt: '' })),
+    ...(pages.data || []).map(item => ({ id: item.id, kind: 'page', title: sentenceCase(item.title), path: item.path, excerpt: '' })),
   ];
   const total = response => response.meta?.total ?? (response.data || []).length;
   return { items, truncated: [news, courses, pages].some(response => total(response) > (response.data || []).length) };

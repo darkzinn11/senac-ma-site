@@ -157,7 +157,7 @@ export function Footer() {
       </button>
     </div>
     <div className="copyright">
-      <p className="footer-company"><strong>Razão Social:</strong> SERVICO NACIONAL DE APRENDIZAGEM COMERCIAL - SENAC <span aria-hidden="true">|</span> <strong>CNPJ:</strong> 03.760.035/0001-17</p>
+      <p className="footer-company"><strong>Razão Social:</strong> Serviço Nacional de Aprendizagem Comercial - Senac <span aria-hidden="true">|</span> <strong>CNPJ:</strong> 03.760.035/0001-17</p>
       <p>Copyright {new Date().getFullYear()}. Todos os Direitos Reservados | Serviço Nacional de Aprendizagem Comercial - MA | <a href={links.privacy}>Política de Privacidade.</a></p>
       <a className="footer-credit" href="https://sitw.com.br/" target="_blank" rel="noopener noreferrer">
         <span>Desenvolvido por</span>

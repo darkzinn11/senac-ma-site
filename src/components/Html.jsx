@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import DOMPurify from 'dompurify';
 import { mediaUrl } from '../api/client';
+import { sentenceCase } from '../utils/sentenceCase';
 
 // O HTML dos conteúdos (notícias, páginas, cursos) vem da API já sanitizado (bluemonday). Mesmo assim ele é
 // sanitizado de novo aqui (defesa em profundidade: a API pode mudar, e o conteúdo é de editores) com DOMPurify
@@ -48,7 +49,13 @@ export function hideBrokenImage(img) {
 
 export default function Html({ html, className = 'inner-prose' }) {
   const ref = useRef(null);
-  const safe = useMemo(() => sanitizeHtml(html), [html]);
+  const safe = useMemo(() => {
+    const sanitized = sanitizeHtml(html);
+    const doc = new DOMParser().parseFromString(sanitized, 'text/html');
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) node.nodeValue = sentenceCase(node.nodeValue);
+    return doc.body.innerHTML;
+  }, [html]);
   useEffect(() => {
     const root = ref.current;
     if (!root) return undefined;
