@@ -143,6 +143,16 @@ button { color:inherit; }
 .banner-arrow .icon { width:35px; height:35px; color:white; }
 .banner-next .icon { transform:rotate(180deg); }
 @media (min-width:768px) { .hero-carousel .banner-arrow .icon { color:var(--blue); } }
+/* Convite ao clique apenas nos controles da hero; a pulsação mantém o centro
+   da seta e não altera o posicionamento dos demais carrosséis. */
+@media (prefers-reduced-motion:no-preference) {
+  .hero-carousel .banner-arrow { animation:hero-arrow-pulse 2.8s ease-in-out .8s infinite; }
+  .hero-carousel .banner-arrow:hover,.hero-carousel .banner-arrow:focus-visible { animation:none; }
+  @keyframes hero-arrow-pulse {
+    0%,60%,100% { transform:translateY(-50%) scale(1); opacity:.8; }
+    30% { transform:translateY(-50%) scale(1.15); opacity:1; }
+  }
+}
 .banner-dots { position:absolute; bottom:49px; left:50%; transform:translateX(-50%); display:flex; gap:1px; z-index:2; }
 .banner-dots button { display:grid; place-items:center; width:25px; height:34px; border:0; padding:0; background:transparent; }
 .banner-dots span { display:block; width:9.27px; height:9.27px; border-radius:26px; background:white; }
