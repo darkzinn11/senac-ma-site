@@ -138,7 +138,7 @@ export const navigation = [
   { label:'Para sua empresa', items:[
     { label:'Solicite uma Visita', href:links.company },
     { label:'Banco de Oportunidades', href:links.opportunities },
-    { label:'Aprendizagem', href:'/aprendizagem/' },
+    { label:'Aprendizagem', href:'/para-sua-empresa/aprendizagem/' },
     { label:'Licitações', href:links.tenders },
     { label:'Compras e contratos', href:'http://www.processo.ma.senac.br/Admin/Cadastros/Fornecedores.aspx' },
   ] },

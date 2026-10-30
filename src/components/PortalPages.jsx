@@ -489,10 +489,14 @@ function NoticeDetailPage({page}) {
 }
 
 export default function PortalPages({page,path}) {
-  if (!page) return <div className="container inner-not-found"><h1>Página não encontrada</h1>
-    <p>Não foi possível localizar esta página nesta versão do portal.</p>
-      <ActionLink href={routeHref('/')} arrow>Voltar para a Home</ActionLink>
-  </div>;
+  if (!page) return <section className="container not-found-page" aria-labelledby="not-found-title">
+    <img className="not-found-illustration" src={publicUrl('/assets/illustrations/erro-404.webp')} alt="" aria-hidden="true" width="1600" height="1073" />
+    <div className="not-found-content">
+      <h1 id="not-found-title">Página não encontrada</h1>
+      <p>Não encontramos a página que você procura. Ela pode ter mudado de endereço ou não estar mais disponível.</p>
+      <ActionLink href={routeHref('/')} arrow>Voltar para a página inicial</ActionLink>
+    </div>
+  </section>;
   return <div className={'container inner-page'+(isCatalog(page.path)?' is-course-catalog':'')} key={page.path}>
     {page.kind==='post' ? <ArticlePage page={page}/> :
       page.kind==='course' ? <CoursePage page={page}/> :

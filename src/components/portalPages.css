@@ -565,3 +565,41 @@
   .inner-prose .prose-purpose-card.is-missao p { font-size:20px; }
   .inner-prose .prose-purpose-card p { font-size:17px; }
 }
+
+/* Página 404 */
+.not-found-page { min-height:calc(100dvh - 245px); padding:24px 0 48px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.not-found-illustration { display:block; width:min(100%, 620px); height:auto; max-height:36dvh; object-fit:contain; }
+.not-found-content { display:flex; flex-direction:column; align-items:center; margin-top:8px; }
+.not-found-content h1 { color:var(--blue); font-size:clamp(30px, 3vw, 44px); line-height:1.12; font-weight:800; }
+.not-found-content p { max-width:540px; margin:16px 0 26px; color:#405a73; font-size:17px; line-height:1.6; }
+.not-found-content .button { min-height:50px; }
+@media (max-width:767px) {
+  .not-found-page { min-height:calc(100dvh - 200px); padding:32px 0 48px; }
+  .not-found-illustration { max-height:none; width:min(100%, 500px); }
+  .not-found-content { margin-top:16px; }
+  .not-found-content p { margin:14px 0 24px; font-size:16px; }
+}
+
+/* Estrutura provisória para páginas internas enquanto a API responde. */
+.page-skeleton { min-height:50dvh; padding-top:34px; padding-bottom:120px; }
+.skeleton-block { background:#dfe9f2; border-radius:6px; }
+.page-skeleton-breadcrumb { width:180px; max-width:55%; height:13px; margin-bottom:32px; }
+.page-skeleton-title { width:420px; max-width:75%; height:44px; margin-bottom:16px; border-radius:9px; }
+.page-skeleton-subtitle { width:540px; max-width:90%; height:16px; }
+.page-skeleton-body { display:grid; grid-template-columns:minmax(0,1fr) 304px; gap:56px; margin-top:64px; align-items:start; }
+.page-skeleton-copy { max-width:760px; padding-top:6px; }
+.page-skeleton-heading { width:35%; height:23px; margin-bottom:28px; }
+.page-skeleton-line { width:100%; height:14px; margin-bottom:16px; }
+.page-skeleton-line.is-medium { width:78%; margin-bottom:30px; }
+.page-skeleton-line.is-short { width:55%; }
+.page-skeleton-aside { padding:28px; background:#fff; border-radius:20px; }
+.page-skeleton-aside-title { width:70%; height:20px; margin-bottom:26px; }
+.page-skeleton-aside .page-skeleton-line { height:12px; margin-bottom:14px; }
+.page-skeleton-action { width:130px; height:42px; margin-top:26px; border-radius:13px; }
+@media (max-width:767px) {
+  .page-skeleton { padding-top:18px; padding-bottom:72px; }
+  .page-skeleton-breadcrumb { margin-bottom:26px; }
+  .page-skeleton-title { height:34px; max-width:90%; }
+  .page-skeleton-body { grid-template-columns:1fr; gap:32px; margin-top:44px; }
+  .page-skeleton-aside { padding:24px; }
+}

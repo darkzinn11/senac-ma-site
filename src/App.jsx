@@ -12,6 +12,8 @@ import { applySeo } from './api/seo';
 import { appPath, routeHref } from './data/basePath';
 import { isFilePath, localHref, normalizePath } from './data/portalRoutes';
 
+// Rotas temporariamente indisponíveis; remova da lista quando forem liberadas.
+const inactiveRoutes = new Set(['/solicite-uma-visita/', '/para-sua-empresa/aprendizagem/']);
 const localRoutes = ['/', '/pesquisa/'];
 const isLocalRoute = path => localRoutes.includes(path);
 const currentRoute = () => normalizePath(appPath(window.location.pathname));
@@ -21,6 +23,7 @@ const MAX_REDIRECTS = 6;
 async function follow(start) {
   let path = start;
   for (let hop = 0; hop < MAX_REDIRECTS; hop += 1) {
+    if (inactiveRoutes.has(path)) return { type: 'notfound', path };
     const result = await resolveRoute(path);
     if (result.type !== 'redirect') return { ...result, path };
     if (result.status === 410 || !result.to) return { type: 'gone', path };
@@ -33,6 +36,7 @@ const fromResult = (route, result) => result.type === 'page' ? { route, status: 
   : { route, status: result.type === 'gone' ? 'gone' : 'notfound', page: null };
 
 function initialView(route) {
+  if (inactiveRoutes.has(route)) return { route, status: 'notfound', page: null };
   if (isLocalRoute(route)) return { route, status: 'ready', page: null };
   const cached = peekRoute(route);
   return cached && cached.type !== 'redirect' ? fromResult(route, cached) : null;
@@ -40,6 +44,33 @@ function initialView(route) {
 
 function Message({ title, children, role = 'status' }) {
   return <div className="container inner-not-found" role={role}><h1>{title}</h1>{children}</div>;
+}
+
+function PageSkeleton() {
+  return <div className="container page-skeleton" role="status" aria-live="polite">
+    <span className="sr-only">Carregando página</span>
+    <div className="page-skeleton-layout" aria-hidden="true">
+      <div className="page-skeleton-breadcrumb skeleton-block" />
+      <div className="page-skeleton-title skeleton-block" />
+      <div className="page-skeleton-subtitle skeleton-block" />
+      <div className="page-skeleton-body">
+        <div className="page-skeleton-copy">
+          <div className="skeleton-block page-skeleton-heading" />
+          <div className="skeleton-block page-skeleton-line" />
+          <div className="skeleton-block page-skeleton-line" />
+          <div className="skeleton-block page-skeleton-line is-medium" />
+          <div className="skeleton-block page-skeleton-line" />
+          <div className="skeleton-block page-skeleton-line is-short" />
+        </div>
+        <div className="page-skeleton-aside">
+          <div className="skeleton-block page-skeleton-aside-title" />
+          <div className="skeleton-block page-skeleton-line" />
+          <div className="skeleton-block page-skeleton-line is-medium" />
+          <div className="skeleton-block page-skeleton-action" />
+        </div>
+      </div>
+    </div>
+  </div>;
 }
 
 export default function App() {
@@ -56,8 +87,9 @@ export default function App() {
   }, []);
 
   // Resolve a rota atual na API. A tela anterior continua visível enquanto a nova carrega;
-  // o aviso "Carregando" só aparece se demorar (evita piscar o layout).
+  // o skeleton só substitui a tela anterior se demorar (evita piscar o layout).
   useEffect(() => {
+    if (inactiveRoutes.has(route)) { setView({ route, status: 'notfound', page: null }); setSlow(false); return undefined; }
     if (isLocalRoute(route)) { setView({ route, status: 'ready', page: null }); setSlow(false); return undefined; }
     let active = true;
     setSlow(false);
@@ -151,9 +183,7 @@ export default function App() {
   const active = shown || view; // enquanto carrega, a tela anterior permanece
   let main;
   if (!active || (slow && !shown)) {
-    main = <Message title="Carregando página...">
-      <p>Consultando informações públicas do Senac Maranhão.</p>
-    </Message>;
+    main = <PageSkeleton />;
   } else if (active.route === '/') main = <Home />;
   else if (active.route === '/pesquisa/') main = <SearchResults query={new URLSearchParams(window.location.search).get('s') || ''} />;
   else if (active.status === 'error') main = <Message title="Não foi possível carregar a página" role="alert">
