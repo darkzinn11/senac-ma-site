@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, Buildings2, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search } from 'iconsax-react';
+import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, Calendar as CalendarDays, ArrowRight2 as ChevronRight, Buildings2, ClipboardText as ClipboardList, DocumentText as FileText, Teacher as GraduationCap, Location as MapPin, SearchNormal1 as Search, Clock, Copy, TickCircle } from 'iconsax-react';
 import { isCatalog, isNews, isNotices, localHref } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
 import { publicUrl, routeHref } from '../data/basePath';
@@ -330,11 +330,23 @@ const SHARE_TARGETS=[
   {name:'Facebook',icon:'facebook',href:url=>'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url)},
 ];
 function ArticleShare({title}) {
-  const url=typeof window==='undefined'?'':window.location.href;
-  return <div className="article-share">
-    <span>Compartilhe:</span>
+  const [copyState,setCopyState]=useState('ready');
+  useEffect(()=>{
+    if(copyState==='ready')return undefined;
+    const timer=setTimeout(()=>setCopyState('ready'),4000);
+    return()=>clearTimeout(timer);
+  },[copyState]);
+  const url=typeof window==='undefined'?'':window.location.origin+window.location.pathname;
+  async function copyLink(){
+    try{await navigator.clipboard.writeText(url);setCopyState('copied');}
+    catch{setCopyState('error');}
+  }
+  return <div className="article-share" aria-label="Compartilhar notícia">
+    <span className="article-share-label">Compartilhe esta notícia</span>
     <ul>{SHARE_TARGETS.map(t=><li key={t.icon}><a href={t.href(url,title)} target="_blank" rel="noopener noreferrer" aria-label={'Compartilhar no '+t.name}>
-      <img src={publicUrl('/assets/share/'+t.icon+'.svg')} alt="" width="34" height="34"/></a></li>)}</ul>
+      <img src={publicUrl('/assets/share/'+t.icon+'.svg')} alt="" width="28" height="28"/></a></li>)}</ul>
+    <button type="button" className="article-copy-link" onClick={copyLink}>{copyState==='copied'?<TickCircle size={19} color="currentColor" aria-hidden="true"/>:<Copy size={19} color="currentColor" aria-hidden="true"/>}{copyState==='copied'?'Link copiado':'Copiar link'}</button>
+    <span role="status" className={copyState==='error'?'article-share-status':'sr-only'}>{copyState==='copied'?'Link da notícia copiado.':copyState==='error'?'Não foi possível copiar. Copie o endereço na barra do navegador.':''}</span>
   </div>;
 }
 
@@ -342,21 +354,35 @@ function ArticlePage({page}) {
   const related=useAsync(async()=>(await listNews({perPage:5})).items.filter(a=>a.id!==page.id).slice(0,4),[page.id]);
   const articleImage=safeImage(page.image) || safeImage(page.cover);
   const [coverFailed,setCoverFailed]=useState(false);
+  useEffect(()=>setCoverFailed(false),[articleImage]);
   const body=useMemo(()=>groupImages(page.html),[page.html]);
+  const readingMinutes=useMemo(()=>{
+    const doc=new DOMParser().parseFromString(sanitizeHtml(page.html),'text/html');
+    return Math.max(1,Math.ceil((doc.body.textContent.trim().match(/\S+/g)||[]).length/200));
+  },[page.html]);
+  const hasCover=Boolean(articleImage&&!coverFailed);
   return <>
       <article className="article-page">
-        <header className="article-heading">
-          <Breadcrumb page={page}/>
-          <h1>{page.title}</h1>
-          {page.date&&<ul className="article-meta"><li><CalendarDays size={16} variant="Bold" color="currentColor"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li></ul>}
-        </header>
-        {articleImage && !coverFailed && <figure className="article-cover">
-          <img src={articleImage} alt={page.coverAlt||''} loading="eager" decoding="async" onError={()=>setCoverFailed(true)}/>
-        </figure>}
-        <div className="article-body"><Html html={body}/></div>
+        <Breadcrumb page={page}/>
+        <div className={'article-intro'+(hasCover?' has-cover':'')}>
+          <header className="article-heading">
+            <h1>{page.title}</h1>
+            {page.excerpt&&<p className="article-subtitle">{page.excerpt}</p>}
+            <ul className="article-meta">
+              {page.date&&<li><CalendarDays size={17} color="currentColor" aria-hidden="true"/><time dateTime={page.date}>{prettyDate(page.date)}</time></li>}
+              <li><Clock size={17} color="currentColor" aria-hidden="true"/><span>Leitura estimada: {readingMinutes} min</span></li>
+            </ul>
+            {page.author&&<p className="article-author">Por {page.author}</p>}
+          </header>
+          {hasCover&&<figure className="article-cover">
+            <img src={articleImage} alt={page.coverAlt||''} loading="eager" fetchPriority="high" decoding="async" onError={()=>setCoverFailed(true)}/>
+          </figure>}
+        </div>
         <ArticleShare title={page.title}/>
+        <div className="article-body"><Html html={body}/></div>
         <footer className="article-end">
           <a href={routeHref('/noticias/')} className="button button-soft"><ArrowLeft size={18} variant="Linear" color="currentColor"/>Voltar para notícias</a>
+          <a href="#main" className="article-top-link">Voltar ao início da notícia</a>
         </footer>
       </article>
     {(related.data||[]).length>0&&<section className="article-related" aria-labelledby="article-related-title">

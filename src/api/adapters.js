@@ -38,7 +38,7 @@ export function adaptNews(data) {
   return {
     ...adaptNewsItem(data), html: data.content_html || '', blocks: [], links: [], parent: '/noticias/',
     seoTitle: data.seo_title || '', seoDescription: data.seo_description || '', coverAlt: data.cover_image_alt || '',
-    tags: data.tags || [],
+    tags: data.tags || [], author: data.author_name || '',
   };
 }
 export function adaptPage(data, unit = null) {
