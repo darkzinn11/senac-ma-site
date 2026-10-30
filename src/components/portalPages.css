@@ -7,7 +7,7 @@
    Não renderizar banner decorativo azul, marca em marca d'água ou hero. */
 .inner-breadcrumb { display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:13px; color:#53697c; margin-bottom:30px; }
 .inner-breadcrumb a { color:#004b8d; font-weight:700; }
-.inner-breadcrumb a:hover { color:#e67d0d; text-decoration:underline; }
+.inner-breadcrumb a:hover { color:#e67d0d; text-decoration:none; }
 .inner-breadcrumb span { color:#52677c; }
 .inner-page-heading { max-width:970px; padding:8px 0 0; }
 .inner-eyebrow,.inner-kicker { text-transform:none; letter-spacing:normal; font-weight:800; font-size:12px; color:#e67d0d; }
@@ -53,7 +53,7 @@
 .inner-prose hr { border:0; border-top:1px solid #d7e0ea; margin:28px 0; }
 .inner-prose blockquote { margin:0 0 19px; padding-left:18px; border-left:4px solid #f7941f; }
 .inner-prose [hidden] { display:none; }
-.inner-prose a { color:#0060a6; text-decoration:underline; text-underline-offset:3px; }
+.inner-prose a { color:#0060a6; text-decoration:none; }
 .inner-prose a:hover { color:#e67d0d; }
 .inner-aside { display:grid; gap:20px; align-content:start; align-self:start; }
 .inner-aside > * { align-self:start; }
@@ -89,7 +89,7 @@
 .inner-contact-card p { color:#52677c; font-size:14px; line-height:1.7; overflow-wrap:anywhere; }
 .inner-contact-lines { margin:0; }
 .inner-contact-lines p { margin:0; color:#52677c; font-size:15px; line-height:1.75; overflow-wrap:anywhere; }
-.inner-contact-lines a { color:#00579c; font-weight:700; text-decoration:underline; text-underline-offset:3px; }
+.inner-contact-lines a { color:#00579c; font-weight:700; text-decoration:none; }
 .inner-contact-lines a:hover { color:#e67d0d; }
 .inner-contact-support { margin-top:40px; padding:34px 38px; display:flex; align-items:center; justify-content:space-between; gap:32px; border-radius:28px; background:linear-gradient(90deg,#004b8d,#2c93db); color:white; }
 .inner-contact-support h2 { margin:6px 0 8px; font-size:28px; line-height:1.2; }
