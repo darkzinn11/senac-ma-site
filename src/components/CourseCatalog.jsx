@@ -7,7 +7,7 @@ import { situationClass } from '../api/adapters';
 import { Icon } from './Ui';
 const fold=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 // A API só expõe turmas abertas ou programadas; turmas encerradas não são públicas.
-const SITUATIONS=['Matrículas abertas','Programada','Em andamento','A confirmar'];
+const SITUATIONS=['Matrículas abertas','Programada','A confirmar'];
 // Telas largas (1600px+) mostram 4 cursos por linha; a página tem 2 linhas completas em qualquer largura.
 const WIDE_GRID='(min-width:1600px)';
 function usePageSize() {

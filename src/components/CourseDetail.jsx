@@ -110,7 +110,10 @@ function OfferCard({ offer, status }) {
           Matricular-se<ArrowRight size={18} color="currentColor" aria-hidden="true" />
           <span className="sr-only"> na turma de {offer.inicio} em {offer.unidade || offer.localidade} (abre o sistema de matrícula em nova aba)</span>
         </a>
-        : <span className="course-offer-soon">Inscrições em breve</span>}
+        : <a className="button button-soft" href={routeHref('/cadastro-de-interesse/')}>
+          Avise-me quando disponível<ArrowRight size={18} color="currentColor" aria-hidden="true" />
+          <span className="sr-only"> sobre a turma de {offer.inicio || 'data a confirmar'} em {offer.unidade || offer.localidade}</span>
+        </a>}
     </div>
   </li>;
 }

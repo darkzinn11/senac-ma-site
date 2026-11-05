@@ -47,6 +47,49 @@ export function hideBrokenImage(img) {
   if (parent && parent.tagName === 'P' && !parent.textContent.trim() && !parent.querySelector('img:not([hidden])')) parent.hidden = true;
 }
 
+
+// Legendas vindas do WordPress: o texto logo abaixo de uma foto, em itálico/negrito ou com "Imagem: …",
+// vira <figcaption> (foto única) ou parágrafo de legenda (galeria). Só mexe em texto curto colado na foto.
+const CAPTION_HINT = /\b(imagem|imagens|foto|fotos|fotografia|crédito|créditos|divulgação|reprodução|arquivo)\b\s*[:/(]|\((?:foto|imagem|divulgação|arquivo)/i;
+const CAPTION_MAX = 300;
+const hasImage = el => el.nodeType === 1 && (el.tagName === 'IMG' || Boolean(el.querySelector?.('img'))) && !el.textContent.trim();
+const isEmptyBlock = node => (node.nodeType === 3 && !node.nodeValue.trim()) || (node.nodeType === 1 && node.tagName === 'P' && !node.textContent.trim() && !node.querySelector('img'));
+function captionText(node) {
+  if (node.nodeType === 3) {
+    const text = node.nodeValue.trim();
+    return text && text.length <= CAPTION_MAX && CAPTION_HINT.test(text) ? text : '';
+  }
+  if (node.nodeType !== 1 || !['P', 'EM', 'STRONG', 'I', 'B'].includes(node.tagName)) return '';
+  const text = node.textContent.replace(/\s+/g, ' ').trim();
+  if (!text || text.length > CAPTION_MAX || node.querySelector('img')) return '';
+  const onlyEmphasis = [...node.childNodes].every(child => (child.nodeType === 3 && !child.nodeValue.trim())
+    || (child.nodeType === 1 && ['EM', 'STRONG', 'I', 'B', 'BR'].includes(child.tagName) && !child.querySelector('a')));
+  return onlyEmphasis || CAPTION_HINT.test(text) ? text : '';
+}
+export function markCaptions(doc) {
+  const blocks = [...doc.body.children].filter(el => hasImage(el) || el.classList.contains('article-gallery'));
+  for (const block of blocks) {
+    let next = block.nextSibling;
+    while (next && isEmptyBlock(next)) next = next.nextSibling;
+    if (!next) continue;
+    const text = captionText(next);
+    if (!text) continue;
+    if (block.classList.contains('article-gallery')) {
+      const caption = doc.createElement('p');
+      caption.className = 'img-caption';
+      caption.textContent = text;
+      next.replaceWith(caption);
+    } else {
+      const figure = doc.createElement('figure');
+      const caption = doc.createElement('figcaption');
+      caption.textContent = text;
+      block.replaceWith(figure);
+      figure.append(...(block.tagName === 'IMG' ? [block] : block.childNodes), caption);
+      next.remove();
+    }
+  }
+}
+
 export default function Html({ html, className = 'inner-prose' }) {
   const ref = useRef(null);
   const safe = useMemo(() => {
@@ -54,6 +97,7 @@ export default function Html({ html, className = 'inner-prose' }) {
     const doc = new DOMParser().parseFromString(sanitized, 'text/html');
     const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) node.nodeValue = sentenceCase(node.nodeValue);
+    markCaptions(doc);
     return doc.body.innerHTML;
   }, [html]);
   useEffect(() => {

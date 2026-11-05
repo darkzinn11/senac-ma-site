@@ -57,7 +57,7 @@ export default function SearchResults({query=''}) {
   const matches=useMemo(()=>{
     if(!tokens.length)return [];
     return found.items.map(item=>({item,rank:score(item,tokens,phrase)}))
-      .sort((a,b)=>b.rank-a.rank || a.item.title.localeCompare(b.item.title,'pt-BR'))
+      .sort((a,b)=>b.rank-a.rank || String(b.item.date||'').localeCompare(String(a.item.date||'')) || a.item.title.localeCompare(b.item.title,'pt-BR'))
       .map(entry=>entry.item);
   },[phrase,found.items]);
   const counts=Object.fromEntries(types.map(type=>[type.id,type.id==='all'?matches.length:matches.filter(item=>item.kind===type.id).length]));

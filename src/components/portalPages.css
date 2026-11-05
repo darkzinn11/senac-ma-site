@@ -604,3 +604,13 @@
   .page-skeleton-body { grid-template-columns:1fr; gap:32px; margin-top:44px; }
   .page-skeleton-aside { padding:24px; }
 }
+
+/* Legenda de foto, destaque e alinhamento criados no editor do painel (classes de lista fechada na API) */
+.inner-prose figure img { margin:0; width:100%; }
+.inner-prose figcaption { margin-top:10px; font-size:14px; line-height:1.5; color:#5b7287; }
+.inner-prose .callout { margin:0 0 19px; padding:20px 24px; border-radius:16px; background:#fff4e5; border-left:4px solid #f7941f; color:#00284d; }
+.inner-prose .callout > :last-child { margin-bottom:0; }
+.inner-prose .align-center { text-align:center; }
+.inner-prose .align-right { text-align:right; }
+.inner-prose .align-justify { text-align:justify; }
+.inner-prose .img-caption { margin:-14px 0 24px; font-size:14px; line-height:1.5; color:#5b7287; }
