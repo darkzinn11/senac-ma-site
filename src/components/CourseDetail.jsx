@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowRight, Calendar as CalendarDays, CalendarTick, Clock as Clock3, Location as MapPin, People as Users, Teacher, Category, Award, InfoCircle } from 'iconsax-react';
-import { brl, coursePrice, dateISO } from '../data/courseApi';
+import { brl, COURSE_DISCOUNT_PERCENT, coursePrice, dateISO } from '../data/courseApi';
 import { routeHref } from '../data/basePath';
 import { courseVisual } from '../data/courseVisuals';
 import { canEnroll, offerSituation, situationClass, textOf } from '../api/adapters';
@@ -105,11 +105,11 @@ function OfferCard({ offer, status }) {
     </div>
     <div className="course-offer-action">
       <p className="course-offer-price">{price ? <>
-        {price.discountPercent > 0 && <>
-          <span className="course-offer-discount">{price.discountPercent}% de desconto</span>
+        {price.hasDiscount && <>
+          <span className="course-offer-discount">{COURSE_DISCOUNT_PERCENT}% de desconto</span>
           <span className="course-offer-original">De <s>{brl(price.original)}</s></span>
         </>}
-        <span className="course-offer-current"><small>{price.discountPercent > 0 ? 'Por' : 'Valor'}</small><strong>{brl(price.current)}</strong></span>
+        <span className="course-offer-current"><small>{price.hasDiscount ? 'Por' : 'Valor'}</small><strong>{brl(price.current)}</strong></span>
       </> : <small>Valor a confirmar</small>}</p>
       {open
         ? <a className="button" href={offer.link_para_matricula} target="_blank" rel="noopener noreferrer">
