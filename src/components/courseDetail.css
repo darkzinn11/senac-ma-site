@@ -76,7 +76,7 @@
 .course-offer-action { display:flex; flex-direction:column; align-items:flex-end; gap:10px; text-align:right; }
 .course-offer-price { display:flex; flex-direction:column; align-items:flex-end; gap:7px; margin:0; font-size:24px; line-height:1.15; font-weight:800; color:var(--blue); }
 .course-offer-price small { font-size:12px; font-weight:400; color:var(--course-muted); }
-.course-offer-discount { padding:5px 8px; border-radius:6px; background:#fff1dd; color:#994b00; font-size:12px; line-height:1.25; font-weight:800; }
+.course-offer-discount { padding:5px 8px; border-radius:6px; background:#e3f5e9; color:#1d7a3e; font-size:12px; line-height:1.25; font-weight:800; }
 .course-offer-original { color:var(--course-muted); font-size:14px; line-height:1.4; font-weight:400; }
 .course-offer-original s { text-decoration:line-through; }
 .course-offer-current { display:flex; align-items:baseline; gap:6px; }
