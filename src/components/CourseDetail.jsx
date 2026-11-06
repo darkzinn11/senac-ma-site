@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowRight, Calendar as CalendarDays, CalendarTick, Clock as Clock3, Location as MapPin, People as Users, Teacher, Category, Award, InfoCircle } from 'iconsax-react';
-import { brl, dateISO } from '../data/courseApi';
+import { brl, coursePrice, dateISO } from '../data/courseApi';
 import { routeHref } from '../data/basePath';
 import { courseVisual } from '../data/courseVisuals';
 import { canEnroll, offerSituation, situationClass, textOf } from '../api/adapters';
@@ -87,7 +87,7 @@ function Fact({ icon: FactIcon, label, value }) {
 function OfferCard({ offer, status }) {
   const start = dayMonth(offer.inicio);
   const open = canEnroll(offer);
-  const price = brl(offer.preco);
+  const price = coursePrice(offer.preco);
   return <li className={'course-offer' + (open ? '' : ' is-muted')}>
     <div className="course-offer-date" aria-hidden="true">
       {start ? <><strong>{start.day}</strong><span>{start.month}</span></> : <span>A confirmar</span>}
@@ -104,7 +104,13 @@ function OfferCard({ offer, status }) {
       </ul>
     </div>
     <div className="course-offer-action">
-      <p className="course-offer-price">{price ? <><small>Valor</small>{price}</> : <small>Valor a confirmar</small>}</p>
+      <p className="course-offer-price">{price ? <>
+        {price.discountPercent > 0 && <>
+          <span className="course-offer-discount">{price.discountPercent}% de desconto</span>
+          <span className="course-offer-original">De <s>{brl(price.original)}</s></span>
+        </>}
+        <span className="course-offer-current"><small>{price.discountPercent > 0 ? 'Por' : 'Valor'}</small><strong>{brl(price.current)}</strong></span>
+      </> : <small>Valor a confirmar</small>}</p>
       {open
         ? <a className="button" href={offer.link_para_matricula} target="_blank" rel="noopener noreferrer">
           Matricular-se<ArrowRight size={18} color="currentColor" aria-hidden="true" />

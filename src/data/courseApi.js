@@ -15,4 +15,16 @@ export const brl=value=>{
   const number=Number(String(value).replace(',','.'));
   return Number.isFinite(number) ? new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(number) : null;
 };
+export const COURSE_DISCOUNT_PERCENT = 40;
+// O preço da API permanece como referência; calcula a promoção uma única vez,
+// em centavos, para não acumular descontos nem exibir frações de centavo.
+export function coursePrice(value) {
+  if (value === null || value === undefined || String(value).trim() === '') return null;
+  const amount = Number(String(value).replace(',', '.'));
+  if (!Number.isFinite(amount) || amount < 0) return null;
+  const originalCents = Math.round((amount + Number.EPSILON) * 100);
+  const discountPercent = originalCents > 0 ? COURSE_DISCOUNT_PERCENT : 0;
+  const currentCents = Math.round(originalCents * (100 - discountPercent) / 100);
+  return { original:originalCents / 100, current:currentCents / 100, discountPercent };
+}
 export const briefDate=value=>value || 'A confirmar';
