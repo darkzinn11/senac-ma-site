@@ -42,7 +42,7 @@ O site consome somente a API pública (`/v1/public/...`); não há snapshots no 
 
 ### Correções de preços do trimestre IV/2026
 Os preços recebidos da API são os valores finais promocionais. `coursePrice()` calcula o valor de referência dividindo o preço final por 0,60, para exibir 40% de desconto.
-Na conferência dos PDFs em 06/11/2026, quatro turmas ainda retornavam preço integral: Informática Avançada Office e Mobile, Preparando-se para o Mercado de Trabalho e Massagem Modeladora e Turbinada em Santa Inês; Oratória avançada em Bacabal. `src/data/offerPriceCorrections.js` corrige somente seus IDs quando o preço recebido ainda coincide com o integral da tabela. Preços já corrigidos e outras turmas permanecem como vieram da API. Esse ajuste atende à exibição no portal e deve ser removido após a correção no cadastro/SIG; não altera o valor cobrado no sistema externo de matrícula.
+O portal exibe o preço recebido do SIG sem sobrescritas baseadas nos PDFs. Se o PDF divergir, prevalece o valor da API/SIG; o valor de referência é calculado para a apresentação do desconto e não altera o valor cobrado no sistema externo de matrícula.
 
 ### Biblioteca de ícones
 - Preservar os pictogramas SVG originais do Figma (Portal do aluno, busca, setas, duração, botões e redes sociais) em `src/components/Ui.jsx`. Usar `iconsax-react` para novos controles internos, incluindo os filtros, dados dos cursos e visualização grade/lista.

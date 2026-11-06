@@ -4,7 +4,6 @@ import { mediaUrl } from './client';
 import { courseStatus } from '../data/courseApi';
 import { normalizePath } from '../data/portalRoutes';
 import { sentenceCase } from '../utils/sentenceCase';
-import { offerPrice } from '../data/offerPriceCorrections';
 
 export const textOf = (html) => {
   if (!html) return '';
@@ -65,7 +64,7 @@ export function adaptOffer(offer) {
   return {
     id: offer.id, courseSlug: offer.course_slug, courseName: offer.course_name,
     localidade: offer.unit_city || '', unidade: offer.unit_name || '', unitSlug: offer.unit_slug || '',
-    inicio: brDate(offer.start_date), fim: brDate(offer.end_date), preco: offerPrice(offer),
+    inicio: brDate(offer.start_date), fim: brDate(offer.end_date), preco: offer.price,
     total_de_vagas: offer.seats, horarios: offer.schedule || '', link_para_matricula: offer.enrollment_url || '',
     apiStatus: offer.status,
   };
