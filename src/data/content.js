@@ -30,13 +30,6 @@ export const links = {
   instagram: 'https://www.instagram.com/senacmaranhao',
   youtube: 'https://www.youtube.com/@senacmaranhao7779',
 };
-export const heroSlides = [
-  { image:'b2300.png', mobileImage:publicUrl('/assets/mobile-banners/mobile-selecao-senac.png'), alt:'Senac Maranhão: educação profissional e novas oportunidades.', href:links.courses },
-  { image:'6c1ad.png', mobileImage:publicUrl('/assets/mobile-banners/mobile-senac-80-anos.png'), alt:'Há 80 anos, o Senac transforma histórias e futuros.', href:links.about },
-  { image:'08919.png', mobileImage:publicUrl('/assets/mobile-banners/mobile-orango.png'), alt:'Descubra seu caminho. Vem pro Orango. Cursos gratuitos e 100% online.', href:links.ead },
-  { image:'93d0b.png', mobileImage:publicUrl('/assets/mobile-banners/mobile-psg.png'), alt:'Educação profissional para todos. Conheça o Programa Senac de Gratuidade.', href:links.psg },
-  { image:'500dd.png', mobileImage:publicUrl('/assets/mobile-banners/mobile-nova-unidade.png'), alt:'Nova unidade em São Luís, na região Forquilha/Cohab.', href:links.units },
-];
 export const coursePreview = [
   { id:'paes', title:'Pães e Fermentação Artesanal', area:'Produção de alimentos', hours:10, image:'f964e.png' },
   { id:'excel', title:'Excel para o Mercado de Trabalho', area:'Tecnologia e negócios', hours:12, image:'11592.png' },

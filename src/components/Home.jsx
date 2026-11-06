@@ -4,7 +4,7 @@ import CourseFinder from './CourseFinder';
 import QuickAccess from './QuickAccess';
 import Courses from './Courses';
 import { Contact, Institutional, InstitutionalVideo, News, Notices, Services } from './ContentSections';
-import { coursePreview, heroSlides } from '../data/content';
+import { coursePreview } from '../data/content';
 import useAsync from '../api/useAsync';
 import { useSiteData } from '../api/SiteData';
 import { loadBanners } from '../api/content';
@@ -14,11 +14,10 @@ const emptyFilters = { query:'', area:'', city:'', unit:'', type:'' };
 
 function HeroBanner() {
   const banners = useAsync(loadBanners, []);
-  // Mostra a arte local imediatamente enquanto a API valida as imagens dos banners.
-  if (banners.status === 'loading') return <BannerCarousel slides={heroSlides} initial={0} label="Destaques do Senac" />;
-  // API fora do ar: vale a arte aprovada no layout (reserva). API respondeu com lista vazia: o admin não quer
-  // banners, então a seção some (sem carrossel quebrado).
-  if (banners.status === 'error') return <BannerCarousel slides={heroSlides} initial={2} label="Destaques do Senac" />;
+  // Reserva o espaço enquanto os banners do painel carregam, sem exibir campanhas locais.
+  if (banners.status === 'loading') return <div className="banner-carousel hero-carousel" aria-hidden="true">
+    <div className="banner-stage"><div className="banner-slide hero-placeholder" /></div>
+  </div>;
   if (!banners.data?.length) return <div className="hero-empty" hidden />;
   return <BannerCarousel slides={banners.data} initial={0} label="Destaques do Senac" />;
 }

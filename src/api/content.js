@@ -92,7 +92,7 @@ const canLoad = (url, timeout = 5000) => new Promise(resolve => {
 });
 // Banners do carrossel da home. A API pública já devolve só os ativos e dentro da janela start_at/end_at;
 // aqui só ordenamos (sort_order) e descartamos o que não tem imagem carregável. Lista vazia é resposta legítima
-// (a Home esconde a seção); erro de rede/HTTP rejeita a promessa (a Home usa os slides de reserva).
+// (a Home esconde a seção); erro de rede/HTTP também mantém a seção oculta, sem banners locais de reserva.
 // placement: 'hero' (carrossel do topo, padrão) ou 'institutional' (segundo carrossel, acima das notícias).
 export async function loadBanners(placement = 'hero') {
   const banners = (await getJSON(`${API}/banners` + query({ placement }), { ttl: 30 * 1000 })).data || [];
