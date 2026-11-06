@@ -40,6 +40,10 @@ O site consome somente a API pública (`/v1/public/...`); não há snapshots no 
 - Mídia: enquanto os uploads não são copiados para o servidor de mídia, `src/data/localMedia.json` (gerado por `npm run media:map`) aponta as 231 mídias de `public/media` para as chaves da API. Depois do rsync, esvazie esse arquivo (`{}`).
 - Verificação: `npm run verify:independence` (rotas reais, tráfego externo bloqueado) e `npm run verify:sitemap` (amostra do sitemap antigo). Ambos exigem a API no ar.
 
+### Correções de preços do trimestre IV/2026
+Os preços recebidos da API são os valores finais promocionais. `coursePrice()` calcula o valor de referência dividindo o preço final por 0,60, para exibir 40% de desconto.
+Na conferência dos PDFs em 06/11/2026, quatro turmas ainda retornavam preço integral: Informática Avançada Office e Mobile, Preparando-se para o Mercado de Trabalho e Massagem Modeladora e Turbinada em Santa Inês; Oratória avançada em Bacabal. `src/data/offerPriceCorrections.js` corrige somente seus IDs quando o preço recebido ainda coincide com o integral da tabela. Preços já corrigidos e outras turmas permanecem como vieram da API. Esse ajuste atende à exibição no portal e deve ser removido após a correção no cadastro/SIG; não altera o valor cobrado no sistema externo de matrícula.
+
 ### Biblioteca de ícones
 - Preservar os pictogramas SVG originais do Figma (Portal do aluno, busca, setas, duração, botões e redes sociais) em `src/components/Ui.jsx`. Usar `iconsax-react` para novos controles internos, incluindo os filtros, dados dos cursos e visualização grade/lista.
 - As subpáginas utilizam componentes Iconsax diretamente. `@tabler/icons-react` e `lucide-react` foram removidos das dependências.

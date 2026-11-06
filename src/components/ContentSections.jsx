@@ -15,21 +15,11 @@ export function Services() {
     <div className="services-grid">{services.map(item => <PhotoCard key={item.title} item={item} />)}</div>
   </section>;
 }
-const opportunitiesSlide = { image:'a7d1b.png', title:'Conheça o banco de oportunidades', alt:'Conheça o Banco de Oportunidades do Senac Maranhão.',
-  href:links.opportunities, description:'O Banco de Oportunidades tem como objetivo realizar a intermediação entre os alunos egressos do Senac e as oportunidades existentes no mundo do trabalho.' };
 export function Institutional() {
   const banners = useAsync(() => loadBanners('institutional'), []);
-  const fallback = [
-    { image:'5e143.png', title:'Ouvidoria Senac', alt:'Ouvidoria Senac — acesse nosso canal de atendimento',
-      href:links.ombudsman, description:'A Ouvidoria é um canal de comunicação direto e eficiente para o recebimento de reclamações, solicitações, elogios, sugestões e denúncias.' },
-    opportunitiesSlide,
-  ];
-  // Carrega do admin (aba "Carrossel institucional"). API fora do ar: slides de reserva. Lista vazia: o admin não
-  // quer banners aqui, então o bloco some. Enquanto carrega, reserva a altura para evitar salto de layout.
+  // Exibe apenas banners do painel. Durante a consulta, reserva a altura para evitar salto de layout.
   if (banners.status === 'loading') return <div className="section-block container institutional-placeholder" aria-hidden="true" />;
-  // O admin manda em TODOS os slides (imagem, link e texto alternativo). O layout do Figma do Banco de Oportunidades
-  // (foto + logo e texto em HTML) só entra como reserva, quando a API está fora do ar (veja `fallback`).
-  const slides = banners.status === 'error' ? fallback : banners.data;
+  const slides = banners.data;
   if (!slides?.length) return null;
   return <div className="section-block container"><BannerCarousel slides={slides} variant="institutional" label="Serviços institucionais" /></div>;
 }
@@ -81,29 +71,17 @@ export function Notices() {
 export function InstitutionalVideo() {
   const [playing, setPlaying] = useState(false);
   const { highlight = {} } = useSiteData().settings;
-  if (highlight.enabled === false) return null;
   const banner = highlight.bannerUrl;
+  if (highlight.enabled === false || !banner) return null;
   const id = highlight.videoId || videoId;
   const customPoster = highlight.videoId ? 'https://i.ytimg.com/vi/' + highlight.videoId : '';
-  return <section className={'video-section senac80-section section-block' + (banner ? ' has-banner' : '')} id="senac" aria-label="Senac 80 anos">
-    {banner
-      ? <picture>
-        {highlight.bannerMobileUrl && <source media="(max-width: 768px)" srcSet={highlight.bannerMobileUrl} />}
-        <img className="senac80-background senac80-custom-banner" src={banner} alt={highlight.bannerAlt} />
-      </picture>
-      : <img className="senac80-background" src={publicUrl('/assets/senac80/453e1.png')} alt="" aria-hidden="true" />}
+  return <section className="video-section senac80-section section-block has-banner" id="senac" aria-label="Senac 80 anos">
+    <picture>
+      {highlight.bannerMobileUrl && <source media="(max-width: 768px)" srcSet={highlight.bannerMobileUrl} />}
+      <img className="senac80-background senac80-custom-banner" src={banner} alt={highlight.bannerAlt} />
+    </picture>
     <div className="container senac80-inner">
-      {banner ? <div className="senac80-brand-spacer" aria-hidden="true" /> : <div className="senac80-brand" aria-hidden="true">
-        <div className="senac80-brand-row">
-          <div className="senac80-lockup">
-            <img className="senac80-senac-logo" src={publicUrl('/assets/senac80/5f907.svg')} alt="" />
-            <img className="senac80-system-logo" src={publicUrl('/assets/senac80/40437.svg')} alt="" />
-          </div>
-          <img className="senac80-divider" src={publicUrl('/assets/senac80/a00a2.svg')} alt="" />
-          <img className="senac80-mark" src={publicUrl('/assets/senac80/0d0d4.svg')} alt="" />
-        </div>
-        <img className="senac80-tagline" src={publicUrl('/assets/senac80/63eeb.png')} alt="" />
-      </div>}
+      <div className="senac80-brand-spacer" aria-hidden="true" />
       <div className="video-frame senac80-video-frame">
         {playing ? <iframe title="Senac 80 anos — vídeo institucional" src={'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1'}
           allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
