@@ -25,6 +25,12 @@ export const courseTypeLabels = {
   aprendizagem: 'Aprendizagem', idiomas: 'Idiomas', outros: 'Outros',
 };
 export const modalityLabels = { presencial: 'Presencial', ead: 'EAD', semipresencial: 'Semipresencial' };
+export const displayPageTitle = (title, path) => {
+  const value = sentenceCase(title);
+  return path === '/trabalhe-conosco/'
+    ? value.replace(/\s*[-–—]\s*padrão\s*$/i, '').trim()
+    : value;
+};
 
 export function adaptNewsItem(item) {
   const cover = mediaUrl(item.cover_image_url);
@@ -44,11 +50,11 @@ export function adaptNews(data) {
 export function adaptPage(data, unit = null) {
   const cover = mediaUrl(unit?.image_url || data.cover_image_url);
   return {
-    id: data.id, kind: 'page', title: sentenceCase(data.title), slug: data.slug, path: data.path, parent: data.parent_path || null,
+    id: data.id, kind: 'page', title: displayPageTitle(data.title, data.path), slug: data.slug, path: data.path, parent: data.parent_path || null,
     excerpt: unit ? brief(unit.description) : '', html: data.content_html || '', ...htmlToBlocks(data.path === '/fale-conosco/' ? data.content_html : ''),
     children: (data.children || []).map(child => ({ id: child.path, title: sentenceCase(child.title), path: child.path })),
     cover, image: cover, unit,
-    seoTitle: data.seo_title || '', seoDescription: data.seo_description || '',
+    seoTitle: data.seo_title ? displayPageTitle(data.seo_title, data.path) : '', seoDescription: data.seo_description || '',
   };
 }
 export function adaptUnit(unit) {

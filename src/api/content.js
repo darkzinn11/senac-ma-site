@@ -1,6 +1,6 @@
 import { ApiError, getJSON, mediaUrl, query } from './client';
 import {
-  adaptContent, adaptNews, adaptNewsItem, adaptPage, adaptUnit, brief, textOf,
+  adaptContent, adaptNews, adaptNewsItem, adaptPage, adaptUnit, brief, displayPageTitle, textOf,
 } from './adapters';
 import { normalizePath, virtualPages } from '../data/portalRoutes';
 import { sentenceCase } from '../utils/sentenceCase';
@@ -135,7 +135,7 @@ export async function searchSite(term) {
   const items = [
     ...(courses.data || []).map(item => ({ id: item.id, kind: 'course', title: item.name, path: item.path, excerpt: item.short_description || '', carga_horaria: item.workload_hours })),
     ...(news.data || []).map(adaptNewsItem),
-    ...(pages.data || []).map(item => ({ id: item.id, kind: 'page', title: sentenceCase(item.title), path: item.path, excerpt: '' })),
+    ...(pages.data || []).map(item => ({ id: item.id, kind: 'page', title: displayPageTitle(item.title, item.path), path: item.path, excerpt: '' })),
   ];
   const total = response => response.meta?.total ?? (response.data || []).length;
   return { items, truncated: [news, courses, pages].some(response => total(response) > (response.data || []).length) };
