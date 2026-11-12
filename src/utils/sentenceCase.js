@@ -19,3 +19,21 @@ export function sentenceCase(value) {
     .replace(/instituto nacional do seguro social/gi, 'Instituto Nacional do Seguro Social');
   return result;
 }
+
+// Títulos que chegam inteiramente em maiúsculas: cada palavra com inicial maiúscula, exceto
+// ligações (de, da, e, para...), siglas conhecidas e nomes próprios do mapa. Ex.: "DIRETORIA DE GESTÃO" -> "Diretoria de Gestão".
+// Texto que já tem capitalização (o que a equipe digitou) nunca é alterado.
+const lowerWords = new Set(['a','as','o','os','de','da','das','do','dos','e','em','no','na','nos','nas','para','por','com','ou','ao','aos','à','às','um','uma']);
+export function headingCase(value) {
+  const text = String(value ?? '');
+  const base = sentenceCase(text);
+  if (base === text) return text; // não estava em caixa alta (ou é sigla/URL): respeita como está
+  let first = true;
+  return base.replace(/[\p{L}]+/gu, word => {
+    const known = abbreviations.get(word.toLocaleUpperCase('pt-BR'));
+    const isFirst = first; first = false;
+    if (known) return known;
+    if (!isFirst && lowerWords.has(word.toLocaleLowerCase('pt-BR'))) return word.toLocaleLowerCase('pt-BR');
+    return word.charAt(0).toLocaleUpperCase('pt-BR') + word.slice(1).toLocaleLowerCase('pt-BR');
+  });
+}

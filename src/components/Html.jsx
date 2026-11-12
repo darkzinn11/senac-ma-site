@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import DOMPurify from 'dompurify';
 import { mediaUrl } from '../api/client';
-import { sentenceCase } from '../utils/sentenceCase';
+import { headingCase, sentenceCase } from '../utils/sentenceCase';
 
 // O HTML dos conteúdos (notícias, páginas, cursos) vem da API já sanitizado (bluemonday). Mesmo assim ele é
 // sanitizado de novo aqui (defesa em profundidade: a API pode mudar, e o conteúdo é de editores) com DOMPurify
@@ -52,12 +52,14 @@ export function hideBrokenImage(img) {
 // vira <figcaption> (foto única) ou parágrafo de legenda (galeria). Só mexe em texto curto colado na foto.
 const CAPTION_HINT = /\b(imagem|imagens|foto|fotos|fotografia|crédito|créditos|divulgação|reprodução|arquivo)\b\s*[:/(]|\((?:foto|imagem|divulgação|arquivo)/i;
 const CAPTION_MAX = 300;
+const BARE_CAPTION_MAX = 200;
 const hasImage = el => el.nodeType === 1 && (el.tagName === 'IMG' || Boolean(el.querySelector?.('img'))) && !el.textContent.trim();
 const isEmptyBlock = node => (node.nodeType === 3 && !node.nodeValue.trim()) || (node.nodeType === 1 && node.tagName === 'P' && !node.textContent.trim() && !node.querySelector('img'));
 function captionText(node) {
   if (node.nodeType === 3) {
     const text = node.nodeValue.trim();
-    return text && text.length <= CAPTION_MAX && CAPTION_HINT.test(text) ? text : '';
+    // Texto solto (fora de <p>) e curto colado na foto: nas matérias do WordPress é a legenda.
+    return text && (text.length <= BARE_CAPTION_MAX || (text.length <= CAPTION_MAX && CAPTION_HINT.test(text))) ? text : '';
   }
   if (node.nodeType !== 1 || !['P', 'EM', 'STRONG', 'I', 'B'].includes(node.tagName)) return '';
   const text = node.textContent.replace(/\s+/g, ' ').trim();
@@ -96,7 +98,7 @@ export default function Html({ html, className = 'inner-prose' }) {
     const sanitized = sanitizeHtml(html);
     const doc = new DOMParser().parseFromString(sanitized, 'text/html');
     const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
-    for (let node = walker.nextNode(); node; node = walker.nextNode()) node.nodeValue = sentenceCase(node.nodeValue);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) node.nodeValue = (/^H[1-6]$/.test(node.parentElement?.closest('h1,h2,h3,h4,h5,h6')?.tagName || '') ? headingCase : sentenceCase)(node.nodeValue);
     markCaptions(doc);
     return doc.body.innerHTML;
   }, [html]);

@@ -216,7 +216,9 @@
   font-size:16px;
   line-height:1.55;
 }
-.administration-area-content strong { display:inline-block; margin-bottom:2px; color:#00284d; }
+.administration-area-content strong { display:block; margin-bottom:2px; color:#00284d; }
+/* o <br> logo depois do negrito já é a quebra de linha do bloco: sem isto sobra uma linha em branco */
+.administration-area-content :is(strong + br, strong > br:last-child) { display:none; }
 .administration-page > .institutional-explore { margin-top:88px; }
 @media(max-width:980px) {
   .administration-hero { padding:32px; gap:28px; }

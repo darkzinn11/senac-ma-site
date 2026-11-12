@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowRight2 as ArrowUpRight, Book as BookOpen, C
 import { isCatalog, isNews, isNotices, localHref } from '../data/portalRoutes';
 import { asset, links } from '../data/content';
 import { publicUrl, routeHref } from '../data/basePath';
-import { sentenceCase } from '../utils/sentenceCase';
+import { headingCase, sentenceCase } from '../utils/sentenceCase';
 import { courseVisual } from '../data/courseVisuals';
 import { courseStatus } from '../data/courseApi';
 import useAsync from '../api/useAsync';
@@ -142,11 +142,11 @@ function AdministrationRegionalPage({page}) {
     return [...doc.body.querySelectorAll(':scope > h2')].map(heading=>{
       const grid=heading.nextElementSibling?.classList.contains('prose-card-grid')?heading.nextElementSibling:null;
       const cards=grid?[...grid.querySelectorAll(':scope > .prose-card')].map(card=>{
-        const title=sentenceCase(cleanTitle(card.querySelector('h3')?.textContent));
+        const title=headingCase(cleanTitle(card.querySelector('h3')?.textContent));
         card.querySelector('h3')?.remove();
         return {title,html:card.innerHTML};
       }):[];
-      return {title:sentenceCase(cleanTitle(heading.textContent)),cards};
+      return {title:headingCase(cleanTitle(heading.textContent)),cards};
     }).filter(section=>section.cards.length);
   },[page.html]);
   const related=useAsync(async()=>(await listChildPages('/institucional/'))
@@ -320,10 +320,6 @@ function NewsListing({page}) {
     </section>
   </>;
 }
-// Fotos seguidas no corpo (parágrafos só com imagem) viram uma galeria lado a lado.
-const IMAGE_P=/<p>\s*(?:<a [^>]*>\s*)?<img [^>]*>\s*(?:<\/a>\s*)?<\/p>/;
-const groupImages=html=>String(html||'').replace(new RegExp('(?:'+IMAGE_P.source+'\\s*){2,}','g'),
-  run=>'<div class="article-gallery">'+run.match(new RegExp(IMAGE_P.source,'g')).join('')+'</div>');
 
 const SHARE_TARGETS=[
   {name:'WhatsApp',icon:'whatsapp',href:(url,title)=>'https://wa.me/?text='+encodeURIComponent(title+' '+url)},
@@ -356,7 +352,8 @@ function ArticlePage({page}) {
   const articleImage=safeImage(page.image) || safeImage(page.cover);
   const [coverFailed,setCoverFailed]=useState(false);
   useEffect(()=>setCoverFailed(false),[articleImage]);
-  const body=useMemo(()=>groupImages(page.html),[page.html]);
+  // Sem agrupamento automático: fotos seguidas ficam uma embaixo da outra; o grid só existe quando o editor usa o botão Galeria no painel.
+  const body=page.html;
   const readingMinutes=useMemo(()=>{
     const doc=new DOMParser().parseFromString(sanitizeHtml(page.html),'text/html');
     return Math.max(1,Math.ceil((doc.body.textContent.trim().match(/\S+/g)||[]).length/200));

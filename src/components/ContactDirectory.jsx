@@ -1,24 +1,36 @@
 import React, { useMemo, useState } from 'react';
-import { ArrowRight, Buildings2, Call, Location, SearchNormal1, Sms } from 'iconsax-react';
+import { ArrowRight, Buildings2, Call, Location, Message, SearchNormal1, Sms } from 'iconsax-react';
 import Breadcrumb from './PageBreadcrumb';
 import { ActionLink } from './Ui';
 import './contactDirectory.css';
 
 const fold=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const phonePattern=/\(\d{2}\)\s*\d{4,5}\s*[-–]\s*\d{4}/g;
+const waPattern=/^https?:\/\/(?:wa\.me|api\.whatsapp\.com)\//i;
+const formatPhone=digits=>{const d=digits.length>=12&&digits.startsWith('55')?digits.slice(2):digits;return d.length===10||d.length===11?`(${d.slice(0,2)}) ${d.slice(2,-4)}-${d.slice(-4)}`:'';};
 const emailPattern=/[\w.+-]+@[\w.-]+\.[a-z]{2,}/gi;
 
 // The source contact HTML is already sanitized. Preserve the supplied addresses
 // and numbers; only normalize their presentation and make their actions explicit.
 function contactDetails(group) {
   const doc=new DOMParser().parseFromString(group.html||'','text/html');
+  // WhatsApp: o número vem num link wa.me (cadastro do painel). Sai do texto para não virar "Telefone" nem
+  // sobrar o rótulo "WhatsApp:" no endereço; aparece numa linha própria que abre a conversa.
+  const whatsapps=[];
+  doc.body.querySelectorAll('a[href]').forEach(anchor=>{
+    if(!waPattern.test(anchor.getAttribute('href'))) return;
+    const digits=(anchor.textContent||'').replace(/\D/g,'')||anchor.getAttribute('href').replace(/\D/g,'');
+    const number=formatPhone(digits)||anchor.textContent.trim();
+    if(number&&!whatsapps.some(item=>item.href===anchor.getAttribute('href')))whatsapps.push({number,href:anchor.getAttribute('href')});
+    anchor.remove();
+  });
   doc.body.querySelectorAll('br').forEach(node=>node.replaceWith('\n'));
   doc.body.querySelectorAll('p,li').forEach(node=>node.appendChild(doc.createTextNode('\n')));
   const text=doc.body.textContent||'';
   const phones=[...text.matchAll(phonePattern)].map(match=>{
     const digits=match[0].replace(/\D/g,'');
     return {number:`(${digits.slice(0,2)}) ${digits.slice(2,-4)}-${digits.slice(-4)}`,digits,fax:/fax:\s*$/i.test(text.slice(Math.max(0,match.index-10),match.index))};
-  });
+  }).filter((phone,index,all)=>all.findIndex(other=>other.digits===phone.digits&&other.fax===phone.fax)===index);
   const emails=new Set(text.match(emailPattern)||[]);
   doc.body.querySelectorAll('a[href^="mailto:"]').forEach(anchor=>{
     // Prefer the address the visitor can actually see. Legacy Timon content
@@ -28,11 +40,11 @@ function contactDetails(group) {
     if(visible)emails.add(visible);
     else if(/^[\w.+-]+@[\w.-]+\.[a-z]{2,}$/i.test(target))emails.add(target);
   });
-  const lines=text.split(/\n/).map(line=>line.replace(phonePattern,'').replace(emailPattern,'').replace(/(?:e-?mail|fax)\s*:/gi,'').replace(/^[\s|/;,]+|[\s|/;,]+$/g,'').replace(/\s+/g,' ').trim()).filter(Boolean);
+  const lines=text.split(/\n/).map(line=>line.replace(phonePattern,'').replace(emailPattern,'').replace(/(?:e-?mail|fax|whats\s*app)\s*:/gi,'').replace(/^[\s|/;,]+|[\s|/;,]+$/g,'').replace(/\s+/g,' ').trim()).filter(Boolean);
   const type=/sede|assessoria/i.test(group.title)?'sector':'unit';
   const title=group.title.replace(/\bSENAC\b/g,'Senac');
-  const extraLinks=[...doc.body.querySelectorAll('a[href]')].filter(a=>!a.getAttribute('href').startsWith('mailto:')).map(a=>({label:a.textContent.trim(),href:a.getAttribute('href')})).filter(a=>a.label);
-  return {title,type,phones,emails:[...emails],lines,extraLinks,search:fold(title+' '+text+' '+phones.map(p=>p.digits).join(' '))};
+  const extraLinks=[...doc.body.querySelectorAll('a[href]')].filter(a=>!a.getAttribute('href').startsWith('mailto:')&&!waPattern.test(a.getAttribute('href'))).map(a=>({label:a.textContent.trim(),href:a.getAttribute('href')})).filter(a=>a.label);
+  return {title,type,phones,whatsapps,emails:[...emails],lines,extraLinks,search:fold(title+' '+text+' '+phones.map(p=>p.digits).join(' ')+' '+whatsapps.map(w=>w.number.replace(/\D/g,'')).join(' '))};
 }
 
 function ContactCard({ contact }) {
@@ -41,7 +53,8 @@ function ContactCard({ contact }) {
     <header><Icon size={24} variant="Bulk" color="currentColor" aria-hidden="true"/><h3>{contact.title}</h3></header>
     {contact.lines.length>0&&<div className="contact-directory-address"><span>Endereço</span><p>{contact.lines.map((line,i)=><React.Fragment key={i}>{line}{i<contact.lines.length-1&&<br/>}</React.Fragment>)}</p></div>}
     <dl className="contact-directory-channels">
-      {contact.phones.length>0&&<div><dt><Call size={18} color="currentColor" aria-hidden="true"/>Telefone</dt><dd>{contact.phones.map(phone=><a href={'tel:+55'+phone.digits} key={phone.digits+(phone.fax?'fax':'')}>{phone.number}{phone.fax&&<span className="contact-fax-label">Fax</span>}</a>)}</dd></div>}
+      {contact.phones.length>0&&<div><dt><Call size={18} color="currentColor" aria-hidden="true"/>Telefone</dt><dd>{contact.phones.map(phone=><span className="contact-phone" key={phone.digits+(phone.fax?'fax':'')}>{phone.number}{phone.fax&&<span className="contact-fax-label">Fax</span>}</span>)}</dd></div>}
+      {contact.whatsapps.length>0&&<div><dt><Message size={18} color="currentColor" aria-hidden="true"/>WhatsApp</dt><dd>{contact.whatsapps.map(item=><a href={item.href} key={item.href} target="_blank" rel="noopener noreferrer" aria-label={'Abrir conversa no WhatsApp com '+contact.title+' ('+item.number+')'}>{item.number}</a>)}</dd></div>}
       {contact.emails.length>0&&<div><dt><Sms size={18} color="currentColor" aria-hidden="true"/>E-mail</dt><dd>{contact.emails.map(email=><a href={'mailto:'+email} key={email}>{email}</a>)}</dd></div>}
     </dl>
     {(contact.lines.length>0||contact.extraLinks.length>0)&&<footer>
