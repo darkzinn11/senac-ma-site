@@ -117,7 +117,7 @@ export const navigation = [
     { label:'Cursos', href:links.courses },
     { label:'PSG – Programa Senac de Gratuidade', href:'https://www.portal-psg.ma.senac.br/#/programa-senac-de-gratuidade', items:[
       { label:'O que é o PSG?', href:links.psg },
-      { label:'Inscrição', href:'https://www.psg.ma.senac.br/Inscrevase.aspx' },
+      { label:'Inscrição', href:'https://psg.ma.senac.br/Inscrevase.aspx' },
       { label:'Editais', href:links.notices },
       { label:'Resultados de Editais', href:links.results },
     ] },
